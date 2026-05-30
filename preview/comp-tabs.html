@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--bg-1);padding:20px 24px;font-family:var(--font-display)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:16px;font-family:var(--font-mono)}
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line-1);margin-bottom:18px}
+  .tab{font-family:var(--font-display);font-weight:500;font-size:14px;color:var(--fg-3);padding:10px 14px;position:relative;cursor:pointer}
+  .tab.active{color:var(--fg-1)}
+  .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--grad-pulse);box-shadow:var(--glow-soft)}
+  .seg{display:inline-flex;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-full);padding:4px}
+  .seg div{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);padding:7px 16px;border-radius:var(--r-full);cursor:pointer}
+  .seg div.on{background:var(--grad-pulse);color:var(--fg-on-neon)}
+</style></head>
+<body>
+  <div class="lab">Tabs &amp; segmented control</div>
+  <div class="tabs">
+    <div class="tab active">Overview</div>
+    <div class="tab">Metrics</div>
+    <div class="tab">Logs</div>
+    <div class="tab">Settings</div>
+  </div>
+  <div class="seg">
+    <div class="on">Live</div>
+    <div>1H</div>
+    <div>24H</div>
+    <div>7D</div>
+  </div>
+</body></html>

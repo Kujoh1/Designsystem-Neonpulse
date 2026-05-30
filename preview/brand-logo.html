@@ -1,0 +1,31 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--bg-0);background-image:var(--grad-haze);padding:26px 28px;font-family:var(--font-display)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:22px;font-family:var(--font-mono)}
+  .lock{display:flex;align-items:center;gap:14px}
+  .mark{width:34px;height:34px;border-radius:50%;position:relative;background:var(--grad-pulse);box-shadow:var(--glow-cyan);flex:none}
+  .mark::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--bg-0)}
+  .mark::before{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--neon-cyan)}
+  .wm{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:0.04em;color:var(--fg-1)}
+  .wm b{color:var(--neon-cyan)}
+  .alt{display:flex;gap:30px;align-items:center;margin-top:24px}
+  .small{font-size:15px}
+  .small .mark{width:22px;height:22px}
+  .small .mark::after{inset:6px}
+  .small .mark::before{inset:9px}
+  .mono{font-family:var(--font-mono);font-size:12px;letter-spacing:0.3em;color:var(--fg-2);text-transform:uppercase}
+</style></head>
+<body>
+  <div class="lab">Wordmark · pulse mark</div>
+  <div class="lock">
+    <div class="mark"></div>
+    <div class="wm">NEON<b>PULSE</b></div>
+  </div>
+  <div class="alt">
+    <div class="lock small"><div class="mark"></div><div class="wm small">NEON<b>PULSE</b></div></div>
+    <div class="mono">N / P</div>
+  </div>
+</body></html>

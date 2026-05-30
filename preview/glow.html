@@ -1,0 +1,24 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--bg-1);padding:24px;font-family:var(--font-mono)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:22px;font-family:var(--font-mono)}
+  .row{display:flex;gap:18px}
+  .b{flex:1;height:64px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--fg-2)}
+  .g1{box-shadow:var(--glow-blue);border-color:transparent}
+  .g2{box-shadow:var(--glow-cyan);border-color:transparent}
+  .g3{box-shadow:var(--glow-magenta);border-color:transparent}
+  .p{animation:np-pulse 1.8s var(--ease-in-out) infinite;border-color:transparent}
+</style></head>
+<body>
+  <div class="lab">Elevation &amp; glow · depth = surface + halo, not heavy shadow</div>
+  <div class="row">
+    <div class="b" style="box-shadow:var(--shadow-1)">shadow-1</div>
+    <div class="b g1">glow-blue</div>
+    <div class="b g2">glow-cyan</div>
+    <div class="b g3">glow-magenta</div>
+    <div class="b p">pulse ●</div>
+  </div>
+</body></html>

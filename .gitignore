@@ -1,0 +1,7 @@
+# Local backup / export artifacts — not part of the published site
+Test.zip
+.thumbnail
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

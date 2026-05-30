@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeonPulse — Mobile UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: #050509;
+    background-image: radial-gradient(80% 60% at 50% 0%, rgba(45,123,255,0.10), transparent 60%);
+    font-family: var(--font-body); color: var(--fg-1);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 32px 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .np-btn-primary {
+    font-family: var(--font-display); font-weight: 600; font-size: 15px;
+    border-radius: var(--r-md); padding: 13px 18px; border: 1px solid transparent;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    background: var(--grad-pulse); color: var(--fg-on-neon); box-shadow: var(--glow-blue);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .np-btn-primary:active { transform: scale(0.98); }
+  button svg, .np-btn-primary svg { stroke-width: 1.9; }
+  .npi svg { width: 100%; height: 100%; display: block; stroke-width: 1.9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<script type="text/babel">
+  function Icon({ name, size = 18 }) {
+    const ref = React.useRef(null);
+    React.useEffect(() => {
+      const el = ref.current; if (!el || !window.lucide) return;
+      el.innerHTML = '<i data-lucide="' + name + '"></i>';
+      window.lucide.createIcons();
+    });
+    return <span ref={ref} className="npi" style={{ display: 'inline-flex', width: size, height: size }} />;
+  }
+  window.Icon = Icon;
+</script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="MobileApp.jsx"></script>
+<script type="text/babel">
+  function App() {
+    React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+    return (
+      <IOSDevice dark>
+        <NeonPulseApp />
+      </IOSDevice>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
