@@ -1,0 +1,27 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--bg-0);background-image:var(--grad-haze);padding:26px 28px;font-family:var(--font-display)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:22px;font-family:var(--font-mono)}
+  .row{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+  .logo{height:52px;width:auto;display:block;filter:drop-shadow(0 0 16px rgba(0,229,255,0.28))}
+  .logo.sm{height:30px}
+  .swatches{display:flex;gap:0;margin-top:26px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line-2);max-width:420px}
+  .sw{flex:1;height:34px}
+  .meta{font-family:var(--font-mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-3);margin-top:10px}
+</style></head>
+<body>
+  <div class="lab">kudesi · brand wordmark</div>
+  <div class="row">
+    <img class="logo" src="../assets/kudesi-logo.svg" alt="kudesi">
+    <img class="logo sm" src="../assets/kudesi-logo.svg" alt="kudesi (small)">
+  </div>
+  <!-- Gradient = NeonPulse primary "pulse": blau → cyan (--grad-pulse) -->
+  <div class="swatches">
+    <div class="sw" style="background:var(--neon-blue)"></div>
+    <div class="sw" style="background:var(--neon-cyan)"></div>
+  </div>
+  <div class="meta">grad-pulse · blue → cyan</div>
+</body></html>

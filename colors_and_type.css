@@ -101,6 +101,7 @@
   --glow-cyan:    0 0 0 1px rgba(0,229,255,0.30), 0 0 22px rgba(0,229,255,0.28);
   --glow-blue:    0 0 0 1px rgba(45,123,255,0.35), 0 0 22px rgba(45,123,255,0.30);
   --glow-magenta: 0 0 0 1px rgba(255,45,155,0.35), 0 0 22px rgba(255,45,155,0.30);
+  --glow-danger:  0 0 0 1px rgba(255,59,107,0.35), 0 0 22px rgba(255,59,107,0.30);
   --glow-soft:    0 0 18px rgba(0,229,255,0.18);
 
   /* ---------- MOTION ---------- */
@@ -112,19 +113,94 @@
 }
 
 /* ============================================================
+   SEMANTIC ALIASES  (tier 2 — the design↔dev contract)
+   Components should consume THESE, not the raw primitives above.
+   Primitives say *what the value is* (--bg-2, --neon-cyan);
+   aliases say *what it's for* (--color-surface, --color-accent).
+   Re-point an alias here — or override it in [data-theme="…"] —
+   and every component using it updates, with no find/replace in
+   component code. This is what makes theming + rebrands cheap.
+   ============================================================ */
+:root {
+  /* ---- Surfaces ---- */
+  --color-bg-page:         var(--bg-1);   /* page / app canvas */
+  --color-bg-void:         var(--bg-0);   /* deepest backdrop */
+  --color-surface:         var(--bg-2);   /* cards, panels */
+  --color-surface-raised:  var(--bg-3);   /* hover / elevated */
+  --color-surface-overlay: var(--bg-4);   /* modals, popovers */
+
+  /* ---- Text ---- */
+  --color-text:            var(--fg-1);       /* primary copy + headings */
+  --color-text-secondary:  var(--fg-2);       /* body / supporting */
+  --color-text-muted:      var(--fg-3);       /* captions, hints (large text only — AA-borderline at small sizes) */
+  --color-text-disabled:   var(--fg-4);       /* disabled */
+  --color-text-on-accent:  var(--fg-on-neon); /* text on a neon fill */
+  --color-text-accent:     var(--neon-cyan);  /* links, active text */
+
+  /* ---- Borders ---- */
+  --color-border:          var(--line-2);    /* default card / control border */
+  --color-border-subtle:   var(--line-1);    /* dividers */
+  --color-border-strong:   var(--line-3);    /* emphasis / hover border */
+  --color-border-focus:    var(--line-glow); /* focused control edge */
+
+  /* ---- Actions / accent ---- */
+  --color-action-primary:        var(--grad-pulse);     /* primary CTA fill */
+  --color-action-primary-solid:  var(--neon-blue);      /* flat primary */
+  --color-action-secondary:      var(--grad-pulse-hot); /* energy / secondary */
+  --color-accent:                var(--neon-cyan);      /* the signal accent */
+
+  /* ---- Feedback (semantic state) ---- */
+  --color-success: var(--success); --color-success-fill: var(--success-fill);
+  --color-warning: var(--warning); --color-warning-fill: var(--warning-fill);
+  --color-danger:  var(--danger);  --color-danger-fill:  var(--danger-fill);
+  --color-info:    var(--info);    --color-info-fill:    var(--info-fill);
+
+  /* ---- Focus ring (apply on :focus-visible) ---- */
+  --ring-focus: 0 0 0 2px var(--bg-1), 0 0 0 4px rgba(0,229,255,0.55);
+
+  /* ---- Elevation aliases ---- */
+  --elevation-flat:    var(--shadow-1);
+  --elevation-overlay: var(--shadow-2);
+
+  /* ---- Z-index scale (one stacking contract for the whole system) ---- */
+  --z-base:     0;
+  --z-dropdown: 1000;
+  --z-sticky:   1100;
+  --z-overlay:  1200;   /* modal scrims */
+  --z-modal:    1300;
+  --z-toast:    1400;
+  --z-tooltip:  1500;
+
+  /* ---- Icons (Lucide outline) ---- */
+  --icon-stroke: 1.9;   /* HUD-crisp stroke width */
+  --icon-sm:     16px;  /* inline / dense UI */
+  --icon-md:     20px;  /* buttons / nav */
+  --icon-lg:     24px;  /* feature / empty states */
+
+  /* ---- Interaction states (one behaviour for every control) ----
+     States are derived from these + pseudo-classes — never hand-painted
+     per component. Reuse them on buttons, tabs, inputs, cards … */
+  --state-pressed-scale: 0.97;
+  --state-hover-glow:    0 0 0 1px rgba(0,229,255,0.50), 0 0 26px rgba(0,229,255,0.45);
+  --state-disabled-opacity: 0.5;
+}
+
+/* ============================================================
    SEMANTIC ELEMENT DEFAULTS (optional — apply to a scope)
+   These now consume the tier-2 aliases above, as a working
+   example of how components should reference tokens.
    ============================================================ */
 .np-scope {
-  background: var(--bg-1);
-  color: var(--fg-1);
+  background: var(--color-bg-page);
+  color: var(--color-text);
   font: var(--body);
   -webkit-font-smoothing: antialiased;
 }
-.np-scope h1 { font: var(--h1); color: var(--fg-1); margin: 0; }
-.np-scope h2 { font: var(--h2); color: var(--fg-1); margin: 0; }
-.np-scope h3 { font: var(--h3); color: var(--fg-1); margin: 0; }
-.np-scope h4 { font: var(--h4); color: var(--fg-1); margin: 0; }
-.np-scope p  { font: var(--body); color: var(--fg-2); margin: 0; }
+.np-scope h1 { font: var(--h1); color: var(--color-text); margin: 0; }
+.np-scope h2 { font: var(--h2); color: var(--color-text); margin: 0; }
+.np-scope h3 { font: var(--h3); color: var(--color-text); margin: 0; }
+.np-scope h4 { font: var(--h4); color: var(--color-text); margin: 0; }
+.np-scope p  { font: var(--body); color: var(--color-text-secondary); margin: 0; }
 .np-scope code, .np-scope .mono {
   font-family: var(--font-mono);
 }
@@ -132,8 +208,172 @@
   font: var(--mono-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--fg-3);
+  color: var(--color-text-muted);
 }
+/* Focus-visible helper — opt in with class="np-focus" on any control */
+.np-focus:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+/* ============================================================
+   BUTTON — the canonical, fully-stated control (system blueprint)
+   Variant (intent) × state, all derived from tokens + pseudo-classes,
+   never hand-painted per combination. The `.is-*` helper classes mirror
+   the real states so the docs can show every state without interaction.
+   Markup:  <button class="np-btn np-btn--primary"><span>Label</span></button>
+   States:  rest · hover · focus-visible · active · loading · disabled
+   ============================================================ */
+.np-btn {
+  --btn-px: 18px; --btn-py: 11px; --btn-fz: 14px;
+  font-family: var(--font-display); font-weight: 600; font-size: var(--btn-fz); line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: var(--btn-py) var(--btn-px); border-radius: var(--r-md); border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; white-space: nowrap; user-select: none; position: relative;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur),
+              border-color var(--dur), color var(--dur), background var(--dur);
+}
+.np-btn > svg, .np-btn .npi { width: var(--icon-md); height: var(--icon-md); }
+
+/* sizes */
+.np-btn--sm   { --btn-px: 13px; --btn-py: 8px;  --btn-fz: 13px; }
+.np-btn--lg   { --btn-px: 22px; --btn-py: 13px; --btn-fz: 15px; }
+.np-btn--pill { border-radius: var(--r-full); }
+
+/* intent: primary — blue→cyan, the one true CTA */
+.np-btn--primary { background: var(--color-action-primary); color: var(--color-text-on-accent); box-shadow: var(--glow-blue); }
+.np-btn--primary:hover, .np-btn--primary.is-hover { box-shadow: var(--state-hover-glow); }
+
+/* intent: secondary — violet→magenta "energy" */
+.np-btn--secondary { background: var(--color-action-secondary); color: var(--fg-1); box-shadow: var(--glow-magenta); }
+.np-btn--secondary:hover, .np-btn--secondary.is-hover { box-shadow: var(--glow-magenta), 0 0 26px rgba(255,45,155,.30); }
+
+/* intent: ghost — flat surface, neon only on interaction */
+.np-btn--ghost { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
+.np-btn--ghost:hover, .np-btn--ghost.is-hover { border-color: var(--color-border-focus); color: var(--color-accent); }
+
+/* intent: danger — tinted outline; neon as warning, not a heavy red fill */
+.np-btn--danger { background: transparent; color: var(--color-danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+.np-btn--danger:hover, .np-btn--danger.is-hover { background: var(--color-danger-fill); border-color: var(--color-danger); box-shadow: var(--glow-danger); }
+
+/* state: focus-visible (keyboard) — one ring for every intent */
+.np-btn:focus-visible, .np-btn.is-focus { outline: none; box-shadow: var(--ring-focus); }
+
+/* state: pressed */
+.np-btn:active, .np-btn.is-active { transform: scale(var(--state-pressed-scale)); }
+
+/* state: loading (aria-busy) — spinner replaces the label, width unchanged */
+.np-btn[aria-busy="true"], .np-btn.is-loading { pointer-events: none; }
+.np-btn[aria-busy="true"] > *, .np-btn.is-loading > * { visibility: hidden; }
+.np-btn[aria-busy="true"]::after, .np-btn.is-loading::after {
+  content: ""; position: absolute; inset: 0; margin: auto; width: 16px; height: 16px;
+  border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent;
+  animation: np-spin 0.7s linear infinite;
+}
+
+/* state: disabled — declared last so it overrides intent + hover */
+.np-btn:disabled, .np-btn[disabled], .np-btn[aria-disabled="true"], .np-btn.is-disabled {
+  cursor: not-allowed; background: var(--color-surface); color: var(--color-text-disabled);
+  border-color: var(--color-border-subtle); box-shadow: none; transform: none;
+}
+
+/* ============================================================
+   PATTERNS — tier-3 composition layer (cards · layout · content)
+   These are the reusable building blocks for assembling on-brand
+   screens without copying a whole kit. All token-driven; states
+   mirror the button model (`.is-*` helpers for docs).
+   ============================================================ */
+
+/* ---------- CARD family ---------- */
+.np-card {
+  display: flex; flex-direction: column; gap: var(--s-2);
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--elevation-flat);
+  transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur),
+              transform var(--dur), background var(--dur);
+}
+/* anatomy */
+.np-card__eyebrow { font: var(--mono-label); letter-spacing: var(--tracking-label);
+  text-transform: uppercase; color: var(--color-text-muted); font-family: var(--font-mono); }
+.np-card__title  { font: var(--h4); color: var(--color-text); }
+.np-card__body   { font: var(--body-sm); color: var(--color-text-secondary); }
+.np-card__metric { font-family: var(--font-display); font-weight: 700; font-size: 28px;
+  line-height: 1.1; color: var(--color-text); }
+.np-card__delta  { font-family: var(--font-mono); font-size: 12px; color: var(--color-accent); }
+.np-card__footer { display: flex; align-items: center; gap: var(--s-3);
+  margin-top: auto; padding-top: var(--s-2); }
+.np-card__media  { height: 92px; background: var(--grad-haze), var(--color-surface-raised); }
+.np-card--media  { padding: 0; overflow: hidden; }
+.np-card--media .np-card__pad { display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-5); }
+
+/* variant: interactive — the whole card is a target */
+.np-card--interactive { cursor: pointer; }
+.np-card--interactive:hover, .np-card--interactive.is-hover {
+  border-color: var(--color-border-focus); box-shadow: var(--glow-soft); transform: translateY(-2px); }
+.np-card--interactive:focus-visible, .np-card--interactive.is-focus {
+  outline: none; box-shadow: var(--ring-focus); }
+
+/* variant: selected */
+.np-card--selected, .np-card.is-selected {
+  border-color: var(--color-border-focus); box-shadow: var(--glow-soft); }
+
+/* variant: live — gradient border for live/highlighted data */
+.np-card--live {
+  border-color: transparent; box-shadow: var(--glow-soft);
+  background: linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+              var(--color-action-primary) border-box; }
+
+/* variant: row — list-item card */
+.np-card--row { flex-direction: row; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); }
+
+/* ---------- LAYOUT primitives ---------- */
+.np-stack   { display: flex; flex-direction: column; gap: var(--s-4); }
+.np-stack--tight { gap: var(--s-2); }
+.np-stack--loose { gap: var(--s-8); }
+.np-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.np-grid    { display: grid; gap: var(--s-4);
+  grid-template-columns: repeat(auto-fill, minmax(var(--np-grid-min, 220px), 1fr)); }
+.np-section { padding-block: var(--s-12); }
+.np-divider { height: 1px; background: var(--color-border-subtle); border: 0; margin: 0; }
+
+/* ---------- CONTENT patterns ---------- */
+/* page header */
+.np-pageheader { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); }
+.np-pageheader__titles { display: flex; flex-direction: column; gap: var(--s-1); }
+
+/* empty state */
+.np-empty { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--s-3); padding: var(--s-12) var(--s-6); color: var(--color-text-muted);
+  border: 1px dashed var(--color-border); border-radius: var(--r-lg); }
+.np-empty__icon { color: var(--color-accent); }
+
+/* skeleton (loading) */
+.np-skeleton { border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-raised) 37%, var(--color-surface) 63%);
+  background-size: 400% 100%; animation: np-shimmer 1.4s ease infinite; }
+.np-skeleton--line { height: 12px; }
+
+/* inline banner / alert */
+.np-banner { display: flex; align-items: flex-start; gap: var(--s-3); padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md); border: 1px solid; font: var(--body-sm); color: var(--color-text); }
+.np-banner__icon { flex: none; margin-top: 1px; }
+.np-banner--info    { background: var(--color-info-fill);    border-color: color-mix(in srgb, var(--info) 40%, transparent); }
+.np-banner--success { background: var(--color-success-fill); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.np-banner--warning { background: var(--color-warning-fill); border-color: color-mix(in srgb, var(--warning) 40%, transparent); }
+.np-banner--danger  { background: var(--color-danger-fill);  border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.np-banner--info    .np-banner__icon { color: var(--info); }
+.np-banner--success .np-banner__icon { color: var(--success); }
+.np-banner--warning .np-banner__icon { color: var(--warning); }
+.np-banner--danger  .np-banner__icon { color: var(--danger); }
+
+/* data list */
+.np-list { display: flex; flex-direction: column; background: var(--color-surface);
+  border: 1px solid var(--color-border); border-radius: var(--r-lg); overflow: hidden; }
+.np-list__row { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--color-border-subtle); transition: background var(--dur); }
+.np-list__row:first-child { border-top: 0; }
+.np-list__row:hover { background: var(--color-surface-raised); }
+.np-list__meta { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-muted); }
 
 /* Pulse keyframe — the signature "neon pulse" animation */
 @keyframes np-pulse {
@@ -143,4 +383,19 @@
 @keyframes np-blink {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.35; }
+}
+@keyframes np-spin { to { transform: rotate(360deg); } }
+@keyframes np-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+/* Respect users who ask for less motion — calm the ambient loops,
+   keep functional spinners turning (just slower). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .np-btn[aria-busy="true"]::after, .np-btn.is-loading::after {
+    animation: np-spin 1.4s linear infinite !important;
+  }
 }

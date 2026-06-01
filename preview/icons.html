@@ -1,0 +1,79 @@
+<!-- @dsCard group="Foundations" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-body);color:var(--color-text-secondary)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin-bottom:14px}
+  .lab + .lab{margin-top:30px}
+  svg{stroke-width:var(--icon-stroke)}
+
+  /* sizes row */
+  .sizes{display:flex;align-items:flex-end;gap:28px}
+  .sizes .s{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--color-text)}
+  .sizes .s .cap{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;color:var(--color-text-muted)}
+  .s-sm svg{width:var(--icon-sm);height:var(--icon-sm)}
+  .s-md svg{width:var(--icon-md);height:var(--icon-md)}
+  .s-lg svg{width:var(--icon-lg);height:var(--icon-lg)}
+
+  /* curated grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+  .tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+        padding:16px 8px;background:var(--color-surface);border:1px solid var(--color-border);
+        border-radius:var(--r-md);color:var(--color-text-muted);cursor:default;
+        transition:border-color var(--dur) var(--ease-out),color var(--dur),box-shadow var(--dur),transform var(--dur)}
+  .tile svg{width:22px;height:22px}
+  .tile .n{font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em;color:var(--color-text-muted)}
+  .tile:hover{border-color:var(--color-border-focus);color:var(--color-accent);transform:translateY(-2px);
+              box-shadow:var(--glow-soft);filter:drop-shadow(0 0 6px rgba(0,229,255,0.35))}
+  .tile:hover .n{color:var(--color-text)}
+
+  /* semantic map */
+  .map{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+  .row{display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--color-surface);
+       border:1px solid var(--color-border);border-radius:var(--r-md)}
+  .row svg{width:18px;height:18px;color:var(--color-accent);flex:none}
+  .row .meaning{font:var(--mono-label);letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text);font-family:var(--font-mono)}
+  .row .name{font-family:var(--font-mono);font-size:11px;color:var(--color-text-muted);margin-left:auto}
+</style></head>
+<body>
+  <div class="lab">Sizes · 16 / 20 / 24 · stroke 1.9 · currentColor</div>
+  <div class="sizes">
+    <div class="s s-sm"><i data-lucide="activity"></i><span class="cap">16 · SM</span></div>
+    <div class="s s-md"><i data-lucide="activity"></i><span class="cap">20 · MD</span></div>
+    <div class="s s-lg"><i data-lucide="activity"></i><span class="cap">24 · LG</span></div>
+  </div>
+
+  <div class="lab">Library · Lucide outline · hover lights the signal</div>
+  <div class="grid" id="grid"></div>
+
+  <div class="lab">Semantic map · shared names for dev &amp; design</div>
+  <div class="map" id="map"></div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"></script>
+<script>
+  const lib = ['activity','zap','cpu','server','database','globe','terminal','git-branch',
+    'rocket','play','refresh-cw','download','upload','search','sliders-horizontal','settings',
+    'bell','lock','user','layers','plus','check','x','arrow-right','arrow-up-right',
+    'chevron-right','copy','trash-2'];
+  const map = [
+    ['LIVE','activity'],['SUCCESS','circle-check'],['WARNING','triangle-alert'],
+    ['DANGER','circle-alert'],['INFO','info'],['SEARCH','search'],
+    ['SETTINGS','sliders-horizontal'],['NOTIFY','bell'],['DEPLOY','rocket'],
+    ['ADD','plus'],['CLOSE','x'],['NEXT','arrow-right'],
+  ];
+  const g = document.getElementById('grid');
+  lib.forEach(n => {
+    const d = document.createElement('div'); d.className = 'tile';
+    d.innerHTML = `<i data-lucide="${n}"></i><span class="n">${n}</span>`;
+    g.appendChild(d);
+  });
+  const m = document.getElementById('map');
+  map.forEach(([meaning,name]) => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = `<i data-lucide="${name}"></i><span class="meaning">${meaning}</span><span class="name">${name}</span>`;
+    m.appendChild(r);
+  });
+  lucide.createIcons();
+</script>
+</body></html>

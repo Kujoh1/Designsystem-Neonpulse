@@ -60,18 +60,32 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 5. **Type:** Space Grotesk (display), Sora (body), JetBrains Mono (data). Soft 12–20px radii.
 6. **Icons:** Lucide outline (`stroke-width` ~1.9), `currentColor`. **No emoji, ever.**
 7. **Always use tokens** from `colors_and_type.css` — never hardcode hex values in new work.
+   Tokens come in **two tiers**: consume the **semantic aliases** (`--color-surface`,
+   `--color-text`, `--color-action-primary`, `--color-border-focus`, `--ring-focus`,
+   `--z-*`) in components; reach for raw **primitives** (`--bg-2`, `--neon-cyan`) only
+   when defining or extending an alias. This keeps theming + rebrands a one-line change.
 
 ## Conventions when adding things
 - New component specimen → add `preview/<name>.html` (self-contained, links
-  `../colors_and_type.css`, line 1 carries `<!-- @dsCard group="..." -->`), then link it
-  from `index.html` (the `comps` array or a new section).
+  `../colors_and_type.css`, line 1 carries `<!-- @dsCard group="..." -->`), then add a
+  dedicated `<section id="comp-<name>">` for it in `index.html` and a matching sidebar link.
+- The system is layered: **tokens** (`colors_and_type.css` primitives + aliases) →
+  **elements** (`.np-btn`) → **patterns** (`.np-card` family, layout primitives
+  `.np-stack/.np-cluster/.np-grid/.np-section`, content blocks `.np-empty/.np-skeleton/
+  .np-banner/.np-list`). Compose new screens from these; only drop to bespoke CSS when no
+  pattern fits — and if a pattern is missing, add it to the patterns layer, don't inline it.
+  Pattern specimens live in `preview/pat-*.html` under the `group="Patterns"` tag.
 - New kit screen/component → add a `*.jsx` to the relevant `ui_kits/<kit>/`, export to
   `window`, and mount it from that kit's `index.html`.
 - The self-rendering `Icon` component (in each kit's `index.html`) re-runs
   `lucide.createIcons()` every render — keep it; it's required because some state lives
   below the React root.
-- Pin React/Babel exactly as already used (React 18.3.1 + Babel 7.29.0 with integrity
-  hashes). Don't swap for unpinned versions.
+- Pin every CDN dep exactly — React 18.3.1 + Babel 7.29.0 (with integrity hashes) and
+  **Lucide 1.17.0**. Never use `@latest`; don't swap for unpinned versions.
+- Icons: use Lucide outline at the icon tokens (`--icon-stroke`, `--icon-sm/md/lg`) and
+  prefer the **semantic icon map** in `preview/icons.html` (LIVE→`activity`,
+  SUCCESS→`circle-check`, WARNING→`triangle-alert`, DANGER→`circle-alert`, …) so dev and
+  design share one name per meaning. No emoji.
 
 ## Good next tasks (backlog)
 - [ ] Add a **light mode** token set (`[data-theme="light"]`) mirroring the dark ramp.

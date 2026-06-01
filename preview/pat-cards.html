@@ -1,0 +1,60 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-body)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin:0 0 14px}
+  .lab + *{margin-bottom:6px}
+  .lab:not(:first-child){margin-top:28px}
+  .avatar{width:34px;height:34px;border-radius:var(--r-full);background:var(--color-action-secondary);flex:none}
+</style></head>
+<body>
+  <div class="lab">Variants · stat · live · content · interactive</div>
+  <div class="np-grid" style="--np-grid-min:200px">
+    <div class="np-card">
+      <span class="np-card__eyebrow">Requests</span>
+      <div class="np-card__metric">1.24M</div>
+      <span class="np-card__delta">+24.6% ↑</span>
+    </div>
+    <div class="np-card np-card--live">
+      <span class="np-card__eyebrow">Latency · live</span>
+      <div class="np-card__metric">42ms</div>
+      <span class="np-card__delta">p99 · us-east</span>
+    </div>
+    <div class="np-card">
+      <span class="np-card__eyebrow">Nodes</span>
+      <span class="np-card__title">18 online</span>
+      <p class="np-card__body">All healthy. Auto-scale armed.</p>
+    </div>
+    <div class="np-card np-card--interactive is-hover">
+      <span class="np-card__eyebrow">Interactive · hover</span>
+      <span class="np-card__title">Open project →</span>
+      <p class="np-card__body">Whole card is a target. Lifts + glows on hover/focus.</p>
+    </div>
+  </div>
+
+  <div class="lab">Media &amp; row</div>
+  <div class="np-grid" style="--np-grid-min:240px">
+    <div class="np-card np-card--media">
+      <div class="np-card__media"></div>
+      <div class="np-card__pad">
+        <span class="np-card__eyebrow">Media</span>
+        <span class="np-card__title">Edge network</span>
+        <p class="np-card__body">Visual header over a haze gradient.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="np-card np-card--row">
+        <span class="avatar"></span>
+        <div><span class="np-card__title" style="font-size:14px">api-gateway</span><div class="np-card__eyebrow">running</div></div>
+        <span class="np-card__delta" style="margin-left:auto">v3.2.0</span>
+      </div>
+      <div class="np-card np-card--row np-card--selected is-selected">
+        <span class="avatar"></span>
+        <div><span class="np-card__title" style="font-size:14px">worker-node</span><div class="np-card__eyebrow">selected</div></div>
+        <span class="np-card__delta" style="margin-left:auto">v3.2.0</span>
+      </div>
+    </div>
+  </div>
+</body></html>

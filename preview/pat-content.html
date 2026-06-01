@@ -1,0 +1,64 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-body)}
+  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin:0 0 12px}
+  .lab:not(:first-child){margin-top:26px}
+  h2.ttl{font:var(--h3);color:var(--color-text);margin:0}
+  .sub{font:var(--body-sm);color:var(--color-text-secondary)}
+  svg{stroke-width:var(--icon-stroke)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+</style></head>
+<body>
+  <div class="lab">Page header</div>
+  <div class="np-pageheader">
+    <div class="np-pageheader__titles">
+      <span class="np-card__eyebrow">Overview</span>
+      <h2 class="ttl">Realtime overview</h2>
+    </div>
+    <div class="np-cluster">
+      <button class="np-btn np-btn--ghost np-btn--sm"><span>Filters</span></button>
+      <button class="np-btn np-btn--primary np-btn--sm"><span>Deploy</span></button>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="lab">Status banners</div>
+      <div class="np-stack np-stack--tight">
+        <div class="np-banner np-banner--info"><i class="np-banner__icon" data-lucide="info"></i><span>Connection dropped. Retrying in 3s…</span></div>
+        <div class="np-banner np-banner--success"><i class="np-banner__icon" data-lucide="circle-check"></i><span>Deployed. Live in us-east.</span></div>
+        <div class="np-banner np-banner--warning"><i class="np-banner__icon" data-lucide="triangle-alert"></i><span>Auto-scale nearing the node limit.</span></div>
+        <div class="np-banner np-banner--danger"><i class="np-banner__icon" data-lucide="circle-alert"></i><span>Build failed — exit code 1.</span></div>
+      </div>
+
+      <div class="lab">Loading · skeleton</div>
+      <div class="np-card">
+        <div class="np-skeleton np-skeleton--line" style="width:40%"></div>
+        <div class="np-skeleton np-skeleton--line" style="width:80%;margin-top:10px"></div>
+        <div class="np-skeleton np-skeleton--line" style="width:65%;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="lab">Empty state</div>
+      <div class="np-empty">
+        <i class="np-empty__icon" data-lucide="inbox" style="width:28px;height:28px"></i>
+        <div><div class="np-card__title">Nothing online yet</div><p class="sub" style="margin:6px 0 0">Spin up your first node to see it here.</p></div>
+        <button class="np-btn np-btn--primary np-btn--sm"><span>Add node</span></button>
+      </div>
+
+      <div class="lab">Data list</div>
+      <div class="np-list">
+        <div class="np-list__row"><i data-lucide="server" style="width:16px;height:16px;color:var(--color-accent)"></i><span>api-gateway</span><span class="np-list__meta">live · 42ms</span></div>
+        <div class="np-list__row"><i data-lucide="server" style="width:16px;height:16px;color:var(--color-accent)"></i><span>worker-01</span><span class="np-list__meta">live · 51ms</span></div>
+        <div class="np-list__row"><i data-lucide="server" style="width:16px;height:16px;color:var(--color-text-muted)"></i><span>worker-02</span><span class="np-list__meta">idle</span></div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body></html>

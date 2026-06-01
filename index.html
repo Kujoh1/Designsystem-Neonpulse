@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NeonPulse — Design System Reference</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0c0c16">
+<meta name="description" content="NeonPulse — a dark-first, cyberpunk flat-design system. Near-black surfaces, neon as signal, token-driven.">
 <link rel="stylesheet" href="colors_and_type.css">
 <style>
   * { box-sizing: border-box; }
@@ -26,8 +29,10 @@
   .mark { width: 30px; height: 30px; border-radius: 50%; position: relative; background: var(--grad-pulse); box-shadow: var(--glow-cyan); flex: none; }
   .mark::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--bg-1); }
   .mark::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--neon-cyan); }
-  .brand b { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: 0.03em; }
+  .brand b { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: 0.03em; line-height: 1; }
   .brand b span { color: var(--neon-cyan); }
+  .brandtext { display: flex; flex-direction: column; gap: 3px; }
+  .brandsub { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-secondary); }
   nav a { display: block; font-size: 14px; color: var(--fg-3); text-decoration: none; padding: 8px 10px; border-radius: var(--r-md); transition: all var(--dur); }
   nav a:hover { color: var(--fg-1); background: var(--bg-2); }
   nav .grouplabel { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--fg-4); padding: 16px 10px 6px; }
@@ -110,7 +115,7 @@
 <body>
 <div class="wrap">
   <aside>
-    <div class="brand"><div class="mark"></div><b>NEON<span>PULSE</span></b></div>
+    <div class="brand"><div class="mark"></div><div class="brandtext"><b>NEON<span>PULSE</span></b><span class="brandsub">Designsystem</span></div></div>
     <nav>
       <a href="#intro">Overview</a>
       <div class="grouplabel">Foundations</div>
@@ -118,8 +123,18 @@
       <a href="#type">Typography</a>
       <a href="#spacing">Spacing &amp; radii</a>
       <a href="#glow">Elevation &amp; glow</a>
+      <a href="#icons">Iconography</a>
       <div class="grouplabel">Components</div>
-      <a href="#components">Component specimens</a>
+      <a href="#comp-buttons">Buttons</a>
+      <a href="#comp-inputs">Inputs &amp; controls</a>
+      <a href="#comp-badges">Badges &amp; status</a>
+      <a href="#comp-cards">Cards</a>
+      <a href="#comp-tabs">Tabs &amp; segmented</a>
+      <a href="#comp-wordmark">Wordmark</a>
+      <div class="grouplabel">Patterns</div>
+      <a href="#pat-cards">Cards</a>
+      <a href="#pat-layout">Layout primitives</a>
+      <a href="#pat-content">Content patterns</a>
       <div class="grouplabel">Kits</div>
       <a href="#kits">UI kits</a>
       <div class="grouplabel">Usage</div>
@@ -195,11 +210,105 @@
       <div class="divider"></div>
     </section>
 
-    <section id="components">
+    <section id="icons">
+      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <h2 class="sec">Iconography</h2>
+      <p class="sub">Lucide outline, 1.9px stroke, <code style="font-family:var(--font-mono); color:var(--neon-cyan)">currentColor</code>. Three sizes (16/20/24). Icons rest in muted grey and take a neon glow only on hover / active. No emoji, ever. The semantic map gives dev &amp; design one shared name per meaning.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Icons</span><a href="preview/icons.html" target="_blank">Open ↗</a></div><iframe src="preview/icons.html" height="560" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-buttons">
       <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
-      <h2 class="sec">Component specimens</h2>
-      <p class="sub">Core building blocks. Open the UI kits below to see them composed and interactive.</p>
-      <div class="cards" id="comp-cards"></div>
+      <h2 class="sec">Buttons</h2>
+      <p class="sub">One canonical <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-btn</code>, four intents (primary · secondary · ghost · danger) across the full state model — rest, hover, <b style="color:var(--fg-1)">focus-visible</b>, active, loading and disabled — all derived from interaction-state tokens, never hand-painted per combination.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Buttons · state matrix</span><a href="preview/comp-buttons.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-buttons.html" height="340" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-inputs">
+      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <h2 class="sec">Inputs &amp; controls</h2>
+      <p class="sub">Text fields, toggles and selects. Focus lights a neon ring; the resting state stays flat.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Inputs &amp; controls</span><a href="preview/comp-inputs.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-inputs.html" height="200" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-badges">
+      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <h2 class="sec">Badges &amp; status</h2>
+      <p class="sub">Status pills and tinted alerts. Mono labels, uppercase, paired with semantic 14%-opacity fills.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Badges &amp; status</span><a href="preview/comp-badges.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-badges.html" height="180" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-cards">
+      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <h2 class="sec">Cards</h2>
+      <p class="sub">Surface-step containers with a 1px hairline. Hover lifts the border and adds a soft halo — never an ambient one.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Cards</span><a href="preview/comp-cards.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-cards.html" height="180" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-tabs">
+      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <h2 class="sec">Tabs &amp; segmented</h2>
+      <p class="sub">Tabs and segmented controls. The active segment carries the signal; the rest stays muted grey.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Tabs &amp; segmented</span><a href="preview/comp-tabs.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-tabs.html" height="180" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-wordmark">
+      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <h2 class="sec">Wordmark</h2>
+      <p class="sub">The NeonPulse mark and logotype, plus the <strong>kudesi</strong> brand wordmark — set in the primary pulse gradient (blue → cyan) on the near-black canvas.</p>
+      <div class="cards">
+        <div class="pcard"><div class="ph"><span class="t">NeonPulse mark</span><a href="preview/brand-logo.html" target="_blank">Open ↗</a></div><iframe src="preview/brand-logo.html" height="210" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">kudesi wordmark</span><a href="preview/brand-kudesi.html" target="_blank">Open ↗</a></div><iframe src="preview/brand-kudesi.html" height="210" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">Starfield · scene backdrop</span><a href="preview/effect-starfield.html" target="_blank">Open ↗</a></div><iframe src="preview/effect-starfield.html" height="210" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="pat-cards">
+      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <h2 class="sec">Cards</h2>
+      <p class="sub">One canonical <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-card</code> with a defined anatomy (eyebrow · title · metric · body · footer) and variants — stat, live (gradient border), content, interactive, media and row — plus hover / focus / selected states. The reusable building block for any surface.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Card family</span><a href="preview/pat-cards.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-cards.html" height="420" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="pat-layout">
+      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <h2 class="sec">Layout primitives</h2>
+      <p class="sub">Token-driven structure so spacing is never ad-hoc: <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-stack</code> (vertical rhythm), <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-cluster</code> (wrapping row), <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-grid</code> (auto-fill) and <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-section</code>. Assemble screens without bespoke margins.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Stack · cluster · grid · section</span><a href="preview/pat-layout.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-layout.html" height="430" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="pat-content">
+      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <h2 class="sec">Content patterns</h2>
+      <p class="sub">The recurring content blocks every product needs: page header, status banners (info · success · warning · danger), empty state, loading skeleton and data list — the three states (empty / loading / error) that are usually forgotten.</p>
+      <div class="cards" style="grid-template-columns:1fr">
+        <div class="pcard"><div class="ph"><span class="t">Header · banners · empty · loading · list</span><a href="preview/pat-content.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-content.html" height="520" loading="lazy"></iframe></div>
+      </div>
       <div class="divider"></div>
     </section>
 
@@ -241,7 +350,12 @@
     <section id="tokens">
       <div class="eyebrow"><span class="livedot"></span>USAGE</div>
       <h2 class="sec">Token reference</h2>
-      <p class="sub">Import <code style="font-family:var(--font-mono); color:var(--neon-cyan)">colors_and_type.css</code> and use these CSS variables. Click a variable to copy.</p>
+      <p class="sub">Two tiers. <b style="color:var(--fg-1)">Semantic aliases</b> say what a token is <i>for</i> — components should consume these. <b style="color:var(--fg-1)">Primitives</b> say what the value <i>is</i>. Re-point an alias (or override it under <code style="font-family:var(--font-mono); color:var(--neon-cyan)">[data-theme]</code>) and everything using it updates. Click a variable to copy.</p>
+
+      <div class="np-label" style="margin-top:26px">Semantic aliases · consume these</div>
+      <table class="tok"><thead><tr><th>Alias</th><th>→ Primitive</th><th>Use</th></tr></thead><tbody id="sem-body"></tbody></table>
+
+      <div class="np-label" style="margin-top:34px">Primitives · the raw scale</div>
       <table class="tok"><thead><tr><th>Variable</th><th>Value</th><th>Use</th></tr></thead><tbody id="tok-body"></tbody></table>
     </section>
   </main>
@@ -277,19 +391,6 @@
   const fill = (id, arr) => arr.forEach(([n,v]) => document.getElementById(id).appendChild(swatch(n,v)));
   fill('sw-surfaces', surfaces); fill('sw-fg', fg); fill('sw-neon', neon); fill('sw-sem', sem);
 
-  // component preview cards
-  const comps = [
-    ['Buttons','preview/comp-buttons.html',170],['Inputs & controls','preview/comp-inputs.html',200],
-    ['Badges & status','preview/comp-badges.html',180],['Cards','preview/comp-cards.html',180],
-    ['Tabs & segmented','preview/comp-tabs.html',180],['Wordmark','preview/brand-logo.html',210],
-  ];
-  const cc = document.getElementById('comp-cards');
-  comps.forEach(([t,src,h]) => {
-    const d = document.createElement('div'); d.className = 'pcard';
-    d.innerHTML = `<div class="ph"><span class="t">${t}</span><a href="${src}" target="_blank">Open ↗</a></div><iframe src="${src}" height="${h}" loading="lazy"></iframe>`;
-    cc.appendChild(d);
-  });
-
   // token table
   const tokens = [
     ['--font-display','Space Grotesk','Headings, hero, buttons'],
@@ -304,13 +405,54 @@
     ['--dur','200ms','Standard transition'],
     ['--ease-out','cubic-bezier(.22,1,.36,1)','Standard easing'],
   ];
-  const tb = document.getElementById('tok-body');
-  tokens.forEach(([v,val,use]) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="var" data-c="${v}">${v}</td><td>${val}</td><td style="color:var(--fg-3)">${use}</td>`;
-    tr.querySelector('.var').onclick = () => copy(v);
-    tb.appendChild(tr);
+  const semTokens = [
+    ['--color-surface','--bg-2','Cards, panels'],
+    ['--color-surface-raised','--bg-3','Hover / elevated'],
+    ['--color-surface-overlay','--bg-4','Modals, popovers'],
+    ['--color-text','--fg-1','Primary text + headings'],
+    ['--color-text-secondary','--fg-2','Body / supporting'],
+    ['--color-text-muted','--fg-3','Captions (large text only)'],
+    ['--color-border','--line-2','Card / control border'],
+    ['--color-border-focus','--line-glow','Focused edge'],
+    ['--color-action-primary','--grad-pulse','Primary CTA fill'],
+    ['--color-accent','--neon-cyan','The signal accent'],
+    ['--ring-focus','box-shadow','Apply on :focus-visible'],
+    ['--z-modal','1300','Modal stacking'],
+  ];
+  const renderRows = (id, rows) => {
+    const body = document.getElementById(id);
+    rows.forEach(([v,val,use]) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="var" data-c="${v}">${v}</td><td>${val}</td><td style="color:var(--fg-3)">${use}</td>`;
+      tr.querySelector('.var').onclick = () => copy(v);
+      body.appendChild(tr);
+    });
+  };
+  renderRows('sem-body', semTokens);
+  renderRows('tok-body', tokens);
+
+  // Auto-fit specimen cards to their content — no inner scrollbars, no clipping.
+  // (Same-origin iframes only; the scaled kit previews are deliberately left fixed.)
+  const specimens = [...document.querySelectorAll('.pcard iframe')];
+  function fit(f) {
+    try {
+      const doc = f.contentDocument;
+      if (!doc || !doc.documentElement) return;
+      const h = Math.ceil(doc.documentElement.scrollHeight);
+      if (h > 0) f.style.height = h + 'px';
+    } catch (e) { /* cross-origin — leave the fallback height */ }
+  }
+  const fitAll = () => specimens.forEach(fit);
+  specimens.forEach(f => {
+    f.addEventListener('load', () => {
+      fit(f);
+      // re-fit once webfonts swap in (they change content height)
+      const fd = f.contentDocument && f.contentDocument.fonts;
+      if (fd && fd.ready) fd.ready.then(() => fit(f));
+    });
   });
+  window.addEventListener('load', fitAll);
+  let rsz; window.addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(fitAll, 150); });
 </script>
 </body>
 </html>
