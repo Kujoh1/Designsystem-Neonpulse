@@ -278,6 +278,37 @@
 }
 
 /* ============================================================
+   CTA SPOTLIGHT — interaktives Betonungselement für seltene,
+   besonders wichtige Aktionen (idealerweise 1 pro View).
+   Legt einen animierten 2px-Gradient-Stroke (volle Neon-Rampe)
+   + einen dezenten Glow-Puls über JEDE Variante. Modifier:
+   <button class="np-btn np-btn--primary np-btn--cta">…</button>
+   Bewusst sparsam einsetzen — die Wirkung kommt aus der Seltenheit.
+   ============================================================ */
+/* der Button selbst pulsiert dezent (eigenständige scale-Property, damit
+   :active-transform erhalten bleibt) */
+.np-btn--cta { position: relative; animation: np-cta-beat 6s var(--ease-in-out) infinite; }
+/* NUR der 2px-Rahmen wird animiert (Gradient-Flow) — Fill bleibt unberührt */
+.np-btn--cta::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;                /* Strichstärke */
+  background: linear-gradient(115deg, var(--neon-blue), var(--neon-cyan), var(--neon-blue));
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  /* ruhiges Hin- und Herwandern statt Dauer-Lauf */
+  animation: np-cta-flow 9s var(--ease-in-out) infinite alternate;
+}
+@keyframes np-cta-flow { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes np-cta-beat { 0%, 100% { scale: 1; } 50% { scale: 1.01; } }
+
+/* ============================================================
    PATTERNS — tier-3 composition layer (cards · layout · content)
    These are the reusable building blocks for assembling on-brand
    screens without copying a whole kit. All token-driven; states
