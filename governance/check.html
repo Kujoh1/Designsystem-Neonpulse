@@ -127,7 +127,7 @@
   .st[data-state="fail"] .st__meta { color: var(--color-danger); }
   .st[data-state="run"] .st__meta { color: var(--color-text-accent); }
 
-  /* result: merge box + guardian comment */
+  /* result: approval status + guardian comment */
   .result { display: flex; flex-direction: column; gap: 14px; animation: np-pop var(--dur) var(--ease-out); }
   .result[hidden] { display: none; }
   .np-banner b { display: block; font: 600 15px/1.35 var(--font-display); }
@@ -574,8 +574,8 @@
     var html = ok
       ? '<div class="np-banner np-banner--success"><i class="np-banner__icon" data-lucide="circle-check" aria-hidden="true"></i><div><b>' + L('Alle Checks grün', 'All checks green') + '</b><span class="d">'
         + L('Bereit für das Review. Freigeben kann nur ein Mensch.', 'Ready for review. Only a person can approve.') + '</span></div></div>'
-      : '<div class="np-banner np-banner--danger"><i class="np-banner__icon" data-lucide="circle-alert" aria-hidden="true"></i><div><b>' + L('Merge blockiert', 'Merge blocked') + '</b><span class="d">'
-        + L(blocks + ' blockierende Funde. Erst korrigieren, dann prüft der Guardian automatisch neu.', blocks + ' blocking findings. Fix them first; the Guardian re-checks automatically.') + '</span></div></div>';
+      : '<div class="np-banner np-banner--danger"><i class="np-banner__icon" data-lucide="circle-alert" aria-hidden="true"></i><div><b>' + L('Nicht freigabereif', 'Not ready to approve') + '</b><span class="d">'
+        + L(blocks + ' blockierende Funde. Erst korrigieren, dann erneut prüfen lassen.', blocks + ' blocking findings. Fix them first, then run the check again.') + '</span></div></div>';
     html += '<div class="eval' + (asExpected ? '' : ' is-off') + '"><i data-lucide="' + (asExpected ? 'circle-check' : 'circle-alert') + '" aria-hidden="true"></i>'
       + (asExpected ? L('Ist = Soll · Testfall bestanden', 'Actual = expected · test case passed') : L('Ist ≠ Soll · Testfall nicht bestanden', 'Actual ≠ expected · test case failed')) + '</div>';
     html += '<div class="comment"><div class="comment__head"><span class="np-avatar" aria-hidden="true"><i data-lucide="shield-check"></i></span>'
@@ -593,7 +593,7 @@
           + '<span class="fd__fix">' + L(f.fixDe, f.fixEn) + '</span></div>';
       }).join('') + '</div>';
     }
-    html += '<div class="closing">' + (ok ? L('Tokens sauber · bereit für das Review →', 'Tokens clean · ready for review →') : L(blocks + ' Blocker beheben → erneut pushen · der Guardian prüft automatisch', 'Fix ' + blocks + ' blockers → push again · the Guardian re-checks automatically')) + '</div></div>';
+    html += '<div class="closing">' + (ok ? L('Tokens sauber · bereit für das Review →', 'Tokens clean · ready for review →') : L(blocks + ' Blocker beheben → erneut prüfen · ein Mensch gibt frei', 'Fix ' + blocks + ' blockers → check again · a person approves')) + '</div></div>';
     var box = run.querySelector('[data-result]');
     box.innerHTML = html; box.hidden = false;
     if (window.lucide) lucide.createIcons();
@@ -657,8 +657,8 @@
     markLines(run, findings);
     renderResult(run, pr, no, findings);
     live.textContent = root.lang === 'de'
-      ? (ok ? 'PR #' + no + ': alle Checks grün' : 'PR #' + no + ': ' + blocks + ' blockierende Funde, Merge blockiert')
-      : (ok ? 'PR #' + no + ': all checks green' : 'PR #' + no + ': ' + blocks + ' blocking findings, merge blocked');
+      ? (ok ? 'PR #' + no + ': alle Checks grün' : 'PR #' + no + ': ' + blocks + ' blockierende Funde, nicht freigabereif')
+      : (ok ? 'PR #' + no + ': all checks green' : 'PR #' + no + ': ' + blocks + ' blocking findings, not ready to approve');
     btn.removeAttribute('aria-busy');
     btn.querySelector('[data-run-label]').innerHTML = L('Erneut prüfen', 'Run again');
     delete run.dataset.busy;
