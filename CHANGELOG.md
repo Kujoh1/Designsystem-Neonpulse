@@ -3,11 +3,6 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
-## 1.1.3 — 2026-10-06
-
-### Added
-- `evals/` — agent eval (DE/EN): one customer-service agent in two versions (a quick-start prompt vs. a master briefing with knowledge base, guardrails and handover) runs through a golden dataset of seven test cases. Seven criteria (five critical, two quality) are graded by fixed rules in the browser, a session panel turns every case green or red, and a release gate decides "do not go live" vs. "released for the pilot". Plus the in-life-management loop (eval, pilot, monitoring, optimise). Answers are prepared examples, the scenario is neutral; both are labelled on the page. Linked from the live check.
-
 ## 1.1.2 — 2026-10-06
 
 ### Added
