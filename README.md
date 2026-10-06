@@ -97,6 +97,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 |---|---|
 | `index.html` | Docs home — interactive reference (theme switch, ⌘K search, live token table). |
 | `showcase/` | Case-study / marketing page (DE/EN) presenting the system. |
+| `evals/` | Agent eval (DE/EN): a customer-service agent in two versions against a golden dataset, release gate and in-life-management loop. |
 | `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow, + `check.html`, a live check of two pull requests (one fails, one passes). |
 | `colors_and_type.css` | **Single source of truth**: tokens, light theme, elements, patterns. |
 | `fonts/` | Self-hosted variable fonts + licence notes. |

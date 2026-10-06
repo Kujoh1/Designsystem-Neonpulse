@@ -19,6 +19,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 | `index.html` | Reference/docs home: theme switch, ⌘K search, swatches + token table read live from the CSS. Start here. |
 | `showcase/` | Case-study page (DE/EN via `?lang=de` / `?lang=en`). `showcase/img/` holds the kit screenshots. |
 | `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas) + `check.html` (live check: two PRs, eleven rules run in the browser). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
+| `evals/` | Agent eval (DE/EN): customer-service agent in two versions, golden dataset, rule-based grading in the browser, release gate. Answers are prepared examples; keep that label. |
 | `colors_and_type.css` | **Single source of truth**: fonts, tokens (primitives + aliases), light theme, elements, patterns. |
 | `fonts/` | Self-hosted variable woff2 (Space Grotesk, Sora, JetBrains Mono) + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
