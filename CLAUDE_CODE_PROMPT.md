@@ -38,11 +38,12 @@ Settings → Pages → Deploy from a branch → `main` / `root`.
 6. Icons: Lucide Outline, `currentColor`. **Keine Emojis.**
 
 **Deine ersten Aufgaben (frag nach, falls Priorität unklar):**
-1. Prüfe, dass die Seite lokal sauber läuft (Startseite + alle drei Kits, keine Konsolenfehler).
-2. Richte GitHub Pages ein und mache den ersten erfolgreichen Deploy.
-3. Danach arbeite den Backlog in `CLAUDE.md` ab — beginne mit **Light Mode** als
-   `[data-theme="light"]`-Token-Set, das die Dunkel-Rampe spiegelt, plus einem Theme-Toggle
-   in `index.html`.
+1. Prüfe, dass die Seite lokal sauber läuft (Startseite in Dark + Light, `showcase/`,
+   alle drei Kits, keine Konsolenfehler).
+2. Arbeite die offenen Punkte im Backlog in `CLAUDE.md` ab (z. B. Date Picker, Pagination,
+   Select/Checkbox/Radio) — jede neue Komponente als Klasse in `colors_and_type.css`,
+   als Specimen in `preview/` und als Sektion in `index.html`, getestet in beiden Themes.
+3. Trage jede sichtbare Änderung in `CHANGELOG.md` ein.
 
 Halte das Repo bei jedem Commit deploybar. Arbeite token-getrieben, on-brand, und
 committe in kleinen, nachvollziehbaren Schritten.

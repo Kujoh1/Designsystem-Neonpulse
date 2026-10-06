@@ -1,25 +1,34 @@
 <!-- @dsCard group="Components" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Buttons</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
   body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-display)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin-bottom:16px}
-  .lab + .matrix{margin-bottom:6px}
+  .lab{display:block;margin-bottom:16px}
+  .lab + .scroll{margin-bottom:6px}
+
+  /* the matrix keeps its columns and scrolls inside the card on narrow screens */
+  .scroll{overflow-x:auto;padding:6px 4px;margin:-6px -4px}
 
   /* variant × state matrix */
-  .matrix{display:grid;grid-template-columns:auto repeat(6,minmax(0,1fr));gap:14px 12px;align-items:center}
+  .matrix{display:grid;grid-template-columns:auto repeat(6,minmax(0,1fr));gap:14px 12px;align-items:center;min-width:600px}
   .h{font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-muted);text-align:center}
   .rh{font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-secondary);justify-self:start}
   .matrix .np-btn{justify-self:center}
 
   .sizes{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px}
   .cap{font-family:var(--font-mono);font-size:10px;color:var(--color-text-muted);letter-spacing:0.1em;margin-left:4px}
+  /* the icon-button set carries its own headroom, so the forced-open tooltip
+     is never clipped and never overlaps a wrapped row above it */
+  .sizes.icons{align-items:flex-end}
+  .iconset{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:var(--s-10)}
 </style></head>
 <body>
-  <div class="lab">Buttons · intent × state · one canonical .np-btn, all states from tokens</div>
+  <div class="np-label lab">Buttons · intent × state · one canonical .np-btn, all states from tokens</div>
 
-  <div class="matrix">
+  <div class="scroll"><div class="matrix">
     <!-- header row -->
     <span></span>
     <span class="h">Rest</span><span class="h">Hover</span><span class="h">Focus</span>
@@ -60,9 +69,9 @@
     <button class="np-btn np-btn--danger np-btn--sm is-active"><span>Delete</span></button>
     <button class="np-btn np-btn--danger np-btn--sm is-loading"><span>Delete</span></button>
     <button class="np-btn np-btn--danger np-btn--sm is-disabled" disabled><span>Delete</span></button>
-  </div>
+  </div></div>
 
-  <div class="lab" style="margin-top:26px">Sizes &amp; shape</div>
+  <div class="np-label lab" style="margin-top:26px">Sizes &amp; shape</div>
   <div class="sizes">
     <button class="np-btn np-btn--primary np-btn--sm"><span>Small</span></button>
     <button class="np-btn np-btn--primary"><span>Medium</span></button>
@@ -71,9 +80,25 @@
     <span class="cap">--sm · md · --lg · --pill</span>
   </div>
 
-  <div class="lab" style="margin-top:26px">CTA spotlight · --cta · animierter 2px-Gradient-Stroke + dezenter Puls</div>
+  <div class="np-label lab" style="margin-top:26px">With icons · Lucide 16px inside .np-btn · .np-icon-btn always carries an aria-label</div>
+  <div class="sizes icons">
+    <button class="np-btn np-btn--primary"><i data-lucide="rocket"></i><span>Deploy</span></button>
+    <button class="np-btn np-btn--ghost"><i data-lucide="sliders-horizontal"></i><span>Filter</span></button>
+    <button class="np-btn np-btn--secondary"><i data-lucide="zap"></i><span>Go live</span></button>
+    <div class="iconset">
+      <button class="np-icon-btn" aria-label="Notifications" data-np-tooltip="Notifications"><i data-lucide="bell"></i></button>
+      <button class="np-icon-btn np-icon-btn--sm" aria-label="Copy" data-np-tooltip="Copy"><i data-lucide="copy"></i></button>
+      <button class="np-icon-btn np-icon-btn--ghost is-tooltip-open" aria-label="Settings" data-np-tooltip="Settings"><i data-lucide="settings"></i></button>
+      <span class="cap">.np-icon-btn · --sm · --ghost · tooltip</span>
+    </div>
+  </div>
+
+  <div class="np-label lab" style="margin-top:26px">CTA spotlight · --cta · animierter 2px-Gradient-Stroke + dezenter Puls</div>
   <div class="sizes">
     <button class="np-btn np-btn--primary np-btn--lg np-btn--cta"><span>Kostenloses Erstgespräch</span></button>
     <span class="cap">für seltene, besonders wichtige Aktionen — sparsam einsetzen (1 pro View)</span>
   </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>lucide.createIcons();</script>
 </body></html>

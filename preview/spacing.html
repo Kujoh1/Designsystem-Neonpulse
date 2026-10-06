@@ -1,23 +1,34 @@
 <!-- @dsCard group="Spacing" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spacing scale</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
-  body{background:var(--bg-1);padding:20px 24px;font-family:var(--font-mono)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:18px;font-family:var(--font-mono)}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:20px 24px;font-family:var(--font-mono)}
+  .lab{display:block;margin-bottom:18px}
   .row{display:flex;align-items:center;gap:14px;margin-bottom:9px}
-  .name{font-size:11px;color:var(--neon-cyan);width:52px}
-  .bar{height:14px;background:var(--grad-pulse);border-radius:3px}
-  .px{font-size:10px;color:var(--fg-3)}
+  .name{font-size:11px;color:var(--color-text-accent);width:52px;flex:none}
+  .bar{height:14px;background:var(--color-action-primary);border-radius:3px;flex:none}
+  .px{font-size:10px;color:var(--color-text-muted)}
 </style></head>
 <body>
-  <div class="lab">Spacing · 4px base</div>
-  <div class="row"><span class="name">s-1</span><div class="bar" style="width:4px"></div><span class="px">4px</span></div>
-  <div class="row"><span class="name">s-2</span><div class="bar" style="width:8px"></div><span class="px">8px</span></div>
-  <div class="row"><span class="name">s-3</span><div class="bar" style="width:12px"></div><span class="px">12px</span></div>
-  <div class="row"><span class="name">s-4</span><div class="bar" style="width:16px"></div><span class="px">16px</span></div>
-  <div class="row"><span class="name">s-6</span><div class="bar" style="width:24px"></div><span class="px">24px</span></div>
-  <div class="row"><span class="name">s-8</span><div class="bar" style="width:32px"></div><span class="px">32px</span></div>
-  <div class="row"><span class="name">s-12</span><div class="bar" style="width:48px"></div><span class="px">48px</span></div>
-  <div class="row"><span class="name">s-16</span><div class="bar" style="width:64px"></div><span class="px">64px</span></div>
+  <div class="np-label lab">Spacing · 4px base · --s-1 … --s-20</div>
+  <div class="row"><span class="name">s-1</span><div class="bar" style="width:var(--s-1)"></div><span class="px">4px</span></div>
+  <div class="row"><span class="name">s-2</span><div class="bar" style="width:var(--s-2)"></div><span class="px">8px</span></div>
+  <div class="row"><span class="name">s-3</span><div class="bar" style="width:var(--s-3)"></div><span class="px">12px</span></div>
+  <div class="row"><span class="name">s-4</span><div class="bar" style="width:var(--s-4)"></div><span class="px">16px</span></div>
+  <div class="row"><span class="name">s-5</span><div class="bar" style="width:var(--s-5)"></div><span class="px">20px</span></div>
+  <div class="row"><span class="name">s-6</span><div class="bar" style="width:var(--s-6)"></div><span class="px">24px</span></div>
+  <div class="row"><span class="name">s-8</span><div class="bar" style="width:var(--s-8)"></div><span class="px">32px</span></div>
+  <div class="row"><span class="name">s-10</span><div class="bar" style="width:var(--s-10)"></div><span class="px">40px</span></div>
+  <div class="row"><span class="name">s-12</span><div class="bar" style="width:var(--s-12)"></div><span class="px">48px</span></div>
+  <div class="row"><span class="name">s-16</span><div class="bar" style="width:var(--s-16)"></div><span class="px">64px</span></div>
+  <div class="row"><span class="name">s-20</span><div class="bar" style="width:var(--s-20)"></div><span class="px">80px</span></div>
+<script>
+/* Print the resolved width of each bar, so the caption always matches the token. */
+document.querySelectorAll('.row').forEach(r => {
+  r.querySelector('.px').textContent = Math.round(parseFloat(getComputedStyle(r.querySelector('.bar')).width)) + 'px';
+});
+</script>
 </body></html>

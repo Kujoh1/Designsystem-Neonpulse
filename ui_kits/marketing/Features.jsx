@@ -1,38 +1,28 @@
-/* Marketing — Feature grid + logo strip */
+/* Marketing — logo strip + feature grid (.np-card in an auto-fit .np-grid) */
 function LogoStrip() {
   const names = ['VECTORA', 'NIMBUS', 'HELIXOS', 'QUANTLY', 'ORBIT', 'FLUX'];
   return (
-    <section style={{ borderTop: '1px solid var(--line-1)', borderBottom: '1px solid var(--line-1)' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '26px 24px', display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+    <section aria-label="Customers" style={{ borderTop: '1px solid var(--color-border-subtle)', borderBottom: '1px solid var(--color-border-subtle)' }}>
+      <div className="np-container np-cluster" style={{ paddingBlock: 26, gap: 18 }}>
         <span className="np-label" style={{ marginRight: 10 }}>Powering teams at</span>
-        {names.map(n => (
-          <span key={n} style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--fg-3)', letterSpacing: '0.06em' }}>{n}</span>
-        ))}
+        <ul className="np-cluster" style={{ listStyle: 'none', margin: 0, padding: 0, gap: 18 }}>
+          {names.map(n => (
+            <li key={n} style={{ font: '700 16px/1 var(--font-display)', color: 'var(--color-text-muted)', letterSpacing: '0.06em' }}>{n}</li>
+          ))}
+        </ul>
       </div>
     </section>
   );
 }
 
+// accent = categorical neon hue for the icon tile; its halo appears on hover only (glow is a state)
 function FeatureCard({ icon, title, body, accent }) {
-  const [h, setH] = React.useState(false);
   return (
-    <div
-      onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
-      style={{
-        background: 'var(--bg-2)', border: '1px solid ' + (h ? 'transparent' : 'var(--line-2)'),
-        borderRadius: 'var(--r-lg)', padding: 24, transition: 'all var(--dur) var(--ease-out)',
-        boxShadow: h ? 'var(--glow-soft)' : 'var(--shadow-1)', transform: h ? 'translateY(-3px)' : 'none'
-      }}>
-      <div style={{
-        width: 44, height: 44, borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'var(--bg-3)', color: accent, boxShadow: h ? '0 0 18px ' + accent + '55' : 'none',
-        transition: 'box-shadow var(--dur)'
-      }}>
-        <Icon name={icon} size={22} />
-      </div>
-      <h3 style={{ font: 'var(--h4)', color: 'var(--fg-1)', margin: '18px 0 8px' }}>{title}</h3>
-      <p style={{ font: 'var(--body-sm)', color: 'var(--fg-2)' }}>{body}</p>
-    </div>
+    <article className="np-card mk-feature" style={{ padding: 24, '--feat-accent': accent }}>
+      <div className="mk-feature__icon" aria-hidden="true"><Icon name={icon} size={22} /></div>
+      <h3 className="np-card__title" style={{ margin: 0 }}>{title}</h3>
+      <p className="np-card__body">{body}</p>
+    </article>
   );
 }
 
@@ -46,12 +36,12 @@ function Features() {
     { icon: 'terminal', title: 'CLI-first', body: 'Everything you can click, you can script. A clean API and a fast local CLI.', accent: 'var(--neon-blue)' },
   ];
   return (
-    <section style={{ maxWidth: 1200, margin: '0 auto', padding: '90px 24px' }}>
-      <div className="np-eyebrow"><span className="np-livedot" />THE PLATFORM</div>
-      <h2 style={{ font: 'var(--h1)', color: 'var(--fg-1)', letterSpacing: '-0.02em', margin: '16px 0 0', maxWidth: 620 }}>
+    <section id="platform" aria-labelledby="platform-title" className="np-container" style={{ paddingBlock: 90 }}>
+      <div className="np-eyebrow"><span className="np-livedot" />The platform</div>
+      <h2 id="platform-title" style={{ font: 'var(--h1)', color: 'var(--color-text)', letterSpacing: '-0.02em', margin: '16px 0 0', maxWidth: 620 }}>
         Everything you need to run realtime, nothing you don't.
       </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18, marginTop: 44 }} className="np-feat-grid">
+      <div className="np-grid" style={{ '--np-grid-min': '300px', gap: 18, marginTop: 44 }}>
         {items.map(it => <FeatureCard key={it.title} {...it} />)}
       </div>
     </section>

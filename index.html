@@ -6,453 +6,825 @@
 <title>NeonPulse — Design System Reference</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0c0c16">
-<meta name="description" content="NeonPulse — a dark-first, cyberpunk flat-design system. Near-black surfaces, neon as signal, token-driven.">
+<meta name="description" content="NeonPulse — a dark-first, cyberpunk flat-design system. Near-black surfaces, neon as signal, token-driven, light theme included.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NeonPulse — Design System Reference">
+<meta property="og:description" content="Dark-first, token-driven, accessible. Tokens, components, patterns and three interactive UI kits.">
+<meta property="og:url" content="https://kujoh1.github.io/Designsystem-Neonpulse/">
+<meta property="og:image" content="https://kujoh1.github.io/Designsystem-Neonpulse/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  /* theme before first paint: ?theme= → saved choice → dark (the brand default) */
+  (function () {
+    var q = new URLSearchParams(location.search).get('theme'), s = null;
+    try { s = localStorage.getItem('np-theme'); } catch (e) {}
+    var t = (q === 'light' || q === 'dark') ? q : (s === 'light' ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="preload" href="fonts/space-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/sora-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="colors_and_type.css">
 <style>
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   body {
-    margin: 0; background: var(--bg-1); color: var(--fg-1);
-    font-family: var(--font-body); -webkit-font-smoothing: antialiased;
-    background-image: radial-gradient(70% 50% at 100% 0%, rgba(124,77,255,0.08), transparent 55%),
-                      radial-gradient(60% 40% at 0% 0%, rgba(45,123,255,0.10), transparent 55%);
+    margin: 0;
+    background-color: var(--color-bg-page);
+    background-image: radial-gradient(70% 50% at 100% 0%, color-mix(in srgb, var(--neon-violet) 8%, transparent), transparent 55%),
+                      radial-gradient(60% 40% at 0% 0%, color-mix(in srgb, var(--neon-blue) 10%, transparent), transparent 55%);
+    background-repeat: no-repeat;
   }
   a { color: inherit; }
-  .wrap { display: grid; grid-template-columns: 244px 1fr; max-width: 1340px; margin: 0 auto; }
+  .wrap { display: grid; grid-template-columns: 252px minmax(0, 1fr); max-width: 1360px; margin: 0 auto; }
 
   /* ---------- sidebar ---------- */
-  aside {
-    position: sticky; top: 0; height: 100vh; overflow-y: auto;
-    border-right: 1px solid var(--line-1); padding: 26px 18px; background: rgba(7,7,13,0.5);
-  }
-  .brand { display: flex; align-items: center; gap: 11px; padding: 0 8px 22px; }
-  .mark { width: 30px; height: 30px; border-radius: 50%; position: relative; background: var(--grad-pulse); box-shadow: var(--glow-cyan); flex: none; }
-  .mark::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--bg-1); }
-  .mark::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--neon-cyan); }
-  .brand b { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: 0.03em; line-height: 1; }
-  .brand b span { color: var(--neon-cyan); }
-  .brandtext { display: flex; flex-direction: column; gap: 3px; }
-  .brandsub { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-secondary); }
-  nav a { display: block; font-size: 14px; color: var(--fg-3); text-decoration: none; padding: 8px 10px; border-radius: var(--r-md); transition: all var(--dur); }
-  nav a:hover { color: var(--fg-1); background: var(--bg-2); }
-  nav .grouplabel { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--fg-4); padding: 16px 10px 6px; }
+  .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;
+    padding: 22px 16px 28px; border-right: 1px solid var(--color-border-subtle);
+    background: color-mix(in srgb, var(--color-bg-void) 50%, transparent); scrollbar-width: thin; }
+  .side__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px; }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; border-radius: var(--r-sm); }
+  .brand:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .mark { width: 30px; height: 30px; border-radius: 50%; position: relative; flex: none; background: var(--color-action-primary); box-shadow: var(--glow-accent); }
+  .mark::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--color-bg-page); }
+  .mark::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--color-accent); z-index: 1; }
+  .brand b { font: 700 17px/1 var(--font-display); letter-spacing: 0.03em; }
+  .brand b span { color: var(--color-text-accent); }
+  .brandtext { display: flex; flex-direction: column; gap: 4px; }
+  .brandsub { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-muted); font-size: 10px; }
+  .side__tools { display: flex; gap: 8px; }
+  .searchbtn { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; text-align: left;
+    padding: 0 10px; height: 38px; border-radius: var(--r-md); border: 1px solid var(--color-border); background: var(--color-surface);
+    font: 400 13px/1 var(--font-body); color: var(--color-text-muted); transition: border-color var(--dur), color var(--dur); }
+  .searchbtn:hover { border-color: var(--color-border-strong); color: var(--color-text-secondary); }
+  .searchbtn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .searchbtn svg { width: 16px; height: 16px; flex: none; }
+  .searchbtn .np-kbd { margin-left: auto; }
+  .tbtn svg { width: 18px; height: 18px; }
+  [data-theme="light"] .ico-sun, :root:not([data-theme="light"]) .ico-moon { display: none; }
+  .ico-sun, .ico-moon { display: inline-flex; }
+  .toc .np-navitem { justify-content: space-between; gap: 8px; padding: 8px 10px; }
+  .toc .grouplabel { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-muted); font-size: 10px; padding: 16px 10px 6px; }
+  .new { font: 500 9px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-accent);
+    border: 1px solid var(--color-border-focus); border-radius: var(--r-full); padding: 3px 6px; }
+  .side__foot { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid var(--color-border-subtle); display: flex; flex-direction: column; gap: 8px; font: 400 13px/1.2 var(--font-body); }
+  .side__foot a { display: inline-flex; align-items: center; gap: 8px; color: var(--color-text-secondary); text-decoration: none; }
+  .side__foot a:hover { color: var(--color-text-accent); }
+  .side__foot svg { width: 15px; height: 15px; }
+
+  /* mobile top bar + drawer */
+  .mtop { display: none; }
+  .drawer-scrim { position: fixed; inset: 0; z-index: var(--z-overlay); background: var(--color-scrim); }
+  .drawer-scrim[hidden] { display: none; }
 
   /* ---------- main ---------- */
-  main { padding: 0 40px 120px; min-width: 0; }
-  section { padding-top: 64px; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 9px; font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--fg-3); }
-  .livedot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); animation: np-blink 1.4s infinite; }
-  h2.sec { font: var(--h1); letter-spacing: -0.02em; margin: 14px 0 6px; }
-  .sub { font: var(--body); color: var(--fg-2); max-width: 640px; }
-  .divider { height: 1px; background: var(--line-1); margin-top: 28px; }
+  main { padding: 0 44px 120px; min-width: 0; }
+  main > section { padding-top: 72px; }
+  h2.sec { font: var(--h1); letter-spacing: -0.02em; margin: 14px 0 8px; }
+  p.sub { font: var(--body); color: var(--color-text-secondary); max-width: 680px; margin: 0; }
+  .divider { height: 1px; background: var(--color-border-subtle); margin-top: 32px; }
 
-  /* hero */
-  .hero { padding: 84px 0 8px; }
+  .hero { padding: 88px 0 8px; }
   .hero h1 { font: var(--display-xl); letter-spacing: -0.03em; margin: 18px 0 0; }
-  .hero h1 .grad { background: var(--grad-pulse); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .hero p { font: var(--body-lg); color: var(--fg-2); max-width: 560px; margin-top: 18px; }
+  .grad { background: var(--color-action-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.lead { font: var(--body-lg); color: var(--color-text-secondary); max-width: 600px; margin: 18px 0 0; }
   .herobtns { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .btn { font-family: var(--font-display); font-weight: 600; font-size: 14px; border-radius: var(--r-md); padding: 12px 20px; border: 1px solid transparent; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all var(--dur); }
-  .btn.primary { background: var(--grad-pulse); color: var(--fg-on-neon); box-shadow: var(--glow-blue); }
-  .btn.ghost { border-color: var(--line-2); color: var(--fg-1); }
-  .btn.ghost:hover { border-color: var(--line-glow); color: var(--neon-cyan); }
+  .whatsnew { margin-top: 34px; max-width: 760px; }
+  .whatsnew b { font-weight: 600; }
 
   /* swatches */
-  .swgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 24px; }
-  .sw { border: 1px solid var(--line-2); border-radius: var(--r-md); overflow: hidden; cursor: pointer; background: var(--bg-2); transition: all var(--dur); }
-  .sw:hover { border-color: var(--line-glow); transform: translateY(-2px); }
-  .sw .chip { height: 64px; }
-  .sw .meta { padding: 10px 12px; }
-  .sw .name { font-family: var(--font-mono); font-size: 12px; color: var(--fg-1); }
-  .sw .val { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+  .swgroup { margin-top: 28px; }
+  .swgroup > .np-label { display: block; margin-bottom: 10px; }
+  .swgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { appearance: none; text-align: left; padding: 0; font: inherit; color: inherit; cursor: pointer; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    border: 1px solid var(--color-border); border-radius: var(--r-md); background: var(--color-surface);
+    transition: border-color var(--dur), transform var(--dur) var(--ease-out); }
+  .sw:hover { border-color: var(--color-border-focus); transform: translateY(-2px); }
+  .sw:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .sw .chip { height: 64px; border-bottom: 1px solid var(--color-border-subtle); }
+  .sw .meta { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; }
+  .sw .name { font: 500 12px/1.3 var(--font-mono); color: var(--color-text); }
+  .sw .val { font: 400 11px/1.3 var(--font-mono); color: var(--color-text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .sw .np-badge { font-size: 9px; padding: 3px 6px; }
 
-  /* token table */
-  table.tok { width: 100%; border-collapse: collapse; margin-top: 22px; }
-  table.tok th { text-align: left; font: var(--mono-label); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); font-weight: 500; padding: 10px 14px; border-bottom: 1px solid var(--line-2); }
-  table.tok td { padding: 12px 14px; border-bottom: 1px solid var(--line-1); font-family: var(--font-mono); font-size: 13px; color: var(--fg-2); }
-  table.tok td.var { color: var(--neon-cyan); cursor: pointer; }
-  table.tok td.var:hover { color: var(--fg-1); }
+  /* specimen cards */
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }
+  .cards--1 { grid-template-columns: minmax(0, 1fr); }
+  .pcard { border: 1px solid var(--color-border); border-radius: var(--r-lg); overflow: hidden; background: var(--color-surface); min-width: 0; }
+  .pcard .ph { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 16px; border-bottom: 1px solid var(--color-border-subtle); }
+  .pcard .ph .t { font: 600 14px/1.2 var(--font-display); margin-right: auto; }
+  .pcard iframe { width: 100%; border: 0; display: block; background: var(--color-bg-page); }
+  .pcard .src { display: none; border-top: 1px solid var(--color-border-subtle); padding: 12px; }
+  .pcard.show-src .src { display: block; }
+  .pcard .src .np-codeblock { max-height: 420px; overflow: auto; font-size: 12px; }
+  .pcard .src__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
 
-  /* card grid for previews / kits */
-  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 24px; }
-  .pcard { border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; background: var(--bg-2); }
-  .pcard .ph { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line-1); }
-  .pcard .ph .t { font-family: var(--font-display); font-weight: 600; font-size: 14px; }
-  .pcard .ph a { font-family: var(--font-mono); font-size: 12px; color: var(--neon-cyan); text-decoration: none; }
-  .pcard iframe { width: 100%; border: 0; display: block; background: var(--bg-1); }
+  /* theming islands */
+  .islands { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; }
+  .island { display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: var(--r-lg); border: 1px solid var(--color-border); background: var(--color-bg-page); color: var(--color-text); }
+  .island .np-cluster { gap: 10px; }
+  .theming-code { margin-top: 18px; }
 
+  /* kits */
   .kits { display: flex; flex-direction: column; gap: 22px; margin-top: 24px; }
-  .kit { border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; background: var(--bg-2); }
-  .kit .kh { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--line-1); }
+  .kit { border: 1px solid var(--color-border); border-radius: var(--r-lg); overflow: hidden; background: var(--color-surface); }
+  .kit .kh { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; padding: 12px 14px 12px 18px; border-bottom: 1px solid var(--color-border-subtle); }
   .kit .kh .t { font: var(--h4); }
-  .kit .kh .d { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+  .kit .kh .d { font: 400 12px/1.3 var(--font-mono); color: var(--color-text-muted); }
   .kit .kh a { margin-left: auto; }
-  .kit .frame { height: 520px; overflow: hidden; position: relative; }
-  .kit .frame iframe { width: 1340px; height: 868px; border: 0; transform: scale(0.62); transform-origin: top left; }
-  .kit.mob .frame { height: 540px; display: flex; justify-content: center; background: #050509; }
-  .kit.mob .frame iframe { width: 480px; height: 900px; transform: scale(0.58); transform-origin: top center; }
+  .kit .frame { --k: 0.62; position: relative; overflow: hidden; height: calc(868px * var(--k)); background: var(--color-bg-void); }
+  .kit .frame iframe { position: absolute; top: 0; left: 0; width: 1340px; height: 868px; border: 0; transform: scale(var(--k)); transform-origin: top left; }
+  .kit.mob .frame { --k: 0.58; height: 540px; }
+  .kit.mob .frame iframe { width: 480px; height: 930px; left: 50%; transform: translateX(-50%) scale(var(--k)); transform-origin: top center; }
 
   /* guidelines */
   .glist { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
-  .g { background: var(--bg-2); border: 1px solid var(--line-2); border-radius: var(--r-lg); padding: 20px; }
-  .g .n { font-family: var(--font-mono); font-size: 12px; color: var(--neon-cyan); }
-  .g h4 { font: var(--h4); margin: 8px 0 6px; }
-  .g p { font: var(--body-sm); color: var(--fg-2); }
+  .g { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-lg); padding: 20px; }
+  .g .n { font: 500 12px/1 var(--font-mono); color: var(--color-text-accent); }
+  .g h3 { font: var(--h4); margin: 10px 0 6px; }
+  .g p { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
 
-  footer { border-top: 1px solid var(--line-1); margin-top: 80px; padding: 28px 40px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); max-width: 1340px; margin-left: auto; margin-right: auto; }
+  /* token reference */
+  .tokbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 24px; }
+  .tokbar .np-inputgroup { max-width: 320px; flex: 1 1 220px; }
+  .tokcount { font: 400 12px/1 var(--font-mono); color: var(--color-text-muted); margin-left: auto; }
+  .tokwrap { margin-top: 14px; }
+  .tokwrap .np-table-wrap { max-height: min(72vh, 760px); overflow: auto; overscroll-behavior: contain; }
+  .tokwrap thead th { position: sticky; top: 0; z-index: 1; background: var(--color-surface); box-shadow: inset 0 -1px 0 var(--color-border-subtle); }
+  .tok td { vertical-align: middle; }
+  .tok td.v { white-space: normal; word-break: break-word; min-width: 180px; max-width: 320px; color: var(--color-text-secondary); }
+  .tok td.note { white-space: normal; min-width: 160px; font-family: var(--font-body); font-size: 13px; color: var(--color-text-muted); }
+  .tok .tname { appearance: none; background: none; border: 0; padding: 2px 4px; margin: -2px -4px; border-radius: 4px; cursor: pointer;
+    font: 500 12px/1.3 var(--font-mono); color: var(--color-text-accent); text-align: left; }
+  .tok .tname:hover { color: var(--color-text); }
+  .tok .tname:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .pv { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 26px; border-radius: 6px;
+    border: 1px solid var(--color-border); background: var(--color-bg-page); color: var(--color-text); overflow: hidden; font-size: 13px; }
+  .pv--fill { border-color: var(--color-border-subtle); }
+  .pv--bar { justify-content: flex-start; padding: 0 4px; }
+  .pv--bar i { display: block; height: 8px; border-radius: 2px; background: var(--color-action-primary); max-width: 100%; }
+  .tier { font: 500 9px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+  .tok tr.is-flash { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
 
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); opacity: 0; background: var(--bg-3); border: 1px solid var(--line-glow); color: var(--fg-1); font-family: var(--font-mono); font-size: 13px; padding: 11px 18px; border-radius: var(--r-full); box-shadow: var(--glow-soft); transition: all var(--dur); pointer-events: none; z-index: 100; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  footer.foot { border-top: 1px solid var(--color-border-subtle); margin: 80px auto 0; padding: 28px 44px; max-width: 1360px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; font: 400 12px/1.5 var(--font-mono); color: var(--color-text-muted); }
+  footer.foot a { color: var(--color-text-secondary); }
 
   @media (max-width: 920px) {
-    .wrap { grid-template-columns: 1fr; }
-    aside { display: none; }
-    main { padding: 0 22px 80px; }
-    .cards, .glist { grid-template-columns: 1fr; }
+    .wrap { grid-template-columns: minmax(0, 1fr); }
+    .mtop { display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: var(--z-sticky); height: 60px; padding: 0 16px;
+      background: var(--color-bg-translucent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--color-border-subtle); }
+    .mtop .brand { margin-right: auto; }
+    .mtop .brand b { font-size: 15px; }
+    .mtop .mark { width: 26px; height: 26px; } .mtop .mark::after { inset: 8px; } .mtop .mark::before { inset: 10.5px; }
+    .side { position: fixed; inset: 0 auto 0 0; width: min(300px, 86vw); z-index: var(--z-modal); background: var(--color-bg-page);
+      transform: translateX(-102%); transition: transform var(--dur-slow) var(--ease-out); box-shadow: var(--elevation-overlay); }
+    .side.is-open { transform: none; }
+    html { scroll-padding-top: 76px; }
+    main { padding: 0 18px 80px; }
+    main > section { padding-top: 56px; }
+    .hero { padding-top: 48px; }
+    .cards, .glist, .islands { grid-template-columns: minmax(0, 1fr); }
+    footer.foot { padding: 24px 18px; }
   }
 </style>
 </head>
-<body>
+<body class="np-scope">
+<a class="np-skip" href="#main">Skip to content</a>
+
+<!-- mobile top bar -->
+<div class="mtop">
+  <a class="brand" href="#intro" aria-label="NeonPulse home"><span class="mark" aria-hidden="true"></span><b>NEON<span>PULSE</span></b></a>
+  <button class="np-icon-btn" type="button" data-open-search aria-label="Search sections and tokens"><i data-lucide="search" aria-hidden="true"></i></button>
+  <button class="np-icon-btn tbtn" type="button" data-theme-toggle aria-label="Toggle light / dark theme"><span class="ico-sun"><i data-lucide="sun" aria-hidden="true"></i></span><span class="ico-moon"><i data-lucide="moon" aria-hidden="true"></i></span></button>
+  <button class="np-icon-btn" type="button" id="menu-btn" aria-label="Open navigation" aria-expanded="false" aria-controls="side"><i data-lucide="menu" aria-hidden="true"></i></button>
+</div>
+<div class="drawer-scrim" id="drawer-scrim" hidden></div>
+
 <div class="wrap">
-  <aside>
-    <div class="brand"><div class="mark"></div><div class="brandtext"><b>NEON<span>PULSE</span></b><span class="brandsub">Designsystem</span></div></div>
-    <nav>
-      <a href="#intro">Overview</a>
+  <aside class="side" id="side" aria-label="Documentation">
+    <div class="side__head">
+      <a class="brand" href="#intro"><span class="mark" aria-hidden="true"></span><span class="brandtext"><b>NEON<span>PULSE</span></b><span class="brandsub">Design system · v1.1</span></span></a>
+    </div>
+    <div class="side__tools">
+      <button class="searchbtn" type="button" data-open-search><i data-lucide="search" aria-hidden="true"></i>Search<span class="np-kbd" id="kbd-hint">⌘K</span></button>
+      <button class="np-icon-btn tbtn" type="button" data-theme-toggle aria-label="Toggle light / dark theme" data-np-tooltip="Theme" data-np-tooltip-pos="bottom"><span class="ico-sun"><i data-lucide="sun" aria-hidden="true"></i></span><span class="ico-moon"><i data-lucide="moon" aria-hidden="true"></i></span></button>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a class="np-navitem" href="#intro">Overview</a>
       <div class="grouplabel">Foundations</div>
-      <a href="#colors">Colors</a>
-      <a href="#type">Typography</a>
-      <a href="#spacing">Spacing &amp; radii</a>
-      <a href="#glow">Elevation &amp; glow</a>
-      <a href="#icons">Iconography</a>
+      <a class="np-navitem" href="#colors">Colors</a>
+      <a class="np-navitem" href="#type">Typography</a>
+      <a class="np-navitem" href="#spacing">Spacing &amp; radii</a>
+      <a class="np-navitem" href="#glow">Elevation &amp; glow</a>
+      <a class="np-navitem" href="#icons">Iconography</a>
+      <a class="np-navitem" href="#theming">Theming <span class="new">New</span></a>
       <div class="grouplabel">Components</div>
-      <a href="#comp-buttons">Buttons</a>
-      <a href="#comp-inputs">Inputs &amp; controls</a>
-      <a href="#comp-badges">Badges &amp; status</a>
-      <a href="#comp-cards">Cards</a>
-      <a href="#comp-tabs">Tabs &amp; segmented</a>
-      <a href="#comp-wordmark">Wordmark</a>
+      <a class="np-navitem" href="#comp-buttons">Buttons</a>
+      <a class="np-navitem" href="#comp-inputs">Inputs &amp; controls</a>
+      <a class="np-navitem" href="#comp-badges">Badges &amp; status</a>
+      <a class="np-navitem" href="#comp-cards">Cards</a>
+      <a class="np-navitem" href="#comp-tabs">Tabs &amp; segmented</a>
+      <a class="np-navitem" href="#comp-overlays">Overlays <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-data">Data display <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-wordmark">Wordmark &amp; effects</a>
       <div class="grouplabel">Patterns</div>
-      <a href="#pat-cards">Cards</a>
-      <a href="#pat-layout">Layout primitives</a>
-      <a href="#pat-content">Content patterns</a>
+      <a class="np-navitem" href="#pat-cards">Cards</a>
+      <a class="np-navitem" href="#pat-layout">Layout primitives</a>
+      <a class="np-navitem" href="#pat-content">Content patterns</a>
       <div class="grouplabel">Kits</div>
-      <a href="#kits">UI kits</a>
+      <a class="np-navitem" href="#kits">UI kits</a>
       <div class="grouplabel">Usage</div>
-      <a href="#guidelines">Guidelines</a>
-      <a href="#tokens">Token reference</a>
+      <a class="np-navitem" href="#guidelines">Guidelines</a>
+      <a class="np-navitem" href="#tokens">Token reference</a>
     </nav>
+    <div class="side__foot">
+      <a href="showcase/"><i data-lucide="presentation" aria-hidden="true"></i>Case study</a>
+      <a href="https://github.com/Kujoh1/Designsystem-Neonpulse" target="_blank" rel="noopener"><i data-lucide="folder-git-2" aria-hidden="true"></i>GitHub</a>
+    </div>
   </aside>
 
-  <main>
+  <main id="main">
     <section id="intro" class="hero">
-      <div class="eyebrow"><span class="livedot"></span>DESIGN SYSTEM · v1.0</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Design system · v1.1</div>
       <h1>Neon<span class="grad">Pulse</span></h1>
-      <p>A dark-first, cyberpunk flat-design system for web and app projects. Near-black surfaces, electric neon as signal, a geometric techy type system, and glow used as a state — never as decoration.</p>
+      <p class="lead">A dark-first, cyberpunk flat-design system for web and app projects. Near-black surfaces, electric neon as signal, a geometric techy type system, and glow used as a state — never as decoration.</p>
       <div class="herobtns">
-        <a class="btn primary" href="#colors">Explore foundations →</a>
-        <a class="btn ghost" href="ui_kits/marketing/index.html">Open marketing kit</a>
+        <a class="np-btn np-btn--primary np-btn--lg" href="#colors">Explore foundations<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+        <a class="np-btn np-btn--ghost np-btn--lg" href="showcase/"><i data-lucide="presentation" aria-hidden="true"></i>Case study</a>
+        <a class="np-btn np-btn--ghost np-btn--lg" href="#kits"><i data-lucide="layout-dashboard" aria-hidden="true"></i>UI kits</a>
+      </div>
+      <div class="np-banner np-banner--info whatsnew">
+        <i class="np-banner__icon" data-lucide="info" aria-hidden="true"></i>
+        <span><b>New in v1.1</b> — light theme (toggle top-left), 23 new elements &amp; patterns (inputs, switch, tabs, tooltip, toast, modal, ⌘K palette, table, meter …), self-hosted fonts, docs read straight from the stylesheet. Press <span class="np-kbd">⌘K</span> to search.</span>
       </div>
     </section>
 
     <section id="colors">
-      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
       <h2 class="sec">Colors</h2>
-      <p class="sub">~90% of any screen is the near-black surface ramp and cool-grey text. Neon is the ~10% that marks what's interactive or live. Click any swatch to copy its value.</p>
-      <div class="swgrid" id="sw-surfaces"></div>
-      <div class="swgrid" id="sw-fg" style="margin-top:12px"></div>
-      <div class="swgrid" id="sw-neon" style="margin-top:12px"></div>
-      <div class="swgrid" id="sw-sem" style="margin-top:12px"></div>
+      <p class="sub">~90% of any screen is the near-black surface ramp and cool-grey text. Neon is the ~10% that marks what's interactive or live. Every swatch below is read live from <code class="np-code">colors_and_type.css</code> for the current theme; text colours show their contrast against the page. Click to copy the token.</p>
+      <div id="swatches"></div>
       <div class="divider"></div>
     </section>
 
     <section id="type">
-      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
       <h2 class="sec">Typography</h2>
-      <p class="sub">Space Grotesk for display, Sora for body, JetBrains Mono for HUD labels &amp; data.</p>
-      <div style="margin-top:26px; display:flex; flex-direction:column; gap:22px">
-        <div style="border-bottom:1px solid var(--line-1); padding-bottom:18px">
-          <div class="eyebrow" style="margin-bottom:10px">Display · Space Grotesk</div>
-          <div style="font:var(--display-l); letter-spacing:-0.02em">Ship at the speed of light</div>
-        </div>
-        <div style="border-bottom:1px solid var(--line-1); padding-bottom:18px">
-          <div class="eyebrow" style="margin-bottom:10px">Body · Sora</div>
-          <div style="font:var(--body-lg); color:var(--fg-2); max-width:620px">Realtime infrastructure for teams that move fast. Spin up nodes, watch them go live, and never lose the signal.</div>
-        </div>
-        <div>
-          <div class="eyebrow" style="margin-bottom:12px">HUD · JetBrains Mono</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase">
-            <span style="color:var(--neon-cyan); border:1px solid var(--line-glow); border-radius:var(--r-full); padding:6px 12px">● LIVE</span>
-            <span style="color:var(--fg-2); border:1px solid var(--line-2); border-radius:var(--r-full); padding:6px 12px">SYSTEM STATUS</span>
-            <span style="color:var(--fg-2); border:1px solid var(--line-2); border-radius:var(--r-full); padding:6px 12px">+24.6%</span>
-            <span style="color:var(--fg-2); border:1px solid var(--line-2); border-radius:var(--r-full); padding:6px 12px">US-EAST</span>
-          </div>
-        </div>
+      <p class="sub">Space Grotesk for display, Sora for body, JetBrains Mono for HUD labels &amp; data — self-hosted variable fonts. Display sizes are fluid (<code class="np-code">clamp()</code>), so headlines scale from phone to desktop without overrides.</p>
+      <div class="cards">
+        <div class="pcard"><div class="ph"><span class="t">Display · Space Grotesk</span></div><iframe src="preview/type-display.html" title="Display type specimen" height="200" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">Body · Sora</span></div><iframe src="preview/type-body.html" title="Body type specimen" height="200" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">HUD · JetBrains Mono</span></div><iframe src="preview/type-mono.html" title="Mono type specimen" height="200" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">Type scale</span></div><iframe src="preview/type-scale.html" title="Type scale specimen" height="240" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="spacing">
-      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
       <h2 class="sec">Spacing &amp; radii</h2>
       <p class="sub">4px base spacing scale; soft 8–28px corner radii.</p>
-      <div class="cards" style="grid-template-columns:1fr 1fr">
-        <div class="pcard"><div class="ph"><span class="t">Spacing scale</span></div><iframe src="preview/spacing.html" height="250" loading="lazy"></iframe></div>
-        <div class="pcard"><div class="ph"><span class="t">Corner radii</span></div><iframe src="preview/radii.html" height="150" loading="lazy"></iframe></div>
+      <div class="cards">
+        <div class="pcard"><div class="ph"><span class="t">Spacing scale</span></div><iframe src="preview/spacing.html" title="Spacing specimen" height="280" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">Corner radii</span></div><iframe src="preview/radii.html" title="Radii specimen" height="150" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="glow">
-      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
       <h2 class="sec">Elevation &amp; glow</h2>
-      <p class="sub">Flat by default. Depth comes from the surface step plus a 1px hairline; neon halos appear only on hover / focus / active and on live data.</p>
-      <div class="cards" style="grid-template-columns:1fr"><div class="pcard"><div class="ph"><span class="t">Glow & elevation</span></div><iframe src="preview/glow.html" height="150" loading="lazy"></iframe></div></div>
+      <p class="sub">Flat by default. Depth comes from the surface step plus a 1px hairline; neon halos appear only on hover / focus / active and on live data. Halos are derived from the neon hues, so they follow a rebrand automatically.</p>
+      <div class="cards cards--1"><div class="pcard"><div class="ph"><span class="t">Glow &amp; elevation</span></div><iframe src="preview/glow.html" title="Glow specimen" height="150" loading="lazy"></iframe></div></div>
       <div class="divider"></div>
     </section>
 
     <section id="icons">
-      <div class="eyebrow"><span class="livedot"></span>FOUNDATIONS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
       <h2 class="sec">Iconography</h2>
-      <p class="sub">Lucide outline, 1.9px stroke, <code style="font-family:var(--font-mono); color:var(--neon-cyan)">currentColor</code>. Three sizes (16/20/24). Icons rest in muted grey and take a neon glow only on hover / active. No emoji, ever. The semantic map gives dev &amp; design one shared name per meaning.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Icons</span><a href="preview/icons.html" target="_blank">Open ↗</a></div><iframe src="preview/icons.html" height="560" loading="lazy"></iframe></div>
+      <p class="sub">Lucide outline, 1.9px stroke, <code class="np-code">currentColor</code>. Three sizes (16/20/24). Icons rest in muted grey and take the signal colour only on hover / active. No emoji, ever. The semantic map gives dev &amp; design one shared name per meaning.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Icons</span></div><iframe src="preview/icons.html" title="Icon specimen" height="560" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
+    <section id="theming">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Foundations</div>
+      <h2 class="sec">Theming</h2>
+      <p class="sub">Dark is the default. Put <code class="np-code">data-theme="light"</code> on <code class="np-code">&lt;html&gt;</code> — or on any subtree — and everything below re-resolves: surfaces and text flip, accents switch to a legible ink, semantic colours deepen so every text pairing keeps WCAG AA. Both islands below use identical markup.</p>
+      <div class="islands">
+        <div class="island" data-theme="dark">
+          <div class="np-cluster"><span class="np-badge np-badge--accent">data-theme="dark"</span><span class="np-badge np-badge--success np-badge--live"><span class="np-badge__dot"></span>Online</span></div>
+          <div class="np-card np-card--live"><span class="np-card__eyebrow">p99 latency · live</span><div class="np-card__metric">42ms</div><span class="np-card__delta">us-east · 3 nodes</span></div>
+          <div class="np-cluster"><button class="np-btn np-btn--primary" type="button">Deploy</button><button class="np-btn np-btn--ghost" type="button">Logs</button><label class="np-switch"><input type="checkbox" role="switch" checked><span class="np-switch__track" aria-hidden="true"></span>Auto</label></div>
+        </div>
+        <div class="island" data-theme="light">
+          <div class="np-cluster"><span class="np-badge np-badge--accent">data-theme="light"</span><span class="np-badge np-badge--success np-badge--live"><span class="np-badge__dot"></span>Online</span></div>
+          <div class="np-card np-card--live"><span class="np-card__eyebrow">p99 latency · live</span><div class="np-card__metric">42ms</div><span class="np-card__delta">us-east · 3 nodes</span></div>
+          <div class="np-cluster"><button class="np-btn np-btn--primary" type="button">Deploy</button><button class="np-btn np-btn--ghost" type="button">Logs</button><label class="np-switch"><input type="checkbox" role="switch" checked><span class="np-switch__track" aria-hidden="true"></span>Auto</label></div>
+        </div>
+      </div>
+<pre class="np-codeblock theming-code"><code><span class="tk-c">&lt;!-- whole page --&gt;</span>
+&lt;<span class="tk-p">html</span> data-theme=<span class="tk-s">"light"</span>&gt;
+
+<span class="tk-c">&lt;!-- or a single island; nesting works both ways --&gt;</span>
+&lt;<span class="tk-p">section</span> data-theme=<span class="tk-s">"dark"</span>&gt; … &lt;/<span class="tk-p">section</span>&gt;
+
+<span class="tk-c">/* rebrand: swap the hues — gradients, glows, rings and focus edges are derived */</span>
+<span class="tk-p">[data-brand="hot"]</span> { <span class="tk-p">--neon-blue</span>: <span class="tk-v">var(--neon-violet)</span>; <span class="tk-p">--neon-cyan</span>: <span class="tk-v">var(--neon-magenta)</span>; }</code></pre>
+      <div class="divider"></div>
+    </section>
+
     <section id="comp-buttons">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Buttons</h2>
-      <p class="sub">One canonical <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-btn</code>, four intents (primary · secondary · ghost · danger) across the full state model — rest, hover, <b style="color:var(--fg-1)">focus-visible</b>, active, loading and disabled — all derived from interaction-state tokens, never hand-painted per combination.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Buttons · state matrix</span><a href="preview/comp-buttons.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-buttons.html" height="340" loading="lazy"></iframe></div>
+      <p class="sub">One canonical <code class="np-code">.np-btn</code>, four intents (primary · secondary · ghost · danger) across the full state model — rest, hover, <b>focus-visible</b>, active, loading and disabled — all derived from interaction-state tokens, never hand-painted per combination. Plus <code class="np-code">.np-icon-btn</code> and tooltips.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Buttons · state matrix</span></div><iframe src="preview/comp-buttons.html" title="Buttons specimen" height="420" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="comp-inputs">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Inputs &amp; controls</h2>
-      <p class="sub">Text fields, toggles and selects. Focus lights a neon ring; the resting state stays flat.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Inputs &amp; controls</span><a href="preview/comp-inputs.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-inputs.html" height="200" loading="lazy"></iframe></div>
+      <p class="sub">Fields with labels, hints and the full state set (hover · focus · invalid · disabled), an input group with keyboard hint, and a switch built on a real checkbox — keyboard and screen-reader native. Focus lights a neon edge; the resting state stays flat.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Inputs &amp; controls</span></div><iframe src="preview/comp-inputs.html" title="Inputs specimen" height="300" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="comp-badges">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Badges &amp; status</h2>
-      <p class="sub">Status pills and tinted alerts. Mono labels, uppercase, paired with semantic 14%-opacity fills.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Badges &amp; status</span><a href="preview/comp-badges.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-badges.html" height="180" loading="lazy"></iframe></div>
+      <p class="sub">Status pills in the HUD voice: mono, uppercase, paired with semantic tinted fills. A blinking dot marks live state only.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Badges &amp; status</span></div><iframe src="preview/comp-badges.html" title="Badges specimen" height="180" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="comp-cards">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Cards</h2>
       <p class="sub">Surface-step containers with a 1px hairline. Hover lifts the border and adds a soft halo — never an ambient one.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Cards</span><a href="preview/comp-cards.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-cards.html" height="180" loading="lazy"></iframe></div>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Cards</span></div><iframe src="preview/comp-cards.html" title="Cards specimen" height="180" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="comp-tabs">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Tabs &amp; segmented</h2>
-      <p class="sub">Tabs and segmented controls. The active segment carries the signal; the rest stays muted grey.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Tabs &amp; segmented</span><a href="preview/comp-tabs.html" target="_blank">Open ↗</a></div><iframe src="preview/comp-tabs.html" height="180" loading="lazy"></iframe></div>
+      <p class="sub">Tabs (<code class="np-code">role="tab"</code>, arrow-key navigation) and segmented controls (<code class="np-code">aria-pressed</code>). The active segment carries the signal; the rest stays muted grey.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Tabs &amp; segmented</span></div><iframe src="preview/comp-tabs.html" title="Tabs specimen" height="180" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-overlays">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Overlays</h2>
+      <p class="sub">Modal (<code class="np-code">.np-scrim</code> + <code class="np-code">.np-modal</code>), toast stack in a polite live region, and the <span class="np-kbd">⌘K</span> command palette — the same one that powers search on this page. All sit on the shared <code class="np-code">--z-*</code> stacking scale.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Modal · toasts · command palette</span></div><iframe src="preview/comp-overlays.html" title="Overlays specimen" height="640" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-data">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Data display</h2>
+      <p class="sub">Data table with tabular figures and hover rows, usage meter, avatars, keyboard keys, inline code and links — the small parts every product screen needs.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Table · meter · avatar · kbd</span></div><iframe src="preview/comp-data.html" title="Data display specimen" height="520" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="comp-wordmark">
-      <div class="eyebrow"><span class="livedot"></span>COMPONENTS</div>
-      <h2 class="sec">Wordmark</h2>
-      <p class="sub">The NeonPulse mark and logotype, plus the <strong>kudesi</strong> brand wordmark — set in the primary pulse gradient (blue → cyan) on the near-black canvas.</p>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Wordmark &amp; effects</h2>
+      <p class="sub">The NeonPulse mark and logotype, the <strong>kudesi</strong> brand wordmark in the primary pulse gradient, and the starfield scene backdrop. Brand art stays on the dark canvas in both themes.</p>
       <div class="cards">
-        <div class="pcard"><div class="ph"><span class="t">NeonPulse mark</span><a href="preview/brand-logo.html" target="_blank">Open ↗</a></div><iframe src="preview/brand-logo.html" height="210" loading="lazy"></iframe></div>
-        <div class="pcard"><div class="ph"><span class="t">kudesi wordmark</span><a href="preview/brand-kudesi.html" target="_blank">Open ↗</a></div><iframe src="preview/brand-kudesi.html" height="210" loading="lazy"></iframe></div>
-        <div class="pcard"><div class="ph"><span class="t">Starfield · scene backdrop</span><a href="preview/effect-starfield.html" target="_blank">Open ↗</a></div><iframe src="preview/effect-starfield.html" height="210" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">NeonPulse mark</span></div><iframe src="preview/brand-logo.html" title="NeonPulse mark specimen" height="210" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">kudesi wordmark</span></div><iframe src="preview/brand-kudesi.html" title="kudesi wordmark specimen" height="210" loading="lazy"></iframe></div>
+        <div class="pcard"><div class="ph"><span class="t">Starfield · scene backdrop</span></div><iframe src="preview/effect-starfield.html" title="Starfield specimen" height="210" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="pat-cards">
-      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
       <h2 class="sec">Cards</h2>
-      <p class="sub">One canonical <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-card</code> with a defined anatomy (eyebrow · title · metric · body · footer) and variants — stat, live (gradient border), content, interactive, media and row — plus hover / focus / selected states. The reusable building block for any surface.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Card family</span><a href="preview/pat-cards.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-cards.html" height="420" loading="lazy"></iframe></div>
+      <p class="sub">One canonical <code class="np-code">.np-card</code> with a defined anatomy (eyebrow · title · metric · body · footer) and variants — stat, live (gradient border), content, interactive, media and row — plus hover / focus / selected states. The reusable building block for any surface.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Card family</span></div><iframe src="preview/pat-cards.html" title="Card family specimen" height="420" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="pat-layout">
-      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
       <h2 class="sec">Layout primitives</h2>
-      <p class="sub">Token-driven structure so spacing is never ad-hoc: <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-stack</code> (vertical rhythm), <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-cluster</code> (wrapping row), <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-grid</code> (auto-fill) and <code style="font-family:var(--font-mono); color:var(--neon-cyan)">.np-section</code>. Assemble screens without bespoke margins.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Stack · cluster · grid · section</span><a href="preview/pat-layout.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-layout.html" height="430" loading="lazy"></iframe></div>
+      <p class="sub">Token-driven structure so spacing is never ad-hoc: <code class="np-code">.np-container</code>, <code class="np-code">.np-stack</code> (vertical rhythm), <code class="np-code">.np-cluster</code> (wrapping row), <code class="np-code">.np-grid</code> (auto-fill) and <code class="np-code">.np-section</code>. Assemble screens without bespoke margins.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Stack · cluster · grid · section</span></div><iframe src="preview/pat-layout.html" title="Layout specimen" height="430" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="pat-content">
-      <div class="eyebrow"><span class="livedot"></span>PATTERNS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
       <h2 class="sec">Content patterns</h2>
       <p class="sub">The recurring content blocks every product needs: page header, status banners (info · success · warning · danger), empty state, loading skeleton and data list — the three states (empty / loading / error) that are usually forgotten.</p>
-      <div class="cards" style="grid-template-columns:1fr">
-        <div class="pcard"><div class="ph"><span class="t">Header · banners · empty · loading · list</span><a href="preview/pat-content.html" target="_blank">Open ↗</a></div><iframe src="preview/pat-content.html" height="520" loading="lazy"></iframe></div>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Header · banners · empty · loading · list</span></div><iframe src="preview/pat-content.html" title="Content patterns specimen" height="520" loading="lazy"></iframe></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="kits">
-      <div class="eyebrow"><span class="livedot"></span>UI KITS</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>UI kits</div>
       <h2 class="sec">UI kits</h2>
-      <p class="sub">Three interactive, high-fidelity recreations. Click “Open” for the full, full-size experience.</p>
+      <p class="sub">Three interactive, high-fidelity products assembled from the system's classes. They are dark-first product mocks, so they stay dark in both doc themes. Open one for the full-size experience — in the dashboard, try <span class="np-kbd">⌘K</span>.</p>
       <div class="kits">
         <div class="kit">
-          <div class="kh"><span class="t">Marketing landing</span><span class="d">hero · pricing · footer</span><a class="btn ghost" href="ui_kits/marketing/index.html" target="_blank">Open ↗</a></div>
-          <div class="frame"><iframe src="ui_kits/marketing/index.html" loading="lazy" scrolling="no"></iframe></div>
+          <div class="kh"><span class="t">Marketing landing</span><span class="d">hero · features · pricing · footer</span><a class="np-btn np-btn--ghost np-btn--sm" href="ui_kits/marketing/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame"><iframe src="ui_kits/marketing/index.html" title="Marketing kit preview" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
         </div>
         <div class="kit">
-          <div class="kh"><span class="t">SaaS dashboard</span><span class="d">charts · modal · toasts</span><a class="btn ghost" href="ui_kits/dashboard/index.html" target="_blank">Open ↗</a></div>
-          <div class="frame"><iframe src="ui_kits/dashboard/index.html" loading="lazy" scrolling="no"></iframe></div>
+          <div class="kh"><span class="t">SaaS dashboard</span><span class="d">charts · modal · toasts · ⌘K</span><a class="np-btn np-btn--ghost np-btn--sm" href="ui_kits/dashboard/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame"><iframe src="ui_kits/dashboard/index.html" title="Dashboard kit preview" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
         </div>
         <div class="kit mob">
-          <div class="kh"><span class="t">Mobile app</span><span class="d">iOS frame · tab bar</span><a class="btn ghost" href="ui_kits/mobile/index.html" target="_blank">Open ↗</a></div>
-          <div class="frame"><iframe src="ui_kits/mobile/index.html" loading="lazy" scrolling="no"></iframe></div>
+          <div class="kh"><span class="t">Mobile app</span><span class="d">iOS frame · tab bar · settings</span><a class="np-btn np-btn--ghost np-btn--sm" href="ui_kits/mobile/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame"><iframe src="ui_kits/mobile/index.html" title="Mobile kit preview" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
         </div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="guidelines">
-      <div class="eyebrow"><span class="livedot"></span>USAGE</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Usage</div>
       <h2 class="sec">Guidelines</h2>
       <div class="glist">
-        <div class="g"><div class="n">01</div><h4>Dark is the canvas, neon is the signal</h4><p>Keep ~90% of a screen near-black and grey. Neon marks the one thing that's interactive or live.</p></div>
-        <div class="g"><div class="n">02</div><h4>Flat, not flat-boring</h4><p>Depth = surface step (bg-1 → bg-2 → bg-3) + a 1px hairline. No stacked drop-shadows.</p></div>
-        <div class="g"><div class="n">03</div><h4>Glow is a state, not a style</h4><p>Halos appear on hover / focus / active and on live data — never ambiently on static cards.</p></div>
-        <div class="g"><div class="n">04</div><h4>Mono is the HUD voice</h4><p>Labels, metrics, statuses and timestamps use JetBrains Mono, uppercase, 0.14em tracking.</p></div>
-        <div class="g"><div class="n">05</div><h4>Soft corners, precise motion</h4><p>12–20px radii keep it friendly; 200ms ease-out transitions keep it sharp. No bounces.</p></div>
-        <div class="g"><div class="n">06</div><h4>No emoji</h4><p>Status is shown with neon dots, mono labels and Lucide outline icons — never emoji.</p></div>
+        <div class="g"><div class="n">01</div><h3>Dark is the canvas, neon is the signal</h3><p>Keep ~90% of a screen near-black and grey. Neon marks the one thing that's interactive or live.</p></div>
+        <div class="g"><div class="n">02</div><h3>Flat, not flat-boring</h3><p>Depth = surface step (bg-1 → bg-2 → bg-3) + a 1px hairline. No stacked drop-shadows.</p></div>
+        <div class="g"><div class="n">03</div><h3>Glow is a state, not a style</h3><p>Halos appear on hover / focus / active and on live data — never ambiently on static cards.</p></div>
+        <div class="g"><div class="n">04</div><h3>Mono is the HUD voice</h3><p>Labels, metrics, statuses and timestamps use JetBrains Mono, uppercase, 0.14em tracking.</p></div>
+        <div class="g"><div class="n">05</div><h3>Soft corners, precise motion</h3><p>12–20px radii keep it friendly; 200ms ease-out transitions keep it sharp. No bounces.</p></div>
+        <div class="g"><div class="n">06</div><h3>No emoji</h3><p>Status is shown with neon dots, mono labels and Lucide outline icons — never emoji.</p></div>
+        <div class="g"><div class="n">07</div><h3>Consume aliases, not values</h3><p>Components use <code class="np-code">--color-*</code>, <code class="np-code">--ring-focus</code>, <code class="np-code">--z-*</code>. Primitives are only for defining aliases — that keeps theming a one-line change.</p></div>
+        <div class="g"><div class="n">08</div><h3>Contrast is not optional</h3><p>Body and label text uses <code class="np-code">--color-text</code>, <code class="np-code">-secondary</code> or <code class="np-code">-muted</code> (all ≥ 4.5:1). <code class="np-code">--color-text-disabled</code> is for disabled states only.</p></div>
       </div>
       <div class="divider"></div>
     </section>
 
     <section id="tokens">
-      <div class="eyebrow"><span class="livedot"></span>USAGE</div>
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Usage</div>
       <h2 class="sec">Token reference</h2>
-      <p class="sub">Two tiers. <b style="color:var(--fg-1)">Semantic aliases</b> say what a token is <i>for</i> — components should consume these. <b style="color:var(--fg-1)">Primitives</b> say what the value <i>is</i>. Re-point an alias (or override it under <code style="font-family:var(--font-mono); color:var(--neon-cyan)">[data-theme]</code>) and everything using it updates. Click a variable to copy.</p>
-
-      <div class="np-label" style="margin-top:26px">Semantic aliases · consume these</div>
-      <table class="tok"><thead><tr><th>Alias</th><th>→ Primitive</th><th>Use</th></tr></thead><tbody id="sem-body"></tbody></table>
-
-      <div class="np-label" style="margin-top:34px">Primitives · the raw scale</div>
-      <table class="tok"><thead><tr><th>Variable</th><th>Value</th><th>Use</th></tr></thead><tbody id="tok-body"></tbody></table>
+      <p class="sub">Generated from <code class="np-code">colors_and_type.css</code> on page load — it can't drift from the code. <b>Aliases</b> say what a token is <i>for</i>; components consume these. <b>Primitives</b> say what the value <i>is</i>. The light column shows the override from <code class="np-code">[data-theme="light"]</code>. Click a token to copy <code class="np-code">var(--…)</code>.</p>
+      <div class="tokbar">
+        <label class="np-inputgroup"><i data-lucide="search" aria-hidden="true"></i><span class="np-sr-only">Filter tokens</span><input id="tok-filter" type="search" placeholder="Filter tokens… e.g. surface, glow, z-"></label>
+        <div class="np-seg" role="group" aria-label="Token tier" id="tok-tier">
+          <button class="np-seg__item" type="button" data-v="all" aria-pressed="true">All</button>
+          <button class="np-seg__item" type="button" data-v="alias" aria-pressed="false">Aliases</button>
+          <button class="np-seg__item" type="button" data-v="primitive" aria-pressed="false">Primitives</button>
+        </div>
+        <span class="tokcount" id="tok-count" aria-live="polite"></span>
+      </div>
+      <div class="np-card np-card--flush tokwrap">
+        <div class="np-table-wrap">
+          <table class="np-table tok">
+            <thead><tr><th scope="col">Preview</th><th scope="col">Token</th><th scope="col">Dark / default</th><th scope="col">Light</th><th scope="col">Note</th></tr></thead>
+            <tbody id="tok-body"><tr><td colspan="5">Loading tokens… (serve the folder over HTTP — see README)</td></tr></tbody>
+          </table>
+        </div>
+      </div>
     </section>
   </main>
 </div>
 
-<footer>
-  <span>© 2026 NeonPulse · Design System v1.0</span>
-  <span style="display:inline-flex; align-items:center; gap:8px"><span class="livedot"></span>All systems operational</span>
+<footer class="foot">
+  <span>© 2026 NeonPulse · Design System v1.1 · by kudesi</span>
+  <span><a href="showcase/">Case study</a> · <a href="https://github.com/Kujoh1/Designsystem-Neonpulse" target="_blank" rel="noopener">GitHub</a></span>
+  <span style="display:inline-flex; align-items:center; gap:8px"><span class="np-livedot" aria-hidden="true"></span>All systems operational</span>
 </footer>
 
-<div class="toast" id="toast">Copied</div>
+<!-- ⌘K search palette -->
+<div class="np-scrim np-scrim--top" id="pal" hidden>
+  <div class="np-palette" role="dialog" aria-modal="true" aria-label="Search sections and tokens">
+    <div class="np-palette__search">
+      <i data-lucide="search" aria-hidden="true"></i>
+      <input id="pal-in" type="text" role="combobox" aria-expanded="true" aria-controls="pal-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search sections and tokens…">
+      <span class="np-kbd">esc</span>
+    </div>
+    <ul class="np-palette__list" id="pal-list" role="listbox" aria-label="Results"></ul>
+    <div class="np-palette__footer"><span>↑↓ navigate</span><span>↵ open · copy token</span><span>esc close</span></div>
+  </div>
+</div>
 
+<div class="np-toast-region" aria-live="polite" id="toasts"></div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
 <script>
-  const toast = document.getElementById('toast');
-  function copy(text) {
-    navigator.clipboard?.writeText(text);
-    toast.textContent = 'Copied  ' + text;
-    toast.classList.add('show');
-    clearTimeout(window.__t); window.__t = setTimeout(() => toast.classList.remove('show'), 1400);
+(function () {
+  var root = document.documentElement;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var icons = function () { if (window.lucide) lucide.createIcons(); };
+  icons();
+  if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) $('#kbd-hint').textContent = 'Ctrl K';
+
+  /* ---------- toast + copy ---------- */
+  function toast(title, body) {
+    var t = document.createElement('div');
+    t.className = 'np-toast np-toast--success'; t.setAttribute('role', 'status');
+    t.innerHTML = '<span class="np-toast__icon"><i data-lucide="copy" aria-hidden="true"></i></span><div class="np-toast__content"><div class="np-toast__title"></div>' + (body ? '<div class="np-toast__body"></div>' : '') + '</div>';
+    t.querySelector('.np-toast__title').textContent = title;
+    if (body) t.querySelector('.np-toast__body').textContent = body;
+    var region = $('#toasts'); while (region.children.length > 2) region.firstChild.remove();
+    region.appendChild(t); icons();
+    setTimeout(function () { t.remove(); }, 2600);
+  }
+  function copy(text, label) {
+    var done = function () { toast('Copied', label || text); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, done); else done();
   }
 
-  function swatch(name, val, dark) {
-    const el = document.createElement('div');
-    el.className = 'sw';
-    el.onclick = () => copy(val);
-    el.innerHTML = `<div class="chip" style="background:${val}"></div><div class="meta"><div class="name">${name}</div><div class="val">${val}</div></div>`;
-    return el;
+  /* ---------- theme ---------- */
+  var themeColor = $('meta[name="theme-color"]');
+  function frameTheme(f) {
+    try {
+      var d = f.contentDocument; if (!d || !d.documentElement || d.documentElement.hasAttribute('data-theme-lock')) return;
+      if (f.closest('.kit')) return;                        // kits are dark product mocks
+      d.documentElement.setAttribute('data-theme', root.getAttribute('data-theme'));
+    } catch (e) {}
   }
-  const surfaces = [['--bg-0','#07070d'],['--bg-1','#0c0c16'],['--bg-2','#12121f'],['--bg-3','#1a1a2b'],['--bg-4','#24243a']];
-  const fg = [['--fg-1','#eef1fb'],['--fg-2','#aab0c8'],['--fg-3','#6c7290'],['--fg-4','#454b66']];
-  const neon = [['--neon-blue','#2d7bff'],['--neon-cyan','#00e5ff'],['--neon-violet','#7c4dff'],['--neon-magenta','#ff2d9b']];
-  const sem = [['--success','#18f0a0'],['--warning','#ffcf3a'],['--danger','#ff3b6b'],['--info','#00e5ff']];
-  const fill = (id, arr) => arr.forEach(([n,v]) => document.getElementById(id).appendChild(swatch(n,v)));
-  fill('sw-surfaces', surfaces); fill('sw-fg', fg); fill('sw-neon', neon); fill('sw-sem', sem);
+  function setTheme(t, persist) {
+    root.setAttribute('data-theme', t);
+    themeColor.setAttribute('content', t === 'light' ? '#f5f6fa' : '#0c0c16');
+    $$('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', t === 'light' ? 'Switch to dark theme' : 'Switch to light theme'); });
+    if (persist) { try { localStorage.setItem('np-theme', t); } catch (e) {} }
+    $$('.pcard iframe').forEach(frameTheme);
+    renderSwatches();
+    setTimeout(fitAll, 60);
+  }
+  $$('[data-theme-toggle]').forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light', true); });
+  });
 
-  // token table
-  const tokens = [
-    ['--font-display','Space Grotesk','Headings, hero, buttons'],
-    ['--font-body','Sora','Paragraphs, UI copy'],
-    ['--font-mono','JetBrains Mono','Labels, data, code'],
-    ['--grad-pulse','blue → cyan','Primary actions'],
-    ['--grad-pulse-hot','violet → magenta','Energy / avatars'],
-    ['--r-lg','16px','Default card radius'],
-    ['--r-md','12px','Buttons, inputs'],
-    ['--glow-cyan','halo','Focus / live state'],
-    ['--shadow-1','flat','Resting elevation'],
-    ['--dur','200ms','Standard transition'],
-    ['--ease-out','cubic-bezier(.22,1,.36,1)','Standard easing'],
-  ];
-  const semTokens = [
-    ['--color-surface','--bg-2','Cards, panels'],
-    ['--color-surface-raised','--bg-3','Hover / elevated'],
-    ['--color-surface-overlay','--bg-4','Modals, popovers'],
-    ['--color-text','--fg-1','Primary text + headings'],
-    ['--color-text-secondary','--fg-2','Body / supporting'],
-    ['--color-text-muted','--fg-3','Captions (large text only)'],
-    ['--color-border','--line-2','Card / control border'],
-    ['--color-border-focus','--line-glow','Focused edge'],
-    ['--color-action-primary','--grad-pulse','Primary CTA fill'],
-    ['--color-accent','--neon-cyan','The signal accent'],
-    ['--ring-focus','box-shadow','Apply on :focus-visible'],
-    ['--z-modal','1300','Modal stacking'],
-  ];
-  const renderRows = (id, rows) => {
-    const body = document.getElementById(id);
-    rows.forEach(([v,val,use]) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td class="var" data-c="${v}">${v}</td><td>${val}</td><td style="color:var(--fg-3)">${use}</td>`;
-      tr.querySelector('.var').onclick = () => copy(v);
-      body.appendChild(tr);
-    });
-  };
-  renderRows('sem-body', semTokens);
-  renderRows('tok-body', tokens);
+  /* ---------- mobile drawer ---------- */
+  var side = $('#side'), scrim = $('#drawer-scrim'), menuBtn = $('#menu-btn');
+  function drawer(open) {
+    side.classList.toggle('is-open', open); scrim.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open));
+    if (open) { var a = $('.toc .np-navitem', side); if (a) a.focus(); } else if (document.activeElement && side.contains(document.activeElement)) menuBtn.focus();
+  }
+  menuBtn.addEventListener('click', function () { drawer(!side.classList.contains('is-open')); });
+  scrim.addEventListener('click', function () { drawer(false); });
+  $$('.toc .np-navitem').forEach(function (a) { a.addEventListener('click', function () { if (side.classList.contains('is-open')) drawer(false); }); });
 
-  // Auto-fit specimen cards to their content — no inner scrollbars, no clipping.
-  // (Same-origin iframes only; the scaled kit previews are deliberately left fixed.)
-  const specimens = [...document.querySelectorAll('.pcard iframe')];
+  /* ---------- swatches (read live from the stylesheet) ---------- */
+  var probe = document.createElement('span'); probe.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden'; document.body.appendChild(probe);
+  function rgba(v) {
+    probe.style.backgroundColor = ''; probe.style.backgroundColor = 'var(' + v + ')';
+    var c = getComputedStyle(probe).backgroundColor, m;
+    if ((m = c.match(/rgba?\(([^)]+)\)/))) { var p = m[1].split(/[\s,/]+/).filter(Boolean).map(Number); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1]; }
+    if ((m = c.match(/color\(srgb ([^)]+)\)/))) { var q = m[1].split(/[\s/]+/).filter(Boolean).map(Number); return [q[0] * 255, q[1] * 255, q[2] * 255, q.length > 3 ? q[3] : 1]; }
+    return [0, 0, 0, 0];
+  }
+  function hex(c) {
+    var h = '#' + c.slice(0, 3).map(function (x) { return ('0' + Math.round(x).toString(16)).slice(-2); }).join('').toUpperCase();
+    return c[3] < 1 ? h + ' · ' + Math.round(c[3] * 100) + '%' : h;
+  }
+  function lum(c) {
+    return c.slice(0, 3).map(function (x) { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); })
+      .reduce(function (a, x, i) { return a + x * [0.2126, 0.7152, 0.0722][i]; }, 0);
+  }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  var GROUPS = [
+    ['Surfaces · near-black ramp', ['--bg-0', '--bg-1', '--bg-2', '--bg-3', '--bg-4']],
+    ['Foreground · contrast vs page', ['--fg-1', '--fg-2', '--fg-3', '--fg-4'], 'contrast'],
+    ['Neon accents · ~10% signal', ['--neon-blue', '--neon-cyan', '--neon-violet', '--neon-magenta', '--neon-ink']],
+    ['Semantic · solid + 14% fill', ['--success', '--warning', '--danger', '--info', '--success-fill', '--warning-fill', '--danger-fill', '--info-fill']],
+    ['Signature gradients', ['--grad-pulse', '--grad-pulse-hot', '--grad-haze'], 'image']
+  ];
+  function renderSwatches() {
+    var host = $('#swatches'); if (!host) return;
+    var page = rgba('--color-bg-page');
+    host.innerHTML = GROUPS.map(function (g) {
+      return '<div class="swgroup"><span class="np-label">' + g[0] + '</span><div class="swgrid">' + g[1].map(function (v) {
+        var val, extra = '';
+        if (g[2] === 'image') val = v === '--grad-haze' ? 'radial · corner wash' : 'linear · 135°';
+        else {
+          var c = rgba(v); val = hex(c);
+          if (g[2] === 'contrast') {
+            var r = ratio(c, page), ok = r >= 4.5;
+            extra = '<span class="np-badge ' + (v === '--fg-4' ? '' : ok ? 'np-badge--success' : 'np-badge--danger') + '">' + r.toFixed(1) + ':1 ' + (v === '--fg-4' ? 'disabled' : ok ? 'AA' : 'fail') + '</span>';
+          }
+        }
+        var chipBg = g[2] === 'image' ? 'background:var(--color-bg-page);background-image:var(' + v + ')' : 'background:var(' + v + ')';
+        return '<button class="sw" type="button" data-copy="var(' + v + ')"><div class="chip" style="' + chipBg + '"></div><div class="meta"><span class="name">' + v + '</span><span class="val">' + val + extra + '</span></div></button>';
+      }).join('') + '</div></div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) { var b = e.target.closest('[data-copy]'); if (b) copy(b.getAttribute('data-copy')); });
+  renderSwatches();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderSwatches);
+
+  /* ---------- specimen iframes: theme, auto-height, source view ---------- */
+  var specimens = $$('.pcard iframe');
   function fit(f) {
     try {
-      const doc = f.contentDocument;
-      if (!doc || !doc.documentElement) return;
-      const h = Math.ceil(doc.documentElement.scrollHeight);
-      if (h > 0) f.style.height = h + 'px';
-    } catch (e) { /* cross-origin — leave the fallback height */ }
+      var d = f.contentDocument; if (!d || !d.documentElement) return;
+      var h = Math.ceil(d.documentElement.scrollHeight); if (h > 0) f.style.height = h + 'px';
+    } catch (e) {}
   }
-  const fitAll = () => specimens.forEach(fit);
-  specimens.forEach(f => {
-    f.addEventListener('load', () => {
-      fit(f);
-      // re-fit once webfonts swap in (they change content height)
-      const fd = f.contentDocument && f.contentDocument.fonts;
-      if (fd && fd.ready) fd.ready.then(() => fit(f));
+  function fitAll() { specimens.forEach(fit); }
+  specimens.forEach(function (f) {
+    f.addEventListener('load', function () {
+      frameTheme(f); fit(f);
+      var fd = f.contentDocument && f.contentDocument.fonts; if (fd && fd.ready) fd.ready.then(function () { fit(f); });
+      setTimeout(function () { fit(f); }, 400);
     });
+    var card = f.closest('.pcard'), src = f.getAttribute('src');
+    var ph = $('.ph', card);
+    ph.insertAdjacentHTML('beforeend',
+      '<button class="np-btn np-btn--ghost np-btn--sm" type="button" data-src-toggle aria-expanded="false"><i data-lucide="code-xml" aria-hidden="true"></i><span>Code</span></button>' +
+      '<a class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" href="' + src + '" target="_blank" rel="noopener" aria-label="Open specimen in a new tab" data-np-tooltip="Open"><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>');
+    card.insertAdjacentHTML('beforeend', '<div class="src"><div class="src__bar"><span class="np-label">Markup · ' + src.split('/').pop() + '</span><button class="np-btn np-btn--ghost np-btn--sm" type="button" data-src-copy><i data-lucide="copy" aria-hidden="true"></i><span>Copy</span></button></div><pre class="np-codeblock"><code>Loading…</code></pre></div>');
+  });
+  icons();
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-src-toggle]');
+    if (t) {
+      var card = t.closest('.pcard'), open = !card.classList.contains('show-src');
+      card.classList.toggle('show-src', open); t.setAttribute('aria-expanded', String(open));
+      if (open && !card.dataset.loaded) {
+        card.dataset.loaded = '1';
+        fetch($('iframe', card).getAttribute('src')).then(function (r) { return r.text(); }).then(function (html) {
+          var body = (html.match(/<body[^>]*>([\s\S]*)<\/body>/i) || [, html])[1]
+            .replace(/<script[\s\S]*?<\/script>/gi, '').replace(/^\s*\n/gm, '').replace(/\s+$/, '');
+          var lines = body.split('\n'), ind = Math.min.apply(null, lines.filter(function (l) { return l.trim(); }).map(function (l) { return l.match(/^\s*/)[0].length; }));
+          card.dataset.code = lines.map(function (l) { return l.slice(ind); }).join('\n');
+          $('code', card).innerHTML = esc(card.dataset.code);
+        }).catch(function () { $('code', card).textContent = 'Could not load the source (serve the folder over HTTP).'; });
+      }
+    }
+    var c = e.target.closest('[data-src-copy]');
+    if (c) { var cd = c.closest('.pcard').dataset.code; if (cd) copy(cd, 'Specimen markup'); }
   });
   window.addEventListener('load', fitAll);
-  let rsz; window.addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(fitAll, 150); });
+  var rsz; window.addEventListener('resize', function () { clearTimeout(rsz); rsz = setTimeout(function () { fitAll(); scaleKits(); }, 150); });
+
+  /* ---------- kits: scale the 1340px desktop previews to the column ---------- */
+  function scaleKits() {
+    $$('.kit:not(.mob) .frame').forEach(function (fr) { fr.style.setProperty('--k', (fr.clientWidth / 1340).toFixed(4)); });
+  }
+  scaleKits();
+
+  /* ---------- token reference (parsed from the stylesheet) ---------- */
+  var TOKENS = [];
+  var ALIAS = /^--(color-|ring-|elevation-|glow-accent|glow-action|z-|icon-|state-)/;
+  function kind(n, v) {
+    if (/^--(shadow|glow|elevation|ring|state-hover)/.test(n)) return 'shadow';
+    if (/^--grad|^--color-action-(primary|secondary)$/.test(n)) return 'image';
+    if (/^--r-/.test(n)) return 'radius';
+    if (/^--(s-\d|container)/.test(n)) return 'space';
+    if (/^--font-/.test(n)) return 'family';
+    if (/^--(display|h\d|body|caption|mono-label)/.test(n)) return 'font';
+    if (/^--(bg|fg|line|neon|success|warning|danger|info|white|color-)/.test(n)) return 'color';
+    return 'text';
+  }
+  function preview(t) {
+    var v = 'var(' + t.name + ')';
+    switch (t.kind) {
+      case 'color': return '<span class="pv pv--fill" style="background:' + v + '"></span>';
+      case 'image': return '<span class="pv pv--fill" style="background:var(--color-bg-page);background-image:' + v + '"></span>';
+      case 'shadow': return '<span class="pv" style="box-shadow:' + v + ';background:var(--color-surface)"></span>';
+      case 'radius': return '<span class="pv" style="border-radius:' + v + ';border-color:var(--color-border-strong)"></span>';
+      case 'space': return '<span class="pv pv--bar"><i style="width:' + v + '"></i></span>';
+      case 'family': return '<span class="pv" style="font-family:' + v + '">Aa</span>';
+      case 'font': return '<span class="pv" style="font:' + v + ';font-size:15px;line-height:1">Aa</span>';
+      default: return '<span class="pv" style="font:400 10px/1 var(--font-mono);color:var(--color-text-muted)">—</span>';
+    }
+  }
+  function parseTokens(css) {
+    var out = {}, order = [], light = {}, b, m;
+    var rblock = /([^{}]*?(:root|\[data-theme[^\]]*\])[^{}]*)\{([^}]*)\}/g;
+    while ((b = rblock.exec(css))) {
+      var sel = b[1].replace(/\/\*[\s\S]*?\*\//g, '').trim(), body = b[3];
+      var isLight = /\[data-theme="light"\]/.test(sel) && !/:root/.test(sel);
+      var rd = /(--[a-z0-9-]+)\s*:\s*([^;]+);([ \t]*\/\*([\s\S]*?)\*\/)?/g;
+      while ((m = rd.exec(body))) {
+        var name = m[1], val = m[2].replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim(), note = (m[4] || '').trim();
+        if (isLight) { light[name] = val; continue; }
+        if (!out[name]) { order.push(name); out[name] = { name: name, value: val, note: note, tier: ALIAS.test(name) ? 'alias' : 'primitive', kind: kind(name, val) }; }
+      }
+    }
+    return order.map(function (n) { var t = out[n]; t.light = light[n] || ''; return t; });
+  }
+  var tier = 'all';
+  function renderTokens() {
+    var q = ($('#tok-filter').value || '').trim().toLowerCase();
+    var rows = TOKENS.filter(function (t) {
+      return (tier === 'all' || t.tier === tier) && (!q || (t.name + ' ' + t.value + ' ' + t.note).toLowerCase().indexOf(q) > -1);
+    });
+    $('#tok-body').innerHTML = rows.map(function (t) {
+      return '<tr id="tok' + t.name + '"><td>' + preview(t) + '</td>' +
+        '<td><button class="tname" type="button" data-copy="var(' + t.name + ')">' + t.name + '</button><div class="tier">' + t.tier + '</div></td>' +
+        '<td class="v">' + esc(t.value) + '</td><td class="v">' + (t.light ? esc(t.light) : '<span class="tier">same</span>') + '</td>' +
+        '<td class="note">' + esc(t.note) + '</td></tr>';
+    }).join('') || '<tr><td colspan="5">No token matches “' + esc(q) + '”.</td></tr>';
+    $('#tok-count').textContent = rows.length + ' / ' + TOKENS.length + ' tokens';
+  }
+  $('#tok-filter').addEventListener('input', renderTokens);
+  $('#tok-tier').addEventListener('click', function (e) {
+    var b = e.target.closest('.np-seg__item'); if (!b) return;
+    $$('.np-seg__item', this).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    tier = b.dataset.v; renderTokens();
+  });
+  fetch('colors_and_type.css').then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (css) {
+    TOKENS = parseTokens(css); renderTokens();
+  }).catch(function () {
+    $('#tok-body').innerHTML = '<tr><td colspan="5">Could not read colors_and_type.css — open the docs over HTTP (e.g. <code class="np-code">python -m http.server</code>).</td></tr>';
+  });
+
+  /* ---------- ⌘K palette: sections + tokens ---------- */
+  var pal = $('#pal'), palIn = $('#pal-in'), palList = $('#pal-list'), lastFocus = null, items = [], active = 0;
+  var SECTIONS = $$('.toc .np-navitem').map(function (a) {
+    var group = a.previousElementSibling; while (group && !group.classList.contains('grouplabel')) group = group.previousElementSibling;
+    return { type: 'section', label: a.childNodes[0].textContent.trim(), hint: group ? group.textContent : 'Overview', href: a.getAttribute('href') };
+  });
+  function paletteResults(q) {
+    q = q.trim().toLowerCase();
+    var s = SECTIONS.filter(function (x) { return !q || (x.label + ' ' + x.hint).toLowerCase().indexOf(q) > -1; });
+    var t = q ? TOKENS.filter(function (x) { return (x.name + ' ' + x.note).toLowerCase().indexOf(q) > -1; }).slice(0, 30) : [];
+    return s.concat(t.map(function (x) { return { type: 'token', label: x.name, hint: x.tier, token: x }; }));
+  }
+  function renderPalette() {
+    items = paletteResults(palIn.value); active = Math.min(active, Math.max(items.length - 1, 0));
+    if (!items.length) { palList.innerHTML = '<li class="np-palette__empty" role="presentation">No results. Try “glow”, “surface” or “buttons”.</li>'; palIn.removeAttribute('aria-activedescendant'); return; }
+    var html = '', lastType = '';
+    items.forEach(function (it, i) {
+      if (it.type !== lastType) { html += '<li class="np-palette__group" role="presentation">' + (it.type === 'section' ? 'Sections' : 'Tokens · copy') + '</li>'; lastType = it.type; }
+      html += '<li class="np-palette__item" role="option" id="pal-' + i + '" data-i="' + i + '" aria-selected="' + (i === active) + '">' +
+        '<i data-lucide="' + (it.type === 'section' ? 'hash' : 'braces') + '" aria-hidden="true"></i>' + esc(it.label) + '<span class="np-palette__hint">' + esc(it.hint) + '</span></li>';
+    });
+    palList.innerHTML = html; icons();
+    palIn.setAttribute('aria-activedescendant', 'pal-' + active);
+    var el = $('#pal-' + active); if (el) el.scrollIntoView({ block: 'nearest' });
+  }
+  function openPalette() { lastFocus = document.activeElement; drawer(false); pal.hidden = false; palIn.value = ''; active = 0; renderPalette(); palIn.focus(); }
+  function closePalette() { pal.hidden = true; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+  function run(it) {
+    closePalette(); if (!it) return;
+    if (it.type === 'section') { location.hash = it.href; return; }
+    copy('var(' + it.label + ')');
+    tier = 'all'; $$('#tok-tier .np-seg__item').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.v === 'all')); });
+    $('#tok-filter').value = ''; renderTokens();
+    var row = document.getElementById('tok' + it.label);
+    if (row) { row.scrollIntoView({ block: 'center' }); row.classList.add('is-flash'); setTimeout(function () { row.classList.remove('is-flash'); }, 1600); }
+  }
+  $$('[data-open-search]').forEach(function (b) { b.addEventListener('click', openPalette); });
+  palIn.addEventListener('input', function () { active = 0; renderPalette(); });
+  palIn.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); active = (active + 1) % Math.max(items.length, 1); renderPalette(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); active = (active - 1 + items.length) % Math.max(items.length, 1); renderPalette(); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(items[active]); }
+  });
+  palList.addEventListener('mousemove', function (e) { var li = e.target.closest('[data-i]'); if (li && +li.dataset.i !== active) { active = +li.dataset.i; renderPalette(); } });
+  palList.addEventListener('click', function (e) { var li = e.target.closest('[data-i]'); if (li) run(items[+li.dataset.i]); });
+  pal.addEventListener('click', function (e) { if (e.target === pal) closePalette(); });
+  document.addEventListener('keydown', function (e) {
+    var typing = /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '');
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); pal.hidden ? openPalette() : closePalette(); }
+    else if (e.key === '/' && !typing && pal.hidden) { e.preventDefault(); openPalette(); }
+    else if (e.key === 'Escape') { if (!pal.hidden) closePalette(); else if (side.classList.contains('is-open')) drawer(false); }
+  });
+
+  /* ---------- scrollspy ---------- */
+  if ('IntersectionObserver' in window) {
+    var links = $$('.toc .np-navitem');
+    var spy = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a) { if (a.getAttribute('href') === '#' + e.target.id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+      });
+    }, { rootMargin: '-30% 0px -65% 0px' });
+    $$('main > section[id]').forEach(function (s) { spy.observe(s); });
+  }
+
+  setTheme(root.getAttribute('data-theme'), false);
+})();
 </script>
 </body>
 </html>

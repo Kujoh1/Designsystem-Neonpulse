@@ -1,20 +1,49 @@
 <!-- @dsCard group="Colors" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gradients</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
-  body{background:var(--bg-1);padding:20px 24px;font-family:var(--font-mono)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:16px;font-family:var(--font-mono)}
-  .row{display:flex;gap:12px}
-  .sw{flex:1;height:90px;border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:20px 24px;font-family:var(--font-mono)}
+  .lab{display:block;margin-bottom:16px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .sw{min-height:96px;box-sizing:border-box;border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:flex-end;gap:3px;
+      padding:12px;color:var(--color-text-on-accent)}
+  .sw.haze{background:var(--grad-haze),var(--color-bg-page);border:1px solid var(--color-border);color:var(--color-text)}
+  .sw.haze .h,.sw.haze .s{color:var(--color-text-secondary)}
   .n{font-size:11px;font-weight:700}
-  .h{font-size:10px;opacity:0.75}
+  .h,.s{font-size:10px;font-weight:500;letter-spacing:0.02em}
+  .s{overflow-wrap:anywhere}
 </style></head>
 <body>
-  <div class="lab">Signature gradients</div>
+  <div class="np-label lab">Signature gradients</div>
   <div class="row">
-    <div class="sw" style="background:var(--grad-pulse);color:#07070d"><span class="n">--grad-pulse</span><span class="h">blue → cyan · primary actions</span></div>
-    <div class="sw" style="background:var(--grad-pulse-hot)"><span class="n">--grad-pulse-hot</span><span class="h">violet → magenta · energy</span></div>
-    <div class="sw" style="background:#0c0c16;background-image:var(--grad-haze);border:1px solid var(--line-2)"><span class="n">--grad-haze</span><span class="h">ambient corner wash</span></div>
+    <div class="sw" style="background:var(--grad-pulse)"><span class="n">--grad-pulse</span><span class="h">blue → cyan · primary actions</span><span class="s" data-stops></span></div>
+    <div class="sw" style="background:var(--grad-pulse-hot)"><span class="n">--grad-pulse-hot</span><span class="h">violet → magenta · energy</span><span class="s" data-stops></span></div>
+    <div class="sw haze"><span class="n">--grad-haze</span><span class="h">ambient corner wash</span><span class="s" data-stops></span></div>
   </div>
+<script>
+/* Read the resolved gradient from the computed background-image and print
+   its colour stops (alpha-aware) — never hardcoded. Re-runs on theme change. */
+(() => {
+  const nums = s => (s.match(/-?[\d.]+(?:e-?\d+)?/g) || []).map(Number);
+  function parse(s) {
+    const n = nums(s), k = s.trim().startsWith('color(') ? 255 : 1;
+    return { r: n[0] * k, g: n[1] * k, b: n[2] * k, a: n.length > 3 ? n[3] : 1 };
+  }
+  const h2 = v => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0');
+  const toHex = c => c.a === 0 ? 'transparent'
+    : ('#' + h2(c.r) + h2(c.g) + h2(c.b) + (c.a < 1 ? h2(c.a * 255) : '')).toUpperCase();
+  function paint() {
+    document.querySelectorAll('[data-stops]').forEach(out => {
+      const img = getComputedStyle(out.closest('.sw')).backgroundImage;
+      const stops = img.match(/(?:rgba?|color)\([^)]*\)/g) || [];
+      out.textContent = stops.map(s => toHex(parse(s))).join(' → ');
+    });
+  }
+  paint();
+  new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
 </body></html>

@@ -1,25 +1,33 @@
 <!-- @dsCard group="Type" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Type scale</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
-  body{background:var(--bg-1);padding:20px 24px;font-family:var(--font-body)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:14px}
-  .row{display:flex;align-items:baseline;gap:14px;padding:7px 0;border-bottom:1px solid var(--line-1)}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:20px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .row{display:flex;align-items:baseline;gap:14px;padding:7px 0;border-bottom:1px solid var(--color-border-subtle)}
   .row:last-child{border-bottom:none}
-  .name{font-family:var(--font-mono);font-size:11px;color:var(--neon-cyan);width:88px;letter-spacing:0.06em}
-  .spec{font-family:var(--font-mono);font-size:11px;color:var(--fg-3);margin-left:auto}
-  .s1{font:var(--h1);color:var(--fg-1)}
-  .s2{font:var(--h2);color:var(--fg-1)}
-  .s3{font:var(--h3);color:var(--fg-1)}
-  .s4{font:var(--body-lg);color:var(--fg-2)}
-  .s5{font:var(--body);color:var(--fg-2)}
+  .name{font-family:var(--font-mono);font-size:11px;color:var(--color-text-accent);width:72px;flex:none;letter-spacing:0.06em}
+  .spec{font-family:var(--font-mono);font-size:11px;color:var(--color-text-muted);margin-left:auto;text-align:right}
+  .s1{font:var(--h1);color:var(--color-text)}
+  .s2{font:var(--h2);color:var(--color-text)}
+  .s3{font:var(--h3);color:var(--color-text)}
+  .s4{font:var(--h4);color:var(--color-text)}
+  .s5{font:var(--body-lg);color:var(--color-text-secondary)}
+  .s6{font:var(--body);color:var(--color-text-secondary)}
+  .s7{font:var(--body-sm);color:var(--color-text-secondary)}
+  .s8{font:var(--caption);color:var(--color-text-muted)}
 </style></head>
 <body>
-  <div class="lab">Type scale</div>
-  <div class="row"><span class="name">h1</span><span class="s1">Aa</span><span class="spec">700 · 36px</span></div>
+  <div class="np-label lab">Type scale</div>
+  <div class="row"><span class="name">h1</span><span class="s1">Aa</span><span class="spec">700 · 28→36px fluid</span></div>
   <div class="row"><span class="name">h2</span><span class="s2">Aa</span><span class="spec">600 · 28px</span></div>
   <div class="row"><span class="name">h3</span><span class="s3">Aa</span><span class="spec">600 · 22px</span></div>
-  <div class="row"><span class="name">body-lg</span><span class="s4">Aa</span><span class="spec">400 · 18px</span></div>
-  <div class="row"><span class="name">body</span><span class="s5">Aa</span><span class="spec">400 · 16px</span></div>
+  <div class="row"><span class="name">h4</span><span class="s4">Aa</span><span class="spec">600 · 18px</span></div>
+  <div class="row"><span class="name">body-lg</span><span class="s5">Aa</span><span class="spec">400 · 18px</span></div>
+  <div class="row"><span class="name">body</span><span class="s6">Aa</span><span class="spec">400 · 16px</span></div>
+  <div class="row"><span class="name">body-sm</span><span class="s7">Aa</span><span class="spec">400 · 14px</span></div>
+  <div class="row"><span class="name">caption</span><span class="s8">Aa</span><span class="spec">400 · 13px</span></div>
 </body></html>

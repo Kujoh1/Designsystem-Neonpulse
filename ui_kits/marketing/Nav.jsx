@@ -1,57 +1,62 @@
-/* Marketing — Nav bar with mobile toggle */
+/* Marketing — sticky nav with in-page anchors + accessible mobile menu */
+const NAV_LINKS = [['Product', '#product'], ['Platform', '#platform'], ['Pricing', '#pricing'], ['Docs', '#docs']];
+
 function NPLogo({ size = 30 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{
+    <a href="#product" aria-label="NeonPulse home" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', borderRadius: 'var(--r-sm)' }} className="mk-logo">
+      <span aria-hidden="true" style={{
         width: size, height: size, borderRadius: '50%', position: 'relative', flex: 'none',
-        background: 'var(--grad-pulse)', boxShadow: 'var(--glow-cyan)'
+        background: 'var(--color-action-primary)', boxShadow: 'var(--glow-accent)'
       }}>
-        <span style={{ position: 'absolute', inset: size * 0.3, borderRadius: '50%', background: 'var(--bg-0)' }} />
-        <span style={{ position: 'absolute', inset: size * 0.42, borderRadius: '50%', background: 'var(--neon-cyan)' }} />
-      </div>
-      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, letterSpacing: '0.04em', color: 'var(--fg-1)' }}>
-        NEON<span style={{ color: 'var(--neon-cyan)' }}>PULSE</span>
+        <span style={{ position: 'absolute', inset: size * 0.3, borderRadius: '50%', background: 'var(--color-bg-void)' }} />
+        <span style={{ position: 'absolute', inset: size * 0.42, borderRadius: '50%', background: 'var(--color-accent)' }} />
       </span>
-    </div>
+      <span style={{ font: '700 18px/1 var(--font-display)', letterSpacing: '0.04em', color: 'var(--color-text)' }}>
+        NEON<span style={{ color: 'var(--color-text-accent)' }}>PULSE</span>
+      </span>
+    </a>
   );
 }
 
 function Nav() {
   const [open, setOpen] = React.useState(false);
-  const links = ['Product', 'Platform', 'Pricing', 'Docs', 'Changelog'];
+  const toggleRef = React.useRef(null);
+  // Esc closes the mobile menu and hands focus back to the toggle
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = e => { if (e.key === 'Escape') { setOpen(false); toggleRef.current && toggleRef.current.focus(); } };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   return (
     <header style={{
-      position: 'sticky', top: 0, zIndex: 50,
-      background: 'rgba(7,7,13,0.72)', backdropFilter: 'blur(14px)',
-      borderBottom: '1px solid var(--line-1)'
+      position: 'sticky', top: 0, zIndex: 'var(--z-sticky)',
+      background: 'var(--color-bg-translucent)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)',
+      borderBottom: '1px solid var(--color-border-subtle)'
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 66, display: 'flex', alignItems: 'center', gap: 28 }}>
+      <div className="np-container" style={{ height: 66, display: 'flex', alignItems: 'center', gap: 28 }}>
         <NPLogo />
-        <nav className="np-desktop" style={{ display: 'flex', gap: 4, marginLeft: 12 }}>
-          {links.map(l => (
-            <a key={l} href="#" style={{
-              fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-2)', textDecoration: 'none',
-              padding: '8px 12px', borderRadius: 'var(--r-md)'
-            }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--fg-1)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--fg-2)'}>{l}</a>
-          ))}
+        <nav className="mk-desktop" aria-label="Primary" style={{ display: 'flex', gap: 4, marginLeft: 12 }}>
+          {NAV_LINKS.map(([l, href]) => <a key={l} href={href} className="mk-navlink">{l}</a>)}
         </nav>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <a href="#" className="np-desktop" style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-2)', textDecoration: 'none' }}>Sign in</a>
-          <button className="np-btn-primary">Start free</button>
-          <button className="np-mobile np-icon-btn" onClick={() => setOpen(o => !o)} aria-label="Menu">
-            <Icon name={open ? 'x' : 'menu'} />
+          <a href="#pricing" className="mk-navlink mk-desktop">Sign in</a>
+          <a href="#pricing" className="np-btn np-btn--primary">Start free</a>
+          <button ref={toggleRef} type="button" className="np-icon-btn mk-mobile" onClick={() => setOpen(o => !o)}
+            aria-label="Menu" aria-expanded={open} aria-controls="mk-mobile-menu">
+            <Icon name={open ? 'x' : 'menu'} size={20} />
           </button>
         </div>
       </div>
-      {open && (
-        <div className="np-mobile" style={{ borderTop: '1px solid var(--line-1)', padding: '12px 24px 18px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {links.map(l => <a key={l} href="#" style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--fg-2)', textDecoration: 'none', padding: '10px 0' }}>{l}</a>)}
-        </div>
-      )}
+      <nav id="mk-mobile-menu" className="mk-mobile" aria-label="Mobile" hidden={!open}
+        style={{ borderTop: '1px solid var(--color-border-subtle)', padding: '8px 12px 14px', flexDirection: 'column', gap: 2 }}>
+        {NAV_LINKS.map(([l, href]) => (
+          <a key={l} href={href} className="mk-navlink" onClick={() => setOpen(false)} style={{ fontSize: 15, padding: '12px' }}>{l}</a>
+        ))}
+      </nav>
     </header>
   );
 }
 
-Object.assign(window, { Nav, NPLogo });
+Object.assign(window, { Nav, NPLogo, NAV_LINKS });

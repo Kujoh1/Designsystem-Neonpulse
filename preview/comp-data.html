@@ -1,0 +1,83 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data display</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .lab:not(:first-child){margin-top:26px}
+  .tablehead{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);flex-wrap:wrap;padding:var(--s-4) var(--s-5) var(--s-1)}
+  .spread{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s-3);flex-wrap:wrap}
+  .readout{font:500 13px/1.2 var(--font-mono);color:var(--color-text);font-variant-numeric:tabular-nums}
+  .readout span{color:var(--color-text-muted)}
+  .avatars{display:flex;align-items:flex-end;gap:var(--s-5);flex-wrap:wrap}
+  .av{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .cap{font:400 10px/1 var(--font-mono);letter-spacing:0.08em;color:var(--color-text-muted)}
+  .keys{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-4);align-items:center}
+  .combo{display:inline-flex;gap:3px}
+  .prose{font:var(--body-sm);color:var(--color-text-secondary);margin:0}
+</style></head>
+<body>
+  <!-- (a) table -->
+  <div class="np-label lab">Table · .np-table in a flush card · tabular figures</div>
+  <div class="np-card np-card--flush">
+    <div class="tablehead">
+      <span class="np-card__title">Nodes</span>
+      <span class="np-badge np-badge--success np-badge--live"><span class="np-badge__dot"></span>4 / 5 live</span>
+    </div>
+    <div class="np-table-wrap">
+      <table class="np-table">
+        <thead>
+          <tr><th scope="col">Node</th><th scope="col">Region</th><th scope="col">Status</th><th scope="col" class="is-num">Uptime</th><th scope="col" class="is-num">p99</th><th scope="col" class="is-num">Reqs</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="is-strong">api-gateway</td><td>us-east-1</td><td><span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Live</span></td><td class="is-num">99.98%</td><td class="is-num">42 ms</td><td class="is-num">1.24M</td></tr>
+          <tr><td class="is-strong">worker-01</td><td>us-east-1</td><td><span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Live</span></td><td class="is-num">99.95%</td><td class="is-num">51 ms</td><td class="is-num">864K</td></tr>
+          <tr><td class="is-strong">worker-02</td><td>eu-west-1</td><td><span class="np-badge np-badge--warning"><span class="np-badge__dot"></span>Degraded</span></td><td class="is-num">98.71%</td><td class="is-num">188 ms</td><td class="is-num">312K</td></tr>
+          <tr><td class="is-strong">edge-cache</td><td>ap-south-1</td><td><span class="np-badge np-badge--info"><span class="np-badge__dot"></span>Syncing</span></td><td class="is-num">99.99%</td><td class="is-num">12 ms</td><td class="is-num">2.07M</td></tr>
+          <tr><td class="is-strong">batch-runner</td><td>eu-west-1</td><td><span class="np-badge np-badge--danger"><span class="np-badge__dot"></span>Offline</span></td><td class="is-num">0.00%</td><td class="is-num">—</td><td class="is-num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="np-grid" style="--np-grid-min:240px;margin-top:var(--s-4)">
+    <!-- (b) meter -->
+    <div class="np-card">
+      <span class="np-label">Meter · usage</span>
+      <div class="spread">
+        <span class="np-card__title" id="usage-lab">Requests this month</span>
+        <span class="readout">6.8M <span>/ 10M reqs</span></span>
+      </div>
+      <div class="np-meter" role="meter" aria-labelledby="usage-lab" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68"
+           aria-valuetext="6.8 million of 10 million requests, 68%">
+        <div class="np-meter__bar" style="--value:68%"></div>
+      </div>
+      <span class="np-field__hint">68% used · resets in 12 days</span>
+    </div>
+
+    <!-- (c) avatars -->
+    <div class="np-card">
+      <span class="np-label">Avatar · --av sizes</span>
+      <div class="avatars">
+        <div class="av"><span class="np-avatar" style="--av:24px" role="img" aria-label="Kira Dahl">KD</span><span class="cap">24</span></div>
+        <div class="av"><span class="np-avatar" style="--av:34px" role="img" aria-label="Arun Rao">AR</span><span class="cap">34</span></div>
+        <div class="av"><span class="np-avatar" style="--av:48px" role="img" aria-label="Noa Park">NP</span><span class="cap">48</span></div>
+      </div>
+    </div>
+
+    <!-- (d) keyboard + code -->
+    <div class="np-card">
+      <span class="np-label">Keyboard · code · link</span>
+      <div class="keys">
+        <span class="combo"><kbd class="np-kbd">⌘</kbd><kbd class="np-kbd">K</kbd></span>
+        <span class="combo"><kbd class="np-kbd">Ctrl</kbd><kbd class="np-kbd">K</kbd></span>
+        <kbd class="np-kbd">Esc</kbd>
+        <kbd class="np-kbd">↵</kbd>
+      </div>
+      <p class="prose">Run <code class="np-code">np deploy --region us-east</code> to ship. Read the <a class="np-link" href="#guide">deploy guide</a>.</p>
+    </div>
+  </div>
+</body></html>

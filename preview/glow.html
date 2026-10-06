@@ -1,24 +1,28 @@
 <!-- @dsCard group="Spacing" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elevation &amp; glow</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
-  body{background:var(--bg-1);padding:24px;font-family:var(--font-mono)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:22px;font-family:var(--font-mono)}
-  .row{display:flex;gap:18px}
-  .b{flex:1;height:64px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--fg-2)}
-  .g1{box-shadow:var(--glow-blue);border-color:transparent}
-  .g2{box-shadow:var(--glow-cyan);border-color:transparent}
-  .g3{box-shadow:var(--glow-magenta);border-color:transparent}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:24px;font-family:var(--font-mono)}
+  .lab{display:block;margin-bottom:22px}
+  .np-grid{gap:18px}
+  .b{height:64px;box-sizing:border-box;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--r-lg);
+     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+  .n{font-size:10px;letter-spacing:0.04em;color:var(--color-text)}
+  .a{font-size:10px;letter-spacing:0.04em;color:var(--color-text-muted)}
+  .halo{border-color:transparent}
   .p{animation:np-pulse 1.8s var(--ease-in-out) infinite;border-color:transparent}
+  .p .n{display:inline-flex;align-items:center;gap:6px}
 </style></head>
 <body>
-  <div class="lab">Elevation &amp; glow · depth = surface + halo, not heavy shadow</div>
-  <div class="row">
-    <div class="b" style="box-shadow:var(--shadow-1)">shadow-1</div>
-    <div class="b g1">glow-blue</div>
-    <div class="b g2">glow-cyan</div>
-    <div class="b g3">glow-magenta</div>
-    <div class="b p">pulse ●</div>
+  <div class="np-label lab">Elevation &amp; glow · depth = surface + halo, glow is a state</div>
+  <div class="np-grid" style="--np-grid-min:128px">
+    <div class="b" style="box-shadow:var(--elevation-flat)"><span class="n">shadow-1</span><span class="a">elevation-flat</span></div>
+    <div class="b halo" style="box-shadow:var(--glow-action)"><span class="n">glow-blue</span><span class="a">glow-action</span></div>
+    <div class="b halo" style="box-shadow:var(--glow-accent)"><span class="n">glow-cyan</span><span class="a">glow-accent</span></div>
+    <div class="b halo" style="box-shadow:var(--glow-magenta)"><span class="n">glow-magenta</span><span class="a">secondary hover</span></div>
+    <div class="b p"><span class="n"><span class="np-livedot"></span>np-pulse</span><span class="a">live data only</span></div>
   </div>
 </body></html>

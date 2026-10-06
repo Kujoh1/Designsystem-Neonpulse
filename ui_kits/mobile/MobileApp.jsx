@@ -1,6 +1,12 @@
 /* Mobile — NeonPulse app screens + tab bar (dark cyberpunk) */
+const MB_NODES = [
+  ['aurora-core-1a', 'us-east', 'Online', '38ms'], ['aurora-core-1b', 'us-east', 'Online', '41ms'],
+  ['aurora-edge-eu', 'eu-west', 'Online', '52ms'], ['aurora-edge-ap', 'ap-south', 'Degraded', '120ms'],
+  ['aurora-batch-1', 'us-west', 'Online', '44ms'], ['aurora-test-x', 'us-east', 'Offline', '—'],
+];
+const MB_TONE = { Online: 'success', Degraded: 'warning', Offline: 'danger' };
 
-function MiniArea({ data, color = 'var(--neon-cyan)', h = 64 }) {
+function MiniArea({ data, color = 'var(--color-accent)', h = 64, label }) {
   const w = 320, pad = 4;
   const max = Math.max(...data), min = Math.min(...data);
   const pts = data.map((v, i) => [
@@ -14,7 +20,8 @@ function MiniArea({ data, color = 'var(--neon-cyan)', h = 64 }) {
   }
   const area = d + ` L ${pts[pts.length - 1][0]},${h} L ${pts[0][0]},${h} Z`;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: h, display: 'block' }} preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: h, display: 'block' }} preserveAspectRatio="none"
+      role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
       <defs>
         <linearGradient id="mfill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.32" /><stop offset="100%" stopColor={color} stopOpacity="0" />
@@ -28,156 +35,236 @@ function MiniArea({ data, color = 'var(--neon-cyan)', h = 64 }) {
 }
 
 function StatusPill({ status }) {
-  const map = {
-    Online: ['var(--success)', 'var(--success-fill)'],
-    Degraded: ['var(--warning)', 'var(--warning-fill)'],
-    Offline: ['var(--danger)', 'var(--danger-fill)'],
-  };
-  const [c, bg] = map[status];
-  return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: c, background: bg, padding: '4px 9px', borderRadius: 'var(--r-full)' }}>
-      <span style={{ width: 6, height: 6, borderRadius: '50%', background: c }} />{status}
-    </span>
-  );
+  return <span className={'np-badge np-badge--' + MB_TONE[status]}><span className="np-badge__dot" />{status}</span>;
 }
 
 function NodeRow({ name, region, status, ms }) {
+  // neon only where the node is live; degraded warns, offline goes quiet
+  const ic = { Online: 'var(--color-accent)', Degraded: 'var(--color-warning)', Offline: 'var(--color-text-muted)' }[status];
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: '1px solid var(--line-1)' }}>
-      <div style={{ width: 38, height: 38, borderRadius: 'var(--r-md)', background: 'var(--bg-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--neon-cyan)', flex: 'none' }}><Icon name="server" size={18} /></div>
+    <li className="np-list__row" style={{ padding: '14px 16px' }}>
+      <span aria-hidden="true" style={{ width: 38, height: 38, flex: 'none', borderRadius: 'var(--r-md)', background: 'var(--color-surface-raised)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: ic }}><Icon name="server" size={18} /></span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--fg-1)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', marginTop: 2 }}>{region} · {ms}</div>
+        <div style={{ font: '400 13px/1.3 var(--font-mono)', color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</div>
+        <div style={{ font: '400 11px/1.3 var(--font-mono)', color: 'var(--color-text-muted)', marginTop: 2 }}>{region} · {ms}</div>
       </div>
       <StatusPill status={status} />
-    </div>
+    </li>
   );
 }
 
-function HomeScreen() {
-  const nodes = [
-    ['aurora-core-1a', 'us-east', 'Online', '38ms'],
-    ['aurora-edge-eu', 'eu-west', 'Online', '52ms'],
-    ['aurora-edge-ap', 'ap-south', 'Degraded', '120ms'],
-  ];
+function NodeList({ nodes }) {
   return (
-    <div style={{ padding: '0 16px 16px' }}>
-      {/* hero status card */}
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 'var(--r-xl)', padding: 20, background: 'var(--bg-2)', border: '1px solid var(--line-2)', boxShadow: 'var(--glow-soft)' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'var(--grad-haze)' }} />
+    <ul className="np-list" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+      {nodes.map(n => <NodeRow key={n[0]} name={n[0]} region={n[1]} status={n[2]} ms={n[3]} />)}
+    </ul>
+  );
+}
+
+function HomeScreen({ setTab }) {
+  const [deploy, setDeploy] = React.useState('idle');   // idle → busy → done
+  React.useEffect(() => {
+    if (deploy !== 'busy') return;
+    const t = setTimeout(() => setDeploy('done'), 1400);
+    return () => clearTimeout(t);
+  }, [deploy]);
+  return (
+    <div className="np-stack" style={{ padding: '0 16px 16px', gap: 14 }}>
+      {/* hero status card — live data, so it carries the live treatment */}
+      <section className="np-card np-card--live" aria-label="Fleet status" style={{ position: 'relative', overflow: 'hidden', borderRadius: 'var(--r-xl)', padding: 20, gap: 0 }}>
+        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: 'var(--grad-haze)' }} />
         <div style={{ position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--neon-cyan)', boxShadow: '0 0 8px var(--neon-cyan)', animation: 'np-blink 1.4s infinite' }} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>All systems operational</span>
-          </div>
+          <div className="np-eyebrow" style={{ fontSize: 11, gap: 8 }}><span className="np-livedot" />All systems operational</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 14 }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 44, color: 'var(--fg-1)', lineHeight: 1 }}>99.99%</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--success)' }}>uptime</span>
+            <span className="np-card__metric" style={{ fontSize: 44, lineHeight: 1 }}>99.99%</span>
+            <span style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--color-success)' }}>uptime</span>
           </div>
-          <div style={{ marginTop: 14 }}><MiniArea data={[42, 38, 50, 44, 58, 52, 66, 60, 74, 70, 82, 90]} /></div>
+          <div style={{ marginTop: 14 }}><MiniArea data={[42, 38, 50, 44, 58, 52, 66, 60, 74, 70, 82, 90]} label="Request volume, last 12 hours, trending up" /></div>
         </div>
-      </div>
+      </section>
 
       {/* quick stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
-        {[['p99 latency', '42ms', 'var(--neon-blue)'], ['requests / s', '12.4K', 'var(--neon-cyan)']].map(([l, v, c]) => (
-          <div key={l} style={{ background: 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-lg)', padding: 16 }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{l}</div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 24, color: 'var(--fg-1)', marginTop: 8 }}>{v}</div>
-            <div style={{ height: 3, borderRadius: 2, background: c, marginTop: 12, boxShadow: `0 0 8px ${c}`, width: '70%' }} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {[['p99 latency', '42ms', 70, '42ms of a 60ms budget'], ['requests / s', '12.4K', 62, '12.4K of 20K capacity']].map(([l, v, pct, txt]) => (
+          <div key={l} className="np-card" style={{ padding: 16, gap: 8 }}>
+            <div className="np-card__eyebrow" style={{ fontSize: 10, letterSpacing: '0.1em' }}>{l}</div>
+            <div className="np-card__metric" style={{ fontSize: 24 }}>{v}</div>
+            <div className="np-meter" role="meter" aria-label={l} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-valuetext={txt} style={{ height: 4, marginTop: 4 }}>
+              <div className="np-meter__bar" style={{ '--value': pct + '%' }} />
+            </div>
           </div>
         ))}
       </div>
 
       {/* nodes */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '22px 4px 10px' }}>
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 17, color: 'var(--fg-1)' }}>Nodes</span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--neon-cyan)' }}>See all →</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '8px 4px -4px' }}>
+        <h2 style={{ font: '600 17px/1.3 var(--font-display)', color: 'var(--color-text)', margin: 0 }}>Nodes</h2>
+        <button type="button" className="np-link" onClick={() => setTab('nodes')}
+          style={{ border: 0, padding: 0, cursor: 'pointer', font: '400 12px/1.4 var(--font-mono)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          See all <Icon name="arrow-right" size={14} />
+        </button>
       </div>
-      <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
-        {nodes.map((n, i) => <NodeRow key={i} name={n[0]} region={n[1]} status={n[2]} ms={n[3]} />)}
-      </div>
+      <NodeList nodes={MB_NODES.filter(n => ['aurora-core-1a', 'aurora-edge-eu', 'aurora-edge-ap'].includes(n[0]))} />
 
-      <button className="np-btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 16 }}><Icon name="rocket" size={16} /> Deploy</button>
+      <div aria-live="polite">
+        {deploy === 'done' && (
+          <div className="np-banner np-banner--success" role="status">
+            <span className="np-banner__icon"><Icon name="circle-check" size={18} /></span>
+            <span>Deployed. Live in us-east · 42ms p99.</span>
+          </div>
+        )}
+      </div>
+      <button type="button" className="np-btn np-btn--primary np-btn--lg np-btn--block" aria-busy={deploy === 'busy'}
+        onClick={() => setDeploy('busy')}>
+        <Icon name="rocket" size={16} /><span>{deploy === 'done' ? 'Deploy again' : 'Deploy'}</span>
+      </button>
+    </div>
+  );
+}
+
+function NodesScreen() {
+  const count = s => MB_NODES.filter(n => n[2] === s).length;
+  return (
+    <div className="np-stack" style={{ padding: '4px 16px 16px', gap: 12 }}>
+      <div className="np-cluster" style={{ gap: 8 }} role="group" aria-label="Fleet summary">
+        {['Online', 'Degraded', 'Offline'].map(s => (
+          <span key={s} className={'np-badge np-badge--outline'} style={{ color: 'var(--color-' + MB_TONE[s] + ')' }}>{count(s)} {s}</span>
+        ))}
+      </div>
+      <NodeList nodes={MB_NODES} />
     </div>
   );
 }
 
 function ActivityScreen() {
+  // categorical icon hues; only the newest (live) event carries a halo
   const events = [
     ['rocket', 'var(--neon-cyan)', 'Deployed aurora-core', 'us-east · 42ms p99', '2m'],
-    ['check-circle-2', 'var(--success)', 'Node back online', 'aurora-edge-ap', '14m'],
-    ['alert-triangle', 'var(--warning)', 'Latency spike', 'ap-south · 120ms', '38m'],
+    ['circle-check', 'var(--color-success)', 'Node back online', 'aurora-edge-ap', '14m'],
+    ['triangle-alert', 'var(--color-warning)', 'Latency spike', 'ap-south · 120ms', '38m'],
     ['git-branch', 'var(--neon-violet)', 'Preview created', 'branch: feat/cache', '1h'],
     ['key-round', 'var(--neon-blue)', 'API key rotated', 'sk_live_••••4f2a', '3h'],
   ];
   return (
-    <div style={{ padding: '4px 16px 16px' }}>
+    <ol style={{ listStyle: 'none', margin: 0, padding: '4px 16px 16px' }}>
       {events.map((e, i) => (
-        <div key={i} style={{ display: 'flex', gap: 14, padding: '14px 4px', borderBottom: i < events.length - 1 ? '1px solid var(--line-1)' : 'none' }}>
-          <div style={{ width: 38, height: 38, borderRadius: 'var(--r-md)', background: 'var(--bg-2)', border: '1px solid var(--line-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: e[1], flex: 'none', filter: `drop-shadow(0 0 5px ${e[1]}66)` }}><Icon name={e[0]} size={17} /></div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)' }}>{e[2]}</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', marginTop: 3 }}>{e[3]}</div>
+        <li key={i} style={{ display: 'flex', gap: 14, padding: '14px 4px', borderBottom: i < events.length - 1 ? '1px solid var(--color-border-subtle)' : 'none' }}>
+          <span aria-hidden="true" style={{
+            width: 38, height: 38, flex: 'none', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--color-surface)', border: '1px solid var(--color-border)', color: e[1],
+            filter: i === 0 ? `drop-shadow(0 0 5px color-mix(in srgb, ${e[1]} 40%, transparent))` : 'none'
+          }}><Icon name={e[0]} size={17} /></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ font: '400 14px/1.35 var(--font-body)', color: 'var(--color-text)' }}>{e[2]}</div>
+            <div style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--color-text-muted)', marginTop: 3 }}>{e[3]}</div>
           </div>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-4)' }}>{e[4]}</span>
-        </div>
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 6, font: '400 11px/1.4 var(--font-mono)', color: 'var(--color-text-muted)' }}>
+            {i === 0 && <span className="np-livedot" style={{ marginTop: 4 }} aria-hidden="true" />}
+            <time>{e[4]}</time>
+          </span>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
 
-function MobileHeader({ tab }) {
-  const titles = { home: 'aurora-core', nodes: 'Nodes', activity: 'Activity', settings: 'Settings' };
-  return (
-    <div style={{ padding: '58px 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <div>
-        {tab === 'home' && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 4 }}>Good evening, Kira</div>}
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, color: 'var(--fg-1)', margin: 0, letterSpacing: '-0.01em' }}>{titles[tab]}</h1>
-      </div>
-      <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'var(--grad-pulse-hot)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13, color: '#fff' }}>KV</div>
-    </div>
-  );
-}
-
-function TabBar({ tab, setTab }) {
-  const tabs = [['home', 'Home'], ['server', 'Nodes'], ['activity', 'Activity'], ['settings', 'Settings']];
-  const key = { home: 'home', server: 'nodes', activity: 'activity', settings: 'settings' };
-  return (
-    <div style={{ display: 'flex', padding: '10px 12px 26px', borderTop: '1px solid var(--line-1)', background: 'rgba(7,7,13,0.82)', backdropFilter: 'blur(14px)' }}>
-      {tabs.map(([ic, label]) => {
-        const k = key[ic];
-        const on = tab === k;
-        return (
-          <button key={k} onClick={() => setTab(k)} style={{ flex: 1, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, color: on ? 'var(--neon-cyan)' : 'var(--fg-3)', transition: 'color var(--dur)' }}>
-            <span style={{ display: 'flex', filter: on ? 'drop-shadow(0 0 6px var(--neon-cyan))' : 'none' }}><Icon name={ic} size={21} /></span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function NeonPulseApp() {
-  const [tab, setTab] = React.useState('home');
-  const nodesAll = [
-    ['aurora-core-1a', 'us-east', 'Online', '38ms'], ['aurora-core-1b', 'us-east', 'Online', '41ms'],
-    ['aurora-edge-eu', 'eu-west', 'Online', '52ms'], ['aurora-edge-ap', 'ap-south', 'Degraded', '120ms'],
-    ['aurora-batch-1', 'us-west', 'Online', '44ms'], ['aurora-test-x', 'us-east', 'Offline', '—'],
+function SettingsScreen() {
+  const [prefs, setPrefs] = React.useState({ autoscale: true, push: true, verbose: false });
+  const [region, setRegion] = React.useState('us-east');
+  const toggles = [
+    ['autoscale', 'Auto-scale', 'Add nodes when load climbs'],
+    ['push', 'Push alerts', 'Incidents and deploy results'],
+    ['verbose', 'Verbose logs', 'Full request traces · 7-day retention'],
   ];
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--bg-1)' }}>
-      <MobileHeader tab={tab} />
-      <div style={{ flex: 1, overflow: 'auto' }}>
-        {tab === 'home' && <HomeScreen />}
-        {tab === 'nodes' && <div style={{ padding: '4px 16px 16px' }}><div style={{ background: 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>{nodesAll.map((n, i) => <NodeRow key={i} name={n[0]} region={n[1]} status={n[2]} ms={n[3]} />)}</div></div>}
-        {tab === 'activity' && <ActivityScreen />}
-        {tab === 'settings' && <div style={{ padding: 40, textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--fg-3)' }}><div style={{ color: 'var(--neon-cyan)', marginBottom: 10 }}><Icon name="construction" size={22} /></div>Settings · placeholder</div>}
-      </div>
-      <TabBar tab={tab} setTab={setTab} />
+    <div className="np-stack" style={{ padding: '4px 16px 24px', gap: 22 }}>
+      <section className="np-card np-card--row" aria-label="Account" style={{ padding: 16, gap: 14 }}>
+        <span className="np-avatar" aria-hidden="true" style={{ '--av': '48px' }}>KV</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ font: 'var(--h4)', color: 'var(--color-text)' }}>Kira Vance</div>
+          <div style={{ font: '400 12px/1.4 var(--font-mono)', color: 'var(--color-text-muted)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>kira@aurora.dev</div>
+        </div>
+        <span className="np-badge np-badge--accent">Owner</span>
+      </section>
+
+      <section aria-labelledby="mb-prefs">
+        <h2 id="mb-prefs" className="np-label" style={{ margin: '0 4px 10px' }}>Preferences</h2>
+        <div className="np-list">
+          {toggles.map(([k, label, hint]) => (
+            <label key={k} className="np-switch np-list__row" style={{ padding: '14px 16px', justifyContent: 'space-between' }}>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span id={'mb-' + k} style={{ display: 'block', font: '400 14px/1.35 var(--font-body)', color: 'var(--color-text)' }}>{label}</span>
+                <span id={'mb-' + k + '-hint'} style={{ display: 'block', font: '400 11px/1.4 var(--font-mono)', color: 'var(--color-text-muted)', marginTop: 3 }}>{hint}</span>
+              </span>
+              <input type="checkbox" role="switch" checked={prefs[k]} aria-labelledby={'mb-' + k} aria-describedby={'mb-' + k + '-hint'}
+                onChange={() => setPrefs(p => ({ ...p, [k]: !p[k] }))} />
+              <span className="np-switch__track" aria-hidden="true" />
+            </label>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="mb-region">
+        <h2 id="mb-region" className="np-label" style={{ margin: '0 4px 10px' }}>Default region</h2>
+        <div className="np-seg" role="group" aria-labelledby="mb-region" style={{ display: 'flex' }}>
+          {['us-east', 'us-west', 'eu-west', 'ap-south'].map(r => (
+            <button key={r} type="button" className="np-seg__item" aria-pressed={region === r} onClick={() => setRegion(r)} style={{ flex: 1, padding: '8px 6px' }}>{r}</button>
+          ))}
+        </div>
+        <p style={{ font: 'var(--caption)', color: 'var(--color-text-muted)', margin: '8px 4px 0' }}>New deploys ship to <span className="np-code">{region}</span> unless a region is set.</p>
+      </section>
+
+      <button type="button" className="np-btn np-btn--danger np-btn--block"><Icon name="log-out" size={16} /><span>Sign out</span></button>
+      <div className="np-label" style={{ textAlign: 'center', fontSize: 10 }}>NeonPulse 2.4.0 · build 7f3a</div>
     </div>
   );
 }
 
-Object.assign(window, { NeonPulseApp, MiniArea, NodeRow, StatusPill });
+function MobileHeader({ tab, framed }) {
+  const titles = { home: 'aurora-core', nodes: 'Nodes', activity: 'Activity', settings: 'Settings' };
+  return (
+    <header style={{ padding: framed ? '58px 16px 12px' : 'calc(16px + env(safe-area-inset-top)) 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+      <div>
+        {tab === 'home' && <div className="np-eyebrow" style={{ fontSize: 11, marginBottom: 4 }}>Good evening, Kira</div>}
+        <h1 style={{ font: '700 28px/1.15 var(--font-display)', color: 'var(--color-text)', margin: 0, letterSpacing: '-0.01em' }}>{titles[tab]}</h1>
+      </div>
+      {tab !== 'settings' && <span className="np-avatar" role="img" aria-label="Kira Vance" style={{ '--av': '38px' }}>KV</span>}
+    </header>
+  );
+}
+
+function TabBar({ tab, setTab, framed }) {
+  const tabs = [['home', 'house', 'Home'], ['nodes', 'server', 'Nodes'], ['activity', 'activity', 'Activity'], ['settings', 'sliders-horizontal', 'Settings']];
+  return (
+    <nav aria-label="Tabs" style={{
+      display: 'flex', padding: framed ? '10px 12px 26px' : '10px 12px calc(10px + env(safe-area-inset-bottom))',
+      borderTop: '1px solid var(--color-border-subtle)',
+      background: 'var(--color-bg-translucent)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)'
+    }}>
+      {tabs.map(([k, ic, label]) => (
+        <button key={k} type="button" className="mb-tab" onClick={() => setTab(k)} aria-label={label} aria-current={tab === k ? 'page' : undefined}>
+          <Icon name={ic} size={21} />
+          <span className="mb-tab__label">{label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+function NeonPulseApp({ framed = true }) {
+  const [tab, setTab] = React.useState('home');
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--color-bg-page)' }}>
+      <MobileHeader tab={tab} framed={framed} />
+      <main style={{ flex: 1, overflow: 'auto' }}>
+        {tab === 'home' && <HomeScreen setTab={setTab} />}
+        {tab === 'nodes' && <NodesScreen />}
+        {tab === 'activity' && <ActivityScreen />}
+        {tab === 'settings' && <SettingsScreen />}
+      </main>
+      <TabBar tab={tab} setTab={setTab} framed={framed} />
+    </div>
+  );
+}
+
+Object.assign(window, { NeonPulseApp, MiniArea, NodeRow, NodeList, StatusPill, HomeScreen, NodesScreen, ActivityScreen, SettingsScreen, TabBar, MobileHeader });

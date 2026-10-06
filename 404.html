@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal lost — NeonPulse</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07070d">
+<script>
+  /* GitHub Pages serves this file for ANY missing path, so relative URLs would break
+     in sub-folders. Resolve everything against the site root instead. */
+  (function () {
+    /* written in one go so the preload scanner never requests the stylesheets
+       relative to the missing path first */
+    var base = /github\.io$/.test(location.hostname) ? '/Designsystem-Neonpulse/' : '/';
+    document.write('<base href="' + base + '">' +
+      '<link rel="icon" type="image/svg+xml" href="favicon.svg">' +
+      '<link rel="stylesheet" href="colors_and_type.css">' +
+      '<link rel="stylesheet" href="effects/starfield.css">');
+  })();
+</script>
+<style>
+  html, body { margin: 0; min-height: 100%; }
+  body { min-height: 100vh; display: grid; place-items: center; background: var(--color-bg-void); overflow: hidden; }
+  .box { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; max-width: 560px; }
+  .code { font: 700 clamp(72px, 14vw, 132px)/1 var(--font-display); letter-spacing: -0.04em;
+    background: var(--color-action-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 { font: var(--h1); margin: 0; }
+  p.lead { font: var(--body); color: var(--color-text-secondary); margin: 0; }
+  .np-cluster { justify-content: center; margin-top: 8px; }
+</style>
+</head>
+<body class="np-scope">
+  <div class="np-starfield" aria-hidden="true"><div class="nebula"></div><div class="stars"></div><div class="stars2"></div><div class="stars3"></div></div>
+  <main class="box">
+    <span class="np-badge np-badge--danger np-badge--live"><span class="np-badge__dot"></span>404 · No route</span>
+    <div class="code" aria-hidden="true">404</div>
+    <h1>Signal lost.</h1>
+    <p class="lead">This node doesn't exist — or it went offline. Reconnect to a known endpoint.</p>
+    <div class="np-cluster">
+      <a class="np-btn np-btn--primary" href="./">Design system docs</a>
+      <a class="np-btn np-btn--ghost" href="showcase/">Case study</a>
+    </div>
+  </main>
+</body>
+</html>

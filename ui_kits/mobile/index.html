@@ -2,41 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NeonPulse — Mobile UI Kit</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<meta name="theme-color" content="#0c0c16">
 <link rel="stylesheet" href="../../colors_and_type.css">
+<script>/* theme-color follows the page token — no hardcoded hex */
+  (function () { var m = document.createElement('meta'); m.name = 'theme-color';
+    m.content = getComputedStyle(document.documentElement).getPropertyValue('--color-bg-page').trim(); document.head.appendChild(m); })();
+</script>
 <style>
+  /* Kit-specific layout only — every control comes from colors_and_type.css */
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
   body {
-    background: #050509;
-    background-image: radial-gradient(80% 60% at 50% 0%, rgba(45,123,255,0.10), transparent 60%);
-    font-family: var(--font-body); color: var(--fg-1);
+    background: var(--color-bg-void); background-image: var(--grad-haze);
+    font-family: var(--font-body); color: var(--color-text);
     display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 32px 0;
+    min-height: 100vh; padding: 16px 0;
     -webkit-font-smoothing: antialiased;
   }
-  .np-btn-primary {
-    font-family: var(--font-display); font-weight: 600; font-size: 15px;
-    border-radius: var(--r-md); padding: 13px 18px; border: 1px solid transparent;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-    background: var(--grad-pulse); color: var(--fg-on-neon); box-shadow: var(--glow-blue);
-    transition: transform var(--dur-fast) var(--ease-out);
+  .npi svg { width: 100%; height: 100%; display: block; }
+  .mb-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 4px 0;
+    background: none; border: 0; border-radius: var(--r-md); cursor: pointer; font: inherit;
+    color: var(--color-text-muted); transition: color var(--dur);
   }
-  .np-btn-primary:active { transform: scale(0.98); }
-  button svg, .np-btn-primary svg { stroke-width: 1.9; }
-  .npi svg { width: 100%; height: 100%; display: block; stroke-width: 1.9; }
+  .mb-tab:hover { color: var(--color-text); }
+  .mb-tab:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .mb-tab[aria-current="page"] { color: var(--color-accent); }
+  .mb-tab[aria-current="page"] .npi { filter: drop-shadow(0 0 6px var(--color-accent)); }  /* active = state → glow */
+  .mb-tab__label { font: 500 9.5px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  /* phones: drop the device chrome, render the app edge-to-edge */
+  .mb-bleed { width: 100%; height: 100vh; height: 100dvh; }
+  @media (max-width: 439px) { body { display: block; padding: 0; } }
 </style>
 </head>
 <body>
 <div id="root"></div>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
 
 <script type="text/babel">
   function Icon({ name, size = 18 }) {
@@ -53,12 +60,31 @@
 <script type="text/babel" src="ios-frame.jsx"></script>
 <script type="text/babel" src="MobileApp.jsx"></script>
 <script type="text/babel">
+  const DEVICE = { w: 402, h: 874 };   // IOSDevice default size
+
+  function useViewport() {
+    const read = () => ({ w: window.innerWidth, h: window.innerHeight });
+    const [vp, setVp] = React.useState(read);
+    React.useEffect(() => {
+      const on = () => setVp(read());
+      window.addEventListener('resize', on);
+      return () => window.removeEventListener('resize', on);
+    }, []);
+    return vp;
+  }
+
   function App() {
     React.useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+    const { w, h } = useViewport();
+    // real phone width → edge-to-edge app; otherwise the device frame, scaled to fit the viewport height
+    if (w < 440) return <div className="mb-bleed"><NeonPulseApp framed={false} /></div>;
+    const fit = Math.min(1, (h - 32) / DEVICE.h, (w - 24) / DEVICE.w);
     return (
-      <IOSDevice dark>
-        <NeonPulseApp />
-      </IOSDevice>
+      <div style={{ zoom: fit }}>
+        <IOSDevice dark>
+          <NeonPulseApp />
+        </IOSDevice>
+      </div>
     );
   }
   ReactDOM.createRoot(document.getElementById('root')).render(<App />);

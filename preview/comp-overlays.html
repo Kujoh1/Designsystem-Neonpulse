@@ -1,0 +1,176 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Overlays</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:26px 22px;align-items:start}
+  .below{margin-top:26px}
+
+  /* ---- .static: in-flow demo of the overlay patterns ----
+     The real patterns are position:fixed and size against the viewport;
+     inside the specimen they sit in the flow so nothing covers the page
+     and the frame can size itself to the content. */
+  .static .np-scrim{position:relative;inset:auto;z-index:auto;border-radius:var(--r-xl);padding:var(--s-6) var(--s-4)}
+  .static .np-modal{max-height:none}
+  .static .np-toast-region{position:static;width:auto;pointer-events:auto}
+  .static .np-palette{margin-inline:auto}
+  .static .np-palette__list{max-height:none}
+  .static .np-palette__footer{flex-wrap:wrap}
+
+  /* specimen helpers */
+  [hidden]{display:none !important}
+  .close{margin-left:auto}
+  .np-toast .np-icon-btn{margin:-5px -6px -5px 0}
+  .np-palette__hint{display:inline-flex;gap:4px}
+  .np-palette__footer span{display:inline-flex;align-items:center;gap:6px}
+</style></head>
+<body>
+  <div class="cols">
+    <!-- (a) modal -->
+    <div class="static">
+      <div class="np-label lab">Modal · .np-scrim + .np-modal</div>
+      <div class="np-scrim">
+        <div class="np-modal" role="dialog" aria-labelledby="dlg-title" aria-describedby="dlg-sub">
+          <div class="np-modal__header">
+            <span class="np-modal__icon"><i data-lucide="rocket"></i></span>
+            <div>
+              <h2 class="np-modal__title" id="dlg-title">Deploy aurora-core</h2>
+              <div class="np-modal__subtitle" id="dlg-sub">build 4f2a · 3 nodes · ~40s</div>
+            </div>
+            <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost close" aria-label="Close"><i data-lucide="x"></i></button>
+          </div>
+          <div class="np-modal__body">
+            <label class="np-field">
+              <span class="np-field__label">Branch</span>
+              <span class="np-inputgroup">
+                <i data-lucide="git-branch"></i>
+                <input value="main" aria-label="Branch">
+              </span>
+            </label>
+            <div class="np-field">
+              <span class="np-field__label" id="region-lab">Region</span>
+              <div class="np-seg" role="group" aria-labelledby="region-lab" data-seg>
+                <button class="np-seg__item" aria-pressed="true">us-east</button>
+                <button class="np-seg__item" aria-pressed="false">eu-west</button>
+                <button class="np-seg__item" aria-pressed="false">ap-south</button>
+              </div>
+            </div>
+          </div>
+          <div class="np-modal__footer">
+            <button class="np-btn np-btn--ghost"><span>Cancel</span></button>
+            <button class="np-btn np-btn--primary"><span>Deploy now</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (b) toast stack -->
+    <div class="static">
+      <div class="np-label lab">Toasts · .np-toast-region · aria-live</div>
+      <div class="np-toast-region" aria-live="polite">
+        <div class="np-toast np-toast--success" role="status">
+          <span class="np-toast__icon"><i data-lucide="circle-check"></i></span>
+          <div class="np-toast__content">
+            <div class="np-toast__title">Deployed. Live in us-east.</div>
+            <div class="np-toast__body">aurora-core · p99 42ms · just now</div>
+          </div>
+          <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Dismiss notification"><i data-lucide="x"></i></button>
+        </div>
+        <div class="np-toast" role="status">
+          <span class="np-toast__icon"><i data-lucide="info"></i></span>
+          <div class="np-toast__content">
+            <div class="np-toast__title">Deploy started</div>
+            <div class="np-toast__body">build 4f2a · 3 nodes · eta 40s</div>
+          </div>
+          <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Dismiss notification"><i data-lucide="x"></i></button>
+        </div>
+        <div class="np-toast np-toast--danger" role="status">
+          <span class="np-toast__icon"><i data-lucide="circle-alert"></i></span>
+          <div class="np-toast__content">
+            <div class="np-toast__title">Build failed — exit code 1</div>
+            <div class="np-toast__body">step 3/5 · npm run build · 12s ago</div>
+          </div>
+          <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Dismiss notification"><i data-lucide="x"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- (c) command palette -->
+  <div class="static below">
+    <div class="np-label lab">Command palette · .np-palette · ↑ ↓ to move, type to filter</div>
+    <div class="np-scrim np-scrim--top">
+      <div class="np-palette" role="dialog" aria-label="Command palette">
+        <div class="np-palette__search">
+          <i data-lucide="search"></i>
+          <input id="pal-input" placeholder="Type a command…" aria-label="Command" role="combobox"
+                 aria-expanded="true" aria-controls="pal-list" aria-activedescendant="pal-overview" autocomplete="off">
+          <kbd class="np-kbd">esc</kbd>
+        </div>
+        <ul class="np-palette__list" id="pal-list" role="listbox" aria-label="Commands">
+          <li class="np-palette__group" role="presentation">Navigate</li>
+          <li class="np-palette__item" role="option" id="pal-overview" aria-selected="true"><i data-lucide="layout-dashboard"></i>Overview</li>
+          <li class="np-palette__item" role="option" id="pal-nodes" aria-selected="false"><i data-lucide="server"></i>Nodes</li>
+          <li class="np-palette__item" role="option" id="pal-alerts" aria-selected="false"><i data-lucide="bell"></i>Alerts</li>
+          <li class="np-palette__group" role="presentation">Actions</li>
+          <li class="np-palette__item" role="option" id="pal-deploy" aria-selected="false"><i data-lucide="rocket"></i>Deploy…<span class="np-palette__hint"><kbd class="np-kbd">⌘</kbd><kbd class="np-kbd">D</kbd></span></li>
+          <li class="np-palette__item" role="option" id="pal-rotate" aria-selected="false"><i data-lucide="key-round"></i>Rotate API key<span class="np-palette__hint"><kbd class="np-kbd">⌘</kbd><kbd class="np-kbd">⇧</kbd><kbd class="np-kbd">R</kbd></span></li>
+        </ul>
+        <div class="np-palette__empty" id="pal-empty" hidden>No commands match.</div>
+        <div class="np-palette__footer">
+          <span><kbd class="np-kbd">↑↓</kbd>navigate</span>
+          <span><kbd class="np-kbd">↵</kbd>run</span>
+          <span><kbd class="np-kbd">esc</kbd>close</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+lucide.createIcons();
+
+/* Segmented control — single choice via aria-pressed. */
+document.querySelectorAll('[data-seg]').forEach(seg => {
+  const items = [...seg.querySelectorAll('.np-seg__item')];
+  items.forEach(b => b.addEventListener('click', () => items.forEach(x => x.setAttribute('aria-pressed', x === b))));
+});
+
+/* Command palette — filter, arrow-key selection, click to select. */
+(() => {
+  const input = document.getElementById('pal-input');
+  const items = [...document.querySelectorAll('.np-palette__item')];
+  const groups = [...document.querySelectorAll('.np-palette__group')];
+  const empty = document.getElementById('pal-empty');
+  const visible = () => items.filter(i => !i.hidden);
+  function select(item) {
+    items.forEach(i => i.setAttribute('aria-selected', i === item));
+    if (item) input.setAttribute('aria-activedescendant', item.id); else input.removeAttribute('aria-activedescendant');
+  }
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    items.forEach(i => { i.hidden = !i.textContent.toLowerCase().includes(q); });
+    groups.forEach(g => {
+      let n = g.nextElementSibling, any = false;
+      while (n && !n.classList.contains('np-palette__group')) { if (!n.hidden) any = true; n = n.nextElementSibling; }
+      g.hidden = !any;
+    });
+    empty.hidden = visible().length > 0;
+    select(visible()[0] || null);
+  });
+  input.addEventListener('keydown', e => {
+    const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    const list = visible(); if (!list.length) return;
+    const cur = list.findIndex(i => i.getAttribute('aria-selected') === 'true');
+    select(list[(cur + step + list.length) % list.length]);
+  });
+  items.forEach(i => i.addEventListener('click', () => select(i)));
+})();
+</script>
+</body></html>

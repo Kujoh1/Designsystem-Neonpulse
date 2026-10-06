@@ -1,18 +1,16 @@
 <!-- @dsCard group="Patterns" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Layout primitives</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
   body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-body)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin:0 0 12px}
-  .lab:not(:first-child){margin-top:26px}
   /* demo blocks so the primitives are visible */
   .b{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--r-md);
      padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--color-text-secondary)}
-  .chip{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--r-full);
-        padding:7px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;color:var(--color-text-secondary)}
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-  .name{font-family:var(--font-mono);font-size:10px;color:var(--color-accent);letter-spacing:0.08em;margin-bottom:8px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:22px}
+  .name{font-family:var(--font-mono);font-size:10px;color:var(--color-text-accent);letter-spacing:0.08em;margin-bottom:8px}
 </style></head>
 <body>
   <div class="cols">
@@ -27,14 +25,14 @@
     <div>
       <div class="name">.np-cluster</div>
       <div class="np-cluster">
-        <span class="chip">Connect</span><span class="chip">Deploy</span>
-        <span class="chip">Sync</span><span class="chip">Logs</span><span class="chip">Settings</span>
+        <span class="np-badge np-badge--outline">Connect</span><span class="np-badge np-badge--outline">Deploy</span>
+        <span class="np-badge np-badge--outline">Sync</span><span class="np-badge np-badge--outline">Logs</span><span class="np-badge np-badge--outline">Settings</span>
       </div>
     </div>
   </div>
 
   <div class="name" style="margin-top:24px">.np-grid · auto-fill, minmax(--np-grid-min)</div>
-  <div class="np-grid" style="--np-grid-min:130px">
+  <div class="np-grid" style="--np-grid-min:120px">
     <div class="b">cell</div><div class="b">cell</div><div class="b">cell</div>
     <div class="b">cell</div><div class="b">cell</div><div class="b">cell</div>
   </div>

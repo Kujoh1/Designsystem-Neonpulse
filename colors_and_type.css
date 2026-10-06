@@ -2,22 +2,52 @@
    NEON PULSE — Design Tokens
    Cyberpunk, dark-first. Flat surfaces, neon energy.
    Import this file, then use the CSS variables below.
-   Fonts load from Google Fonts (see @import) — swap for local
-   files in /fonts if you need offline.
+
+   Layers (top → bottom of this file):
+     0  Fonts            self-hosted @font-face (fonts/, OFL)
+     1  Primitives       raw values — what a value IS   (--bg-2, --neon-cyan)
+     2  Semantic aliases what a value is FOR            (--color-surface, --color-accent)
+     3  Elements         single controls                (.np-btn, .np-input, .np-badge …)
+     4  Patterns         compositions                   (.np-card, .np-stack, .np-modal …)
+
+   Theming: dark is the default. Put data-theme="light" on <html>
+   (or on any subtree) and the whole tree re-resolves. A
+   data-theme="dark" island inside a light page works the same way.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+/* ---------- 0 · FONTS (self-hosted variable woff2, latin subset incl. DE umlauts) ----------
+   No third-party request → shorter critical path and GDPR-friendly.
+   Licences: SIL Open Font License 1.1 — see fonts/README.md. */
+@font-face {
+  font-family: 'Space Grotesk'; font-style: normal; font-weight: 300 700; font-display: swap;
+  src: url('fonts/space-grotesk-latin-wght.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Sora'; font-style: normal; font-weight: 100 800; font-display: swap;
+  src: url('fonts/sora-latin-wght.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono'; font-style: normal; font-weight: 100 800; font-display: swap;
+  src: url('fonts/jetbrains-mono-latin-wght.woff2') format('woff2');
+}
 
-:root {
+/* ============================================================
+   1 · PRIMITIVES  (dark theme values — the default)
+   ============================================================ */
+:root, [data-theme="dark"] {
+  color-scheme: dark;
+
   /* ---------- TYPE FAMILIES ---------- */
   --font-display: 'Space Grotesk', system-ui, sans-serif;  /* headings, hero, buttons */
   --font-body:    'Sora', system-ui, sans-serif;            /* paragraphs, UI copy */
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;/* HUD labels, code, data */
 
-  /* ---------- TYPE SCALE (semantic) ---------- */
-  --display-xl: 700 64px/1.04 var(--font-display);
-  --display-l:  700 48px/1.06 var(--font-display);
-  --h1: 700 36px/1.12 var(--font-display);
+  /* ---------- TYPE SCALE (semantic shorthands for `font:`) ----------
+     Display + h1 are fluid: they scale with the viewport between a
+     phone-safe minimum and the desktop size — no per-page overrides. */
+  --display-xl: 700 clamp(40px, 4.2vw + 18px, 64px)/1.04 var(--font-display);
+  --display-l:  700 clamp(34px, 2.8vw + 18px, 48px)/1.06 var(--font-display);
+  --h1: 700 clamp(28px, 1.4vw + 20px, 36px)/1.12 var(--font-display);
   --h2: 600 28px/1.18 var(--font-display);
   --h3: 600 22px/1.25 var(--font-display);
   --h4: 600 18px/1.3  var(--font-display);
@@ -33,20 +63,22 @@
   --bg-1: #0c0c16;   /* base canvas */
   --bg-2: #12121f;   /* card / raised surface */
   --bg-3: #1a1a2b;   /* elevated / hover */
-  --bg-4: #24243a;   /* overlay / popover */
+  --bg-4: #24243a;   /* overlay / popover / track */
 
   /* ---------- HAIRLINES / BORDERS ---------- */
   --line-1: rgba(255,255,255,0.07);  /* subtle dividers */
   --line-2: rgba(255,255,255,0.12);  /* card borders */
   --line-3: rgba(255,255,255,0.18);  /* strong borders */
-  --line-glow: rgba(0,229,255,0.40); /* neon-lit edge */
 
-  /* ---------- FOREGROUND (cool whites) ---------- */
-  --fg-1: #eef1fb;   /* primary text */
-  --fg-2: #aab0c8;   /* secondary text */
-  --fg-3: #6c7290;   /* tertiary / muted */
+  /* ---------- FOREGROUND (cool whites) ----------
+     fg-1…fg-3 pass WCAG AA (≥ 4.5:1) on bg-0…bg-3. fg-4 is for
+     disabled text only (exempt from contrast requirements). */
+  --fg-1: #eef1fb;   /* primary text            17.2:1 on bg-1 */
+  --fg-2: #aab0c8;   /* secondary text           9.0:1 on bg-1 */
+  --fg-3: #7c82a2;   /* tertiary / muted         5.2:1 on bg-1 */
   --fg-4: #454b66;   /* disabled / faint */
   --fg-on-neon: #07070d; /* text on bright neon fills */
+  --white: #ffffff;      /* knobs, avatar initials */
 
   /* ---------- NEON ACCENTS ---------- */
   --neon-blue:    #2d7bff;
@@ -54,18 +86,13 @@
   --neon-violet:  #7c4dff;
   --neon-magenta: #ff2d9b;  /* the "pulse" accent */
 
-  /* Primary action = blue→cyan electric gradient */
-  --grad-pulse: linear-gradient(135deg, #2d7bff 0%, #00e5ff 100%);
-  --grad-pulse-hot: linear-gradient(135deg, #7c4dff 0%, #ff2d9b 100%);
-  --grad-haze: radial-gradient(120% 120% at 0% 0%, rgba(45,123,255,0.18) 0%, rgba(0,229,255,0.06) 40%, transparent 70%);
-
-  /* ---------- SEMANTIC ---------- */
+  /* ---------- SEMANTIC HUES ---------- */
   --success: #18f0a0;  /* neon mint */
   --warning: #ffcf3a;  /* amber */
   --danger:  #ff3b6b;  /* hot red-pink */
   --info:    #00e5ff;  /* cyan */
 
-  /* tinted fills (12% over dark) for badges/alerts */
+  /* tinted fills (14% over dark) for badges/alerts */
   --success-fill: rgba(24,240,160,0.14);
   --warning-fill: rgba(255,207,58,0.14);
   --danger-fill:  rgba(255,59,107,0.14);
@@ -91,18 +118,11 @@
   --s-12: 48px;
   --s-16: 64px;
   --s-20: 80px;
+  --container-max: 1200px;  /* marketing / content width */
 
-  /* ---------- ELEVATION (flat + neon glow) ---------- *
-     Flat design = minimal drop shadow. Depth comes from
-     surface lightness + a soft neon halo on key elements.
-     Glow intensity tuned to ~30%. */
+  /* ---------- ELEVATION (flat — depth = surface step) ---------- */
   --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 8px rgba(0,0,0,0.4);
   --shadow-2: 0 8px 28px rgba(0,0,0,0.5);
-  --glow-cyan:    0 0 0 1px rgba(0,229,255,0.30), 0 0 22px rgba(0,229,255,0.28);
-  --glow-blue:    0 0 0 1px rgba(45,123,255,0.35), 0 0 22px rgba(45,123,255,0.30);
-  --glow-magenta: 0 0 0 1px rgba(255,45,155,0.35), 0 0 22px rgba(255,45,155,0.30);
-  --glow-danger:  0 0 0 1px rgba(255,59,107,0.35), 0 0 22px rgba(255,59,107,0.30);
-  --glow-soft:    0 0 18px rgba(0,229,255,0.18);
 
   /* ---------- MOTION ---------- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -113,28 +133,49 @@
 }
 
 /* ============================================================
-   SEMANTIC ALIASES  (tier 2 — the design↔dev contract)
-   Components should consume THESE, not the raw primitives above.
-   Primitives say *what the value is* (--bg-2, --neon-cyan);
-   aliases say *what it's for* (--color-surface, --color-accent).
-   Re-point an alias here — or override it in [data-theme="…"] —
-   and every component using it updates, with no find/replace in
-   component code. This is what makes theming + rebrands cheap.
+   DERIVED PRIMITIVES + SEMANTIC ALIASES  (tier 2 — the design↔dev contract)
+   Declared on `:root, [data-theme]` so every themed subtree re-resolves
+   them against its own primitives. Gradients, glows and the glow edge
+   are *derived* from the neon hues — swap two hues and buttons, rings,
+   halos and charts all follow.
+
+   Components should consume the --color-* / --ring-* / --glow-accent
+   aliases, not the raw primitives. Primitives say *what the value is*
+   (--bg-2, --neon-cyan); aliases say *what it's for* (--color-surface).
    ============================================================ */
-:root {
+:root, [data-theme] {
+  /* ---- derived primitives ---- */
+  --neon-ink: color-mix(in srgb, var(--neon-blue) 72%, #000);  /* legible "neon" for text on light surfaces */
+  --grad-pulse:     linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-cyan) 100%);
+  --grad-pulse-hot: linear-gradient(135deg, var(--neon-violet) 0%, var(--neon-magenta) 100%);
+  --grad-haze: radial-gradient(120% 120% at 0% 0%,
+                 color-mix(in srgb, var(--neon-blue) 18%, transparent) 0%,
+                 color-mix(in srgb, var(--neon-cyan) 6%, transparent) 40%, transparent 70%);
+  --line-glow: color-mix(in srgb, var(--neon-cyan) 40%, transparent);  /* neon-lit edge */
+
+  /* Neon halos — tuned to ~30% intensity. A STATE, never ambient. */
+  --glow-cyan:    0 0 0 1px color-mix(in srgb, var(--neon-cyan) 30%, transparent),    0 0 22px color-mix(in srgb, var(--neon-cyan) 28%, transparent);
+  --glow-blue:    0 0 0 1px color-mix(in srgb, var(--neon-blue) 35%, transparent),    0 0 22px color-mix(in srgb, var(--neon-blue) 30%, transparent);
+  --glow-magenta: 0 0 0 1px color-mix(in srgb, var(--neon-magenta) 35%, transparent), 0 0 22px color-mix(in srgb, var(--neon-magenta) 30%, transparent);
+  --glow-danger:  0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent),       0 0 22px color-mix(in srgb, var(--danger) 30%, transparent);
+  --glow-soft:    0 0 18px color-mix(in srgb, var(--neon-cyan) 18%, transparent);
+
   /* ---- Surfaces ---- */
   --color-bg-page:         var(--bg-1);   /* page / app canvas */
-  --color-bg-void:         var(--bg-0);   /* deepest backdrop */
+  --color-bg-void:         var(--bg-0);   /* deepest backdrop: footers, sidebars, code */
+  --color-bg-translucent:  color-mix(in srgb, var(--bg-0) 72%, transparent); /* sticky bars (+ backdrop-filter) */
   --color-surface:         var(--bg-2);   /* cards, panels */
   --color-surface-raised:  var(--bg-3);   /* hover / elevated */
-  --color-surface-overlay: var(--bg-4);   /* modals, popovers */
+  --color-surface-overlay: var(--bg-4);   /* popovers, tooltips */
+  --color-track:           var(--bg-4);   /* meter / chart track */
+  --color-scrim:           rgba(5,5,10,0.66); /* modal backdrop */
 
   /* ---- Text ---- */
   --color-text:            var(--fg-1);       /* primary copy + headings */
   --color-text-secondary:  var(--fg-2);       /* body / supporting */
-  --color-text-muted:      var(--fg-3);       /* captions, hints (large text only — AA-borderline at small sizes) */
-  --color-text-disabled:   var(--fg-4);       /* disabled */
-  --color-text-on-accent:  var(--fg-on-neon); /* text on a neon fill */
+  --color-text-muted:      var(--fg-3);       /* captions, labels, hints (AA) */
+  --color-text-disabled:   var(--fg-4);       /* disabled only */
+  --color-text-on-accent:  var(--fg-on-neon); /* text on a neon fill (both gradients) */
   --color-text-accent:     var(--neon-cyan);  /* links, active text */
 
   /* ---- Borders ---- */
@@ -147,7 +188,7 @@
   --color-action-primary:        var(--grad-pulse);     /* primary CTA fill */
   --color-action-primary-solid:  var(--neon-blue);      /* flat primary */
   --color-action-secondary:      var(--grad-pulse-hot); /* energy / secondary */
-  --color-accent:                var(--neon-cyan);      /* the signal accent */
+  --color-accent:                var(--neon-cyan);      /* the signal accent: icons, dots, edges */
 
   /* ---- Feedback (semantic state) ---- */
   --color-success: var(--success); --color-success-fill: var(--success-fill);
@@ -156,11 +197,13 @@
   --color-info:    var(--info);    --color-info-fill:    var(--info-fill);
 
   /* ---- Focus ring (apply on :focus-visible) ---- */
-  --ring-focus: 0 0 0 2px var(--bg-1), 0 0 0 4px rgba(0,229,255,0.55);
+  --ring-focus: 0 0 0 2px var(--bg-1), 0 0 0 4px color-mix(in srgb, var(--neon-cyan) 55%, transparent);
 
   /* ---- Elevation aliases ---- */
   --elevation-flat:    var(--shadow-1);
   --elevation-overlay: var(--shadow-2);
+  --glow-accent:       var(--glow-cyan);   /* focused field, live element */
+  --glow-action:       var(--glow-blue);   /* primary action halo */
 
   /* ---- Z-index scale (one stacking contract for the whole system) ---- */
   --z-base:     0;
@@ -173,22 +216,72 @@
 
   /* ---- Icons (Lucide outline) ---- */
   --icon-stroke: 1.9;   /* HUD-crisp stroke width */
-  --icon-sm:     16px;  /* inline / dense UI */
-  --icon-md:     20px;  /* buttons / nav */
+  --icon-sm:     16px;  /* inline, dense UI, inside .np-btn */
+  --icon-md:     20px;  /* nav, .np-icon-btn */
   --icon-lg:     24px;  /* feature / empty states */
 
   /* ---- Interaction states (one behaviour for every control) ----
      States are derived from these + pseudo-classes — never hand-painted
      per component. Reuse them on buttons, tabs, inputs, cards … */
   --state-pressed-scale: 0.97;
-  --state-hover-glow:    0 0 0 1px rgba(0,229,255,0.50), 0 0 26px rgba(0,229,255,0.45);
+  --state-hover-glow:    0 0 0 1px color-mix(in srgb, var(--neon-cyan) 50%, transparent), 0 0 26px color-mix(in srgb, var(--neon-cyan) 45%, transparent);
   --state-disabled-opacity: 0.5;
 }
 
 /* ============================================================
+   LIGHT THEME  — mirrors the dark ramp (surfaces light → text dark).
+   Neon hues stay identical (brand constants, used for fills and
+   gradients); text-level accents switch to --neon-ink and the
+   semantic hues to deeper "ink" tones so every text pairing keeps
+   WCAG AA (≥ 4.5:1). Declared after the alias block on purpose.
+   ============================================================ */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-0: #e9ebf3;
+  --bg-1: #f5f6fa;
+  --bg-2: #ffffff;
+  --bg-3: #eef0f6;
+  --bg-4: #e1e4ee;
+
+  --line-1: rgba(16,20,48,0.07);
+  --line-2: rgba(16,20,48,0.13);
+  --line-3: rgba(16,20,48,0.22);
+
+  --fg-1: #11131f;   /* 17.1:1 on bg-1 */
+  --fg-2: #3d4360;   /*  9.0:1 */
+  --fg-3: #5a6080;   /*  5.7:1 */
+  --fg-4: #9ca2ba;   /* disabled */
+
+  --success: #04694a;  --success-fill: rgba(4,105,74,0.10);
+  --warning: #7d4f00;  --warning-fill: rgba(125,79,0,0.10);
+  --danger:  #bb1442;  --danger-fill:  rgba(187,20,66,0.10);
+  --info:    #00618f;  --info-fill:    rgba(0,97,143,0.10);
+
+  --shadow-1: 0 1px 2px rgba(16,20,48,0.06);
+  --shadow-2: 0 18px 40px rgba(16,20,48,0.14);
+
+  /* derived tokens re-tuned for a light canvas: halos become soft tinted shadows */
+  --line-glow:    color-mix(in srgb, var(--neon-ink) 45%, transparent);
+  --glow-cyan:    0 0 0 1px color-mix(in srgb, var(--neon-ink) 30%, transparent),  0 6px 20px color-mix(in srgb, var(--neon-cyan) 28%, transparent);
+  --glow-blue:    0 0 0 1px color-mix(in srgb, var(--neon-blue) 30%, transparent), 0 6px 18px color-mix(in srgb, var(--neon-blue) 26%, transparent);
+  --glow-soft:    0 6px 22px color-mix(in srgb, var(--neon-blue) 16%, transparent);
+  --grad-haze: radial-gradient(120% 120% at 0% 0%,
+                 color-mix(in srgb, var(--neon-blue) 10%, transparent) 0%,
+                 color-mix(in srgb, var(--neon-cyan) 5%, transparent) 40%, transparent 70%);
+  --state-hover-glow: 0 0 0 1px color-mix(in srgb, var(--neon-ink) 40%, transparent), 0 8px 24px color-mix(in srgb, var(--neon-blue) 30%, transparent);
+  --ring-focus: 0 0 0 2px var(--bg-2), 0 0 0 4px color-mix(in srgb, var(--neon-ink) 60%, transparent);
+
+  /* alias re-points */
+  --color-text-accent:     var(--neon-ink);
+  --color-accent:          var(--neon-ink);
+  --color-surface-overlay: var(--bg-2);
+  --color-bg-translucent:  color-mix(in srgb, var(--bg-1) 78%, transparent);
+  --color-scrim:           rgba(16,20,48,0.32);
+}
+
+/* ============================================================
    SEMANTIC ELEMENT DEFAULTS (optional — apply to a scope)
-   These now consume the tier-2 aliases above, as a working
-   example of how components should reference tokens.
    ============================================================ */
 .np-scope {
   background: var(--color-bg-page);
@@ -196,18 +289,29 @@
   font: var(--body);
   -webkit-font-smoothing: antialiased;
 }
-.np-scope h1 { font: var(--h1); color: var(--color-text); margin: 0; }
-.np-scope h2 { font: var(--h2); color: var(--color-text); margin: 0; }
-.np-scope h3 { font: var(--h3); color: var(--color-text); margin: 0; }
-.np-scope h4 { font: var(--h4); color: var(--color-text); margin: 0; }
-.np-scope p  { font: var(--body); color: var(--color-text-secondary); margin: 0; }
-.np-scope code, .np-scope .mono {
-  font-family: var(--font-mono);
-}
+/* :where() keeps these defaults at zero specificity — any class (.np-card__body,
+   a page's .lead …) always wins over the scope's bare-element styling. */
+:where(.np-scope) h1 { font: var(--h1); color: var(--color-text); margin: 0; }
+:where(.np-scope) h2 { font: var(--h2); color: var(--color-text); margin: 0; }
+:where(.np-scope) h3 { font: var(--h3); color: var(--color-text); margin: 0; }
+:where(.np-scope) h4 { font: var(--h4); color: var(--color-text); margin: 0; }
+:where(.np-scope) p  { font: var(--body); color: var(--color-text-secondary); margin: 0; }
+:where(.np-scope) code, :where(.np-scope) .mono { font-family: var(--font-mono); }
+.np-scope ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); color: var(--color-text); }
+
+/* Every Lucide icon gets the system stroke */
+svg.lucide { stroke-width: var(--icon-stroke); }
+
 .np-label {
   font: var(--mono-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+/* Eyebrow — mono label that can lead with a live dot */
+.np-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase;
   color: var(--color-text-muted);
 }
 /* Focus-visible helper — opt in with class="np-focus" on any control */
@@ -215,15 +319,31 @@
   outline: none;
   box-shadow: var(--ring-focus);
 }
+/* Accessibility helpers */
+.np-sr-only {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.np-skip {
+  position: fixed; left: var(--s-3); top: var(--s-3); z-index: var(--z-tooltip);
+  transform: translateY(-160%); transition: transform var(--dur) var(--ease-out);
+  font: 600 14px/1 var(--font-display); color: var(--color-text-on-accent);
+  background: var(--color-action-primary); padding: 12px 16px; border-radius: var(--r-md); text-decoration: none;
+}
+.np-skip:focus-visible { transform: none; outline: none; box-shadow: var(--ring-focus); }
 
 /* ============================================================
+   3 · ELEMENTS
+   ============================================================ */
+
+/* ------------------------------------------------------------
    BUTTON — the canonical, fully-stated control (system blueprint)
    Variant (intent) × state, all derived from tokens + pseudo-classes,
    never hand-painted per combination. The `.is-*` helper classes mirror
    the real states so the docs can show every state without interaction.
    Markup:  <button class="np-btn np-btn--primary"><span>Label</span></button>
    States:  rest · hover · focus-visible · active · loading · disabled
-   ============================================================ */
+   ------------------------------------------------------------ */
 .np-btn {
   --btn-px: 18px; --btn-py: 11px; --btn-fz: 14px;
   font-family: var(--font-display); font-weight: 600; font-size: var(--btn-fz); line-height: 1;
@@ -233,27 +353,29 @@
   transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur),
               border-color var(--dur), color var(--dur), background var(--dur);
 }
-.np-btn > svg, .np-btn .npi { width: var(--icon-md); height: var(--icon-md); }
+.np-btn > svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }  /* 16px keeps icon + label buttons the same height */
 
 /* sizes */
 .np-btn--sm   { --btn-px: 13px; --btn-py: 8px;  --btn-fz: 13px; }
 .np-btn--lg   { --btn-px: 22px; --btn-py: 13px; --btn-fz: 15px; }
 .np-btn--pill { border-radius: var(--r-full); }
+.np-btn--block { width: 100%; }
 
 /* intent: primary — blue→cyan, the one true CTA */
-.np-btn--primary { background: var(--color-action-primary); color: var(--color-text-on-accent); box-shadow: var(--glow-blue); }
+.np-btn--primary { background: var(--color-action-primary); color: var(--color-text-on-accent); box-shadow: var(--glow-action); }
 .np-btn--primary:hover, .np-btn--primary.is-hover { box-shadow: var(--state-hover-glow); }
 
-/* intent: secondary — violet→magenta "energy" */
-.np-btn--secondary { background: var(--color-action-secondary); color: var(--fg-1); box-shadow: var(--glow-magenta); }
-.np-btn--secondary:hover, .np-btn--secondary.is-hover { box-shadow: var(--glow-magenta), 0 0 26px rgba(255,45,155,.30); }
+/* intent: secondary — violet→magenta "energy" (dark label: AA at the label's centre) */
+.np-btn--secondary { background: var(--color-action-secondary); color: var(--color-text-on-accent); box-shadow: var(--glow-magenta); }
+.np-btn--secondary:hover, .np-btn--secondary.is-hover { box-shadow: var(--glow-magenta), 0 0 26px color-mix(in srgb, var(--neon-magenta) 30%, transparent); }
 
 /* intent: ghost — flat surface, neon only on interaction */
 .np-btn--ghost { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
-.np-btn--ghost:hover, .np-btn--ghost.is-hover { border-color: var(--color-border-focus); color: var(--color-accent); }
+.np-btn--ghost:hover, .np-btn--ghost.is-hover { border-color: var(--color-border-focus); color: var(--color-text-accent); }
+.np-btn--ghost[aria-pressed="true"] { border-color: var(--color-border-focus); color: var(--color-text-accent); background: var(--color-surface-raised); } /* toggle button "on" */
 
 /* intent: danger — tinted outline; neon as warning, not a heavy red fill */
-.np-btn--danger { background: transparent; color: var(--color-danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+.np-btn--danger { background: transparent; color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 45%, transparent); }
 .np-btn--danger:hover, .np-btn--danger.is-hover { background: var(--color-danger-fill); border-color: var(--color-danger); box-shadow: var(--glow-danger); }
 
 /* state: focus-visible (keyboard) — one ring for every intent */
@@ -277,14 +399,14 @@
   border-color: var(--color-border-subtle); box-shadow: none; transform: none;
 }
 
-/* ============================================================
+/* ------------------------------------------------------------
    CTA SPOTLIGHT — interaktives Betonungselement für seltene,
    besonders wichtige Aktionen (idealerweise 1 pro View).
    Legt einen animierten 2px-Gradient-Stroke (volle Neon-Rampe)
    + einen dezenten Glow-Puls über JEDE Variante. Modifier:
    <button class="np-btn np-btn--primary np-btn--cta">…</button>
    Bewusst sparsam einsetzen — die Wirkung kommt aus der Seltenheit.
-   ============================================================ */
+   ------------------------------------------------------------ */
 /* der Button selbst pulsiert dezent (eigenständige scale-Property, damit
    :active-transform erhalten bleibt) */
 .np-btn--cta { position: relative; animation: np-cta-beat 6s var(--ease-in-out) infinite; }
@@ -308,8 +430,209 @@
 @keyframes np-cta-flow { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 @keyframes np-cta-beat { 0%, 100% { scale: 1; } 50% { scale: 1.01; } }
 
+/* ------------------------------------------------------------
+   ICON BUTTON — square, icon-only. Always give it an aria-label.
+   <button class="np-icon-btn" aria-label="Notifications"><i data-lucide="bell"></i></button>
+   ------------------------------------------------------------ */
+.np-icon-btn {
+  --ib-size: 38px;
+  width: var(--ib-size); height: var(--ib-size); flex: none; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-md); border: 1px solid var(--color-border);
+  background: var(--color-surface); color: var(--color-text-secondary);
+  cursor: pointer; text-decoration: none; font: inherit;
+  transition: color var(--dur), border-color var(--dur), box-shadow var(--dur), background var(--dur),
+              transform var(--dur-fast) var(--ease-out);
+}
+.np-icon-btn > svg { width: var(--icon-md); height: var(--icon-md); }
+.np-icon-btn:hover, .np-icon-btn.is-hover { color: var(--color-accent); border-color: var(--color-border-focus); }
+.np-icon-btn:focus-visible, .np-icon-btn.is-focus { outline: none; box-shadow: var(--ring-focus); }
+.np-icon-btn:active { transform: scale(var(--state-pressed-scale)); }
+.np-icon-btn--sm { --ib-size: 30px; border-radius: var(--r-sm); }
+.np-icon-btn--sm > svg { width: var(--icon-sm); height: var(--icon-sm); }
+.np-icon-btn--ghost { background: transparent; border-color: transparent; }
+.np-icon-btn--ghost:hover { background: var(--color-surface-raised); border-color: transparent; }
+.np-icon-btn[aria-pressed="true"] { color: var(--color-accent); border-color: var(--color-border-focus); }
+
+/* ------------------------------------------------------------
+   LIVE DOT · BADGE — status in the HUD voice
+   <span class="np-badge np-badge--success"><span class="np-badge__dot np-livedot--blink"></span>Online</span>
+   ------------------------------------------------------------ */
+.np-livedot {
+  width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: var(--color-accent); box-shadow: 0 0 8px var(--color-accent);
+  animation: np-blink 1.4s infinite;
+}
+.np-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 10px; border-radius: var(--r-full); white-space: nowrap;
+  color: var(--color-text-secondary); background: var(--color-surface-raised);
+}
+.np-badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.np-badge--success { color: var(--color-success); background: var(--color-success-fill); }
+.np-badge--warning { color: var(--color-warning); background: var(--color-warning-fill); }
+.np-badge--danger  { color: var(--color-danger);  background: var(--color-danger-fill); }
+.np-badge--info    { color: var(--color-info);    background: var(--color-info-fill); }
+.np-badge--accent  { color: var(--color-text-accent); background: color-mix(in srgb, var(--color-accent) 14%, transparent); }
+.np-badge--outline { background: transparent; box-shadow: inset 0 0 0 1px var(--color-border); }
+.np-badge--live .np-badge__dot { animation: np-blink 1.4s infinite; box-shadow: 0 0 6px currentColor; }
+
+/* ------------------------------------------------------------
+   FIELD · INPUT · INPUT GROUP · KBD
+   <label class="np-field"><span class="np-field__label">Region</span>
+     <input class="np-input" placeholder="us-east-1"></label>
+   States: rest · hover · focus · invalid (aria-invalid) · disabled
+   ------------------------------------------------------------ */
+.np-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.np-field__label { font: 500 11px/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+.np-field__hint  { font: var(--caption); color: var(--color-text-muted); }
+.np-field.is-invalid .np-field__hint, .np-field__hint--error { color: var(--color-danger); }
+
+.np-input, .np-inputgroup {
+  box-sizing: border-box; width: 100%; min-width: 0;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-md);
+  transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
+}
+.np-input {
+  font: 400 14px/1.4 var(--font-body); color: var(--color-text);
+  padding: 10px 14px; outline: none;
+}
+.np-input--mono { font-family: var(--font-mono); font-size: 13px; }
+.np-input::placeholder, .np-inputgroup input::placeholder { color: var(--color-text-muted); opacity: 1; }
+.np-input:hover, .np-input.is-hover, .np-inputgroup:hover { border-color: var(--color-border-strong); }
+.np-input:focus, .np-input.is-focus, .np-inputgroup:focus-within {
+  border-color: transparent; box-shadow: var(--glow-accent); outline: none;
+}
+.np-input[aria-invalid="true"], .np-input.is-invalid { border-color: var(--color-danger); }
+.np-input[aria-invalid="true"]:focus, .np-input.is-invalid.is-focus { border-color: transparent; box-shadow: var(--glow-danger); }
+.np-input:disabled, .np-input.is-disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+
+.np-inputgroup { display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--color-text-muted); }
+.np-inputgroup > svg, .np-inputgroup > .npi { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+.np-inputgroup > input {
+  flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; padding: 9px 0;
+  font: 400 13px/1.4 var(--font-body); color: var(--color-text);
+}
+
+.np-kbd {
+  display: inline-flex; align-items: center; gap: 2px; flex: none;
+  font: 500 10px/1 var(--font-mono); color: var(--color-text-muted);
+  background: var(--color-surface-raised); border: 1px solid var(--color-border); border-bottom-width: 2px;
+  border-radius: 5px; padding: 3px 6px;
+}
+
+/* ------------------------------------------------------------
+   SWITCH — a real checkbox, so it is keyboard + screen-reader native
+   <label class="np-switch"><input type="checkbox" role="switch" checked>
+     <span class="np-switch__track" aria-hidden="true"></span>Auto-scale</label>
+   ------------------------------------------------------------ */
+.np-switch {
+  position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
+  font: 400 12px/1.2 var(--font-mono); color: var(--color-text-secondary);
+}
+.np-switch > input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+.np-switch__track {
+  position: relative; flex: none; box-sizing: border-box; width: 42px; height: 24px; border-radius: var(--r-full);
+  background: var(--color-surface-raised); border: 1px solid var(--color-border);
+  transition: background var(--dur), box-shadow var(--dur), border-color var(--dur);
+}
+.np-switch__track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--color-text-muted);
+  transition: transform var(--dur) var(--ease-out), background var(--dur);
+}
+.np-switch:hover .np-switch__track { border-color: var(--color-border-strong); }
+.np-switch > input:checked + .np-switch__track { background: var(--color-action-primary); border-color: transparent; box-shadow: var(--glow-action); }
+.np-switch > input:checked + .np-switch__track::after { transform: translateX(18px); background: var(--white); }
+.np-switch > input:focus-visible + .np-switch__track { box-shadow: var(--ring-focus); }
+.np-switch > input:disabled + .np-switch__track { opacity: var(--state-disabled-opacity); }
+.np-switch:has(> input:disabled) { cursor: not-allowed; color: var(--color-text-disabled); }
+
+/* ------------------------------------------------------------
+   TABS · SEGMENTED CONTROL — the active item carries the signal
+   <div class="np-tabs" role="tablist"><button class="np-tab" role="tab" aria-selected="true">…</button></div>
+   <div class="np-seg" role="group"><button class="np-seg__item" aria-pressed="true">Live</button>…</div>
+   ------------------------------------------------------------ */
+.np-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--color-border-subtle); overflow-x: auto; scrollbar-width: none; }
+.np-tab {
+  appearance: none; background: none; border: 0; cursor: pointer; position: relative; white-space: nowrap;
+  font: 500 14px/1 var(--font-display); color: var(--color-text-muted);
+  padding: 12px 14px; border-radius: var(--r-sm) var(--r-sm) 0 0; transition: color var(--dur);
+}
+.np-tab:hover { color: var(--color-text); }
+.np-tab:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-tab[aria-selected="true"], .np-tab.is-active { color: var(--color-text); }
+.np-tab[aria-selected="true"]::after, .np-tab.is-active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  background: var(--color-action-primary); box-shadow: var(--glow-soft);
+}
+
+.np-seg {
+  display: inline-flex; gap: 2px; padding: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-full);
+}
+.np-seg__item {
+  appearance: none; border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-text-muted); padding: 8px 14px; border-radius: var(--r-full);
+  transition: color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-seg__item:hover { color: var(--color-text); }
+.np-seg__item:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-seg__item[aria-pressed="true"], .np-seg__item[aria-checked="true"], .np-seg__item.is-on {
+  background: var(--color-action-primary); color: var(--color-text-on-accent);
+}
+
+/* ------------------------------------------------------------
+   TOOLTIP — CSS-only, shows on hover AND keyboard focus.
+   Pair with an aria-label (the pseudo-element is not announced):
+   <button class="np-icon-btn" aria-label="Copy" data-np-tooltip="Copy"></button>
+   Uses ::after — don't combine with .np-btn loading state.
+   ------------------------------------------------------------ */
+[data-np-tooltip] { position: relative; }
+[data-np-tooltip]::after {
+  content: attr(data-np-tooltip);
+  position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: var(--z-tooltip);
+  transform: translate(-50%, 4px); opacity: 0; pointer-events: none; white-space: nowrap;
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: none;
+  color: var(--color-text); background: var(--color-surface-overlay);
+  border: 1px solid var(--color-border-strong); border-radius: var(--r-sm); padding: 7px 9px;
+  box-shadow: var(--elevation-overlay);
+  transition: opacity var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+}
+[data-np-tooltip]:hover::after, [data-np-tooltip]:focus-visible::after, [data-np-tooltip].is-tooltip-open::after {
+  opacity: 1; transform: translate(-50%, 0);
+}
+[data-np-tooltip-pos="bottom"]::after { bottom: auto; top: calc(100% + 8px); transform: translate(-50%, -4px); }
+
+/* ------------------------------------------------------------
+   METER · AVATAR · INLINE CODE · LINK
+   <div class="np-meter" role="meter" aria-valuenow="68" …><div class="np-meter__bar" style="--value:68%"></div></div>
+   ------------------------------------------------------------ */
+.np-meter { height: 6px; border-radius: var(--r-full); background: var(--color-track); overflow: hidden; }
+.np-meter__bar {
+  height: 100%; width: var(--value, 0%); border-radius: inherit;
+  background: var(--color-action-primary); box-shadow: var(--glow-soft);
+  transition: width var(--dur-slow) var(--ease-out);
+}
+.np-avatar {
+  --av: 34px; width: var(--av); height: var(--av); flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-action-secondary); color: var(--white);
+  font: 700 calc(var(--av) * 0.38)/1 var(--font-display); letter-spacing: 0.02em;
+}
+.np-code { font-family: var(--font-mono); font-size: 0.9em; color: var(--color-text-accent); }
+.np-link {
+  color: var(--color-text-accent); text-decoration: none; border-radius: 2px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--dur) var(--ease-out);
+}
+.np-link:hover { background-size: 100% 1px; }
+.np-link:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+
 /* ============================================================
-   PATTERNS — tier-3 composition layer (cards · layout · content)
+   4 · PATTERNS — composition layer (cards · layout · content · overlays)
    These are the reusable building blocks for assembling on-brand
    screens without copying a whole kit. All token-driven; states
    mirror the button model (`.is-*` helpers for docs).
@@ -325,20 +648,21 @@
 }
 /* anatomy */
 .np-card__eyebrow { font: var(--mono-label); letter-spacing: var(--tracking-label);
-  text-transform: uppercase; color: var(--color-text-muted); font-family: var(--font-mono); }
+  text-transform: uppercase; color: var(--color-text-muted); }
 .np-card__title  { font: var(--h4); color: var(--color-text); }
-.np-card__body   { font: var(--body-sm); color: var(--color-text-secondary); }
+.np-card__body   { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
 .np-card__metric { font-family: var(--font-display); font-weight: 700; font-size: 28px;
-  line-height: 1.1; color: var(--color-text); }
-.np-card__delta  { font-family: var(--font-mono); font-size: 12px; color: var(--color-accent); }
+  line-height: 1.1; color: var(--color-text); font-variant-numeric: tabular-nums; }
+.np-card__delta  { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-accent); }
 .np-card__footer { display: flex; align-items: center; gap: var(--s-3);
   margin-top: auto; padding-top: var(--s-2); }
 .np-card__media  { height: 92px; background: var(--grad-haze), var(--color-surface-raised); }
 .np-card--media  { padding: 0; overflow: hidden; }
 .np-card--media .np-card__pad { display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-5); }
+.np-card--flush  { padding: 0; overflow: hidden; }
 
 /* variant: interactive — the whole card is a target */
-.np-card--interactive { cursor: pointer; }
+.np-card--interactive { cursor: pointer; color: inherit; text-decoration: none; }
 .np-card--interactive:hover, .np-card--interactive.is-hover {
   border-color: var(--color-border-focus); box-shadow: var(--glow-soft); transform: translateY(-2px); }
 .np-card--interactive:focus-visible, .np-card--interactive.is-focus {
@@ -358,18 +682,39 @@
 .np-card--row { flex-direction: row; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); }
 
 /* ---------- LAYOUT primitives ---------- */
+.np-container { width: 100%; max-width: var(--container-max); margin-inline: auto; padding-inline: var(--s-6); box-sizing: border-box; }
 .np-stack   { display: flex; flex-direction: column; gap: var(--s-4); }
 .np-stack--tight { gap: var(--s-2); }
 .np-stack--loose { gap: var(--s-8); }
 .np-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .np-grid    { display: grid; gap: var(--s-4);
-  grid-template-columns: repeat(auto-fill, minmax(var(--np-grid-min, 220px), 1fr)); }
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--np-grid-min, 220px), 100%), 1fr)); }
 .np-section { padding-block: var(--s-12); }
 .np-divider { height: 1px; background: var(--color-border-subtle); border: 0; margin: 0; }
 
+/* ---------- NAVIGATION pattern ----------
+   Sidebar / drawer item. Works on <a> and <button>; the current page
+   gets aria-current="page" (or "true") and a neon rail.
+   <a class="np-navitem" href="#colors" aria-current="page"><svg…/>Colors</a> */
+.np-navitem {
+  display: flex; align-items: center; gap: 11px; width: 100%; box-sizing: border-box; padding: 9px 10px;
+  border: 0; border-radius: var(--r-md); background: transparent; cursor: pointer; text-align: left; text-decoration: none;
+  font: 400 14px/1.3 var(--font-body); color: var(--color-text-muted);
+  transition: color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-navitem > svg, .np-navitem > .npi { width: 18px; height: 18px; flex: none; }
+.np-navitem:hover { color: var(--color-text); background: var(--color-surface); }
+.np-navitem:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-navitem[aria-current="page"], .np-navitem[aria-current="true"] {
+  color: var(--color-text); background: var(--color-surface); box-shadow: inset 2px 0 0 var(--color-accent); }
+.np-navitem[aria-current="page"]:focus-visible, .np-navitem[aria-current="true"]:focus-visible {
+  box-shadow: inset 2px 0 0 var(--color-accent), var(--ring-focus); }
+.np-navitem[aria-current="page"] > svg, .np-navitem[aria-current="page"] > .npi { color: var(--color-accent); }
+.np-navitem__meta { margin-left: auto; }
+
 /* ---------- CONTENT patterns ---------- */
 /* page header */
-.np-pageheader { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); }
+.np-pageheader { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
 .np-pageheader__titles { display: flex; flex-direction: column; gap: var(--s-1); }
 
 /* empty state */
@@ -378,38 +723,118 @@
   border: 1px dashed var(--color-border); border-radius: var(--r-lg); }
 .np-empty__icon { color: var(--color-accent); }
 
-/* skeleton (loading) */
+/* skeleton (loading) — raised base + track highlight, so it reads on the page AND inside cards */
 .np-skeleton { border-radius: var(--r-sm);
-  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-raised) 37%, var(--color-surface) 63%);
+  background: linear-gradient(90deg, var(--color-surface-raised) 25%, var(--color-track) 37%, var(--color-surface-raised) 63%);
   background-size: 400% 100%; animation: np-shimmer 1.4s ease infinite; }
 .np-skeleton--line { height: 12px; }
 
 /* inline banner / alert */
 .np-banner { display: flex; align-items: flex-start; gap: var(--s-3); padding: var(--s-3) var(--s-4);
   border-radius: var(--r-md); border: 1px solid; font: var(--body-sm); color: var(--color-text); }
-.np-banner__icon { flex: none; margin-top: 1px; }
-.np-banner--info    { background: var(--color-info-fill);    border-color: color-mix(in srgb, var(--info) 40%, transparent); }
-.np-banner--success { background: var(--color-success-fill); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
-.np-banner--warning { background: var(--color-warning-fill); border-color: color-mix(in srgb, var(--warning) 40%, transparent); }
-.np-banner--danger  { background: var(--color-danger-fill);  border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
-.np-banner--info    .np-banner__icon { color: var(--info); }
-.np-banner--success .np-banner__icon { color: var(--success); }
-.np-banner--warning .np-banner__icon { color: var(--warning); }
-.np-banner--danger  .np-banner__icon { color: var(--danger); }
+.np-banner__icon { flex: none; margin-top: 1px; width: 18px; height: 18px; }
+.np-banner--info    { background: var(--color-info-fill);    border-color: color-mix(in srgb, var(--color-info) 40%, transparent); }
+.np-banner--success { background: var(--color-success-fill); border-color: color-mix(in srgb, var(--color-success) 40%, transparent); }
+.np-banner--warning { background: var(--color-warning-fill); border-color: color-mix(in srgb, var(--color-warning) 40%, transparent); }
+.np-banner--danger  { background: var(--color-danger-fill);  border-color: color-mix(in srgb, var(--color-danger) 40%, transparent); }
+.np-banner--info    .np-banner__icon { color: var(--color-info); }
+.np-banner--success .np-banner__icon { color: var(--color-success); }
+.np-banner--warning .np-banner__icon { color: var(--color-warning); }
+.np-banner--danger  .np-banner__icon { color: var(--color-danger); }
 
 /* data list */
 .np-list { display: flex; flex-direction: column; background: var(--color-surface);
   border: 1px solid var(--color-border); border-radius: var(--r-lg); overflow: hidden; }
 .np-list__row { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4);
-  border-top: 1px solid var(--color-border-subtle); transition: background var(--dur); }
+  border-top: 1px solid var(--color-border-subtle); transition: background var(--dur); color: var(--color-text); }
 .np-list__row:first-child { border-top: 0; }
 .np-list__row:hover { background: var(--color-surface-raised); }
 .np-list__meta { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-muted); }
 
-/* Pulse keyframe — the signature "neon pulse" animation */
+/* data table — mono, tabular figures, hover rows. Wrap in .np-table-wrap for overflow. */
+.np-table-wrap { overflow-x: auto; }
+.np-table { width: 100%; border-collapse: collapse; font: 400 12px/1.4 var(--font-mono);
+  color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.np-table th { text-align: left; font: 500 10px/1.2 var(--font-mono); letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--color-text-muted); padding: 12px 20px; white-space: nowrap; }
+.np-table td { padding: 13px 20px; border-top: 1px solid var(--color-border-subtle); white-space: nowrap; }
+.np-table tbody tr { transition: background var(--dur); }
+.np-table tbody tr:hover { background: var(--color-surface-raised); }
+.np-table .is-num { text-align: right; }
+.np-table .is-strong { color: var(--color-text); font-size: 13px; }
+
+/* code block — <pre class="np-codeblock"><code>…</code></pre>; optional token spans:
+   .tk-c comment · .tk-p property/selector · .tk-v value · .tk-s string/attribute */
+.np-codeblock { margin: 0; font: 400 13px/1.7 var(--font-mono); color: var(--color-text-secondary);
+  background: var(--color-bg-void); border: 1px solid var(--color-border); border-radius: var(--r-lg);
+  padding: 18px 20px; overflow-x: auto; white-space: pre; tab-size: 2; }
+.np-codeblock code { font: inherit; }
+.np-codeblock .tk-c { color: var(--color-text-muted); }
+.np-codeblock .tk-p { color: var(--color-text-accent); }
+.np-codeblock .tk-v { color: var(--color-text); }
+.np-codeblock .tk-s { color: var(--color-success); }
+
+/* ---------- OVERLAY patterns ---------- */
+/* modal: <div class="np-scrim"><div class="np-modal" role="dialog" aria-modal="true" aria-labelledby="…">…</div></div> */
+.np-scrim { position: fixed; inset: 0; z-index: var(--z-overlay); display: grid; place-items: center; padding: 20px;
+  background: var(--color-scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  animation: np-fade var(--dur-fast) ease-out; }
+.np-modal { position: relative; z-index: var(--z-modal); width: min(440px, 100%); max-height: calc(100vh - 40px); overflow: auto;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-xl);
+  box-shadow: var(--elevation-overlay), var(--glow-soft); animation: np-pop var(--dur) var(--ease-out); }
+.np-modal__header { display: flex; align-items: center; gap: 12px; padding: 20px 22px; border-bottom: 1px solid var(--color-border-subtle); }
+.np-modal__icon { width: 38px; height: 38px; flex: none; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;
+  background: var(--color-surface-raised); color: var(--color-accent); }
+.np-modal__title { font: var(--h4); color: var(--color-text); margin: 0; }
+.np-modal__subtitle { font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
+.np-modal__body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+.np-modal__footer { padding: 16px 22px; border-top: 1px solid var(--color-border-subtle); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* toast: <div class="np-toast-region" aria-live="polite"><div class="np-toast np-toast--success" role="status">…</div></div> */
+.np-toast-region { position: fixed; right: 20px; bottom: 20px; z-index: var(--z-toast); display: flex; flex-direction: column; gap: 10px;
+  width: min(340px, calc(100vw - 40px)); pointer-events: none; }
+.np-toast { pointer-events: auto; display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px;
+  background: var(--color-surface-raised); border: 1px solid var(--color-border); border-radius: var(--r-md);
+  box-shadow: var(--elevation-overlay); color: var(--color-text); animation: np-slide-in 220ms var(--ease-out); }
+.np-toast__icon { flex: none; display: flex; margin-top: 1px; color: var(--color-accent); filter: drop-shadow(0 0 6px currentColor); }
+.np-toast__icon > svg { width: 18px; height: 18px; }
+.np-toast--info    .np-toast__icon { color: var(--color-info); }
+.np-toast--success .np-toast__icon { color: var(--color-success); }
+.np-toast--warning .np-toast__icon { color: var(--color-warning); }
+.np-toast--danger  .np-toast__icon { color: var(--color-danger); }
+.np-toast__content { flex: 1; min-width: 0; }
+.np-toast__title { font: 500 14px/1.35 var(--font-body); color: var(--color-text); }
+.np-toast__body  { font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); margin-top: 2px; }
+
+/* command palette (⌘K): <div class="np-scrim np-scrim--top"><div class="np-palette" role="dialog">…</div></div> */
+.np-scrim--top { place-items: start center; padding-top: min(16vh, 140px); }
+.np-scrim[hidden], .np-toast[hidden] { display: none; }
+.np-palette { width: min(560px, 100%); background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--r-xl); box-shadow: var(--elevation-overlay), var(--glow-soft); overflow: hidden;
+  animation: np-pop var(--dur) var(--ease-out); }
+.np-palette__search { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--color-border-subtle); color: var(--color-text-muted); }
+.np-palette__search > svg, .np-palette__search > .npi { width: 18px; height: 18px; flex: none; }
+.np-palette__search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0;
+  font: 400 15px/1.4 var(--font-body); color: var(--color-text); }
+.np-palette__search input::placeholder { color: var(--color-text-muted); }
+.np-palette__list { list-style: none; margin: 0; padding: 8px; max-height: min(52vh, 380px); overflow-y: auto; }
+.np-palette__group { font: 500 10px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); padding: 12px 10px 6px; }
+.np-palette__item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: var(--r-md); cursor: pointer;
+  font: 400 14px/1.3 var(--font-body); color: var(--color-text-secondary); }
+.np-palette__item > svg, .np-palette__item > .npi { width: 16px; height: 16px; flex: none; color: var(--color-text-muted); }
+.np-palette__item[aria-selected="true"], .np-palette__item.is-active { background: var(--color-surface-raised); color: var(--color-text); box-shadow: inset 2px 0 0 var(--color-accent); }
+.np-palette__item[aria-selected="true"] > svg, .np-palette__item[aria-selected="true"] > .npi { color: var(--color-accent); }
+.np-palette__hint { margin-left: auto; font: 400 11px/1 var(--font-mono); color: var(--color-text-muted); }
+.np-palette__footer { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 18px; border-top: 1px solid var(--color-border-subtle);
+  font: 400 11px/1 var(--font-mono); color: var(--color-text-muted); }
+.np-palette__empty { padding: 28px 10px; text-align: center; font: 400 13px/1.4 var(--font-mono); color: var(--color-text-muted); }
+
+/* ============================================================
+   KEYFRAMES — the signature motion
+   ============================================================ */
 @keyframes np-pulse {
   0%, 100% { box-shadow: var(--glow-cyan); }
-  50%      { box-shadow: 0 0 0 1px rgba(0,229,255,0.45), 0 0 34px rgba(0,229,255,0.45); }
+  50%      { box-shadow: 0 0 0 1px color-mix(in srgb, var(--neon-cyan) 45%, transparent), 0 0 34px color-mix(in srgb, var(--neon-cyan) 45%, transparent); }
 }
 @keyframes np-blink {
   0%, 100% { opacity: 1; }
@@ -417,6 +842,9 @@
 }
 @keyframes np-spin { to { transform: rotate(360deg); } }
 @keyframes np-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+@keyframes np-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes np-pop { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes np-slide-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
 
 /* Respect users who ask for less motion — calm the ambient loops,
    keep functional spinners turning (just slower). */
@@ -425,6 +853,7 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
   .np-btn[aria-busy="true"]::after, .np-btn.is-loading::after {
     animation: np-spin 1.4s linear infinite !important;

@@ -1,4 +1,6 @@
-/* Dashboard — SVG charts (area, bars, donut, sparkline) */
+/* Dashboard — SVG charts (area, bars, donut, sparkline)
+   Single-series charts default to the accent alias; neon primitives are
+   fine as a categorical series palette (pass them via `color`). */
 
 function smoothPath(pts) {
   if (pts.length < 2) return '';
@@ -12,7 +14,7 @@ function smoothPath(pts) {
   return d;
 }
 
-function AreaChart({ data, color = 'var(--neon-cyan)', height = 220, id = 'a' }) {
+function AreaChart({ data, color = 'var(--color-accent)', height = 220, id = 'a', label }) {
   const w = 680, h = height, pad = 14;
   const max = Math.max(...data) * 1.15, min = Math.min(...data) * 0.85;
   const pts = data.map((v, i) => [
@@ -23,7 +25,8 @@ function AreaChart({ data, color = 'var(--neon-cyan)', height = 220, id = 'a' })
   const area = line + ` L ${pts[pts.length - 1][0]},${h - pad} L ${pts[0][0]},${h - pad} Z`;
   const last = pts[pts.length - 1];
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height, display: 'block' }} preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height, display: 'block' }} preserveAspectRatio="none"
+      role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
       <defs>
         <linearGradient id={`fill-${id}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.28" />
@@ -33,7 +36,7 @@ function AreaChart({ data, color = 'var(--neon-cyan)', height = 220, id = 'a' })
           <feGaussianBlur stdDeviation="3.2" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-      {[0.25, 0.5, 0.75].map(g => <line key={g} x1="0" x2={w} y1={h * g} y2={h * g} stroke="var(--line-1)" strokeWidth="1" />)}
+      {[0.25, 0.5, 0.75].map(g => <line key={g} x1="0" x2={w} y1={h * g} y2={h * g} stroke="var(--color-border-subtle)" strokeWidth="1" />)}
       <path d={area} fill={`url(#fill-${id})`} />
       <path d={line} fill="none" stroke={color} strokeWidth="2.4" filter={`url(#glow-${id})`} strokeLinecap="round" />
       <circle cx={last[0]} cy={last[1]} r="4.5" fill={color} filter={`url(#glow-${id})`} />
@@ -42,12 +45,12 @@ function AreaChart({ data, color = 'var(--neon-cyan)', height = 220, id = 'a' })
   );
 }
 
-function BarChart({ data, color = 'var(--neon-blue)', height = 180 }) {
+function BarChart({ data, height = 180 }) {
   const w = 320, h = height, pad = 8, gap = 8;
   const max = Math.max(...data) * 1.1;
   const bw = (w - pad * 2 - gap * (data.length - 1)) / data.length;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height, display: 'block' }} preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height, display: 'block' }} preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="barg" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--neon-cyan)" /><stop offset="100%" stopColor="var(--neon-blue)" />
@@ -61,16 +64,16 @@ function BarChart({ data, color = 'var(--neon-blue)', height = 180 }) {
   );
 }
 
-function Donut({ value = 72, color = 'var(--neon-cyan)', size = 132 }) {
+function Donut({ value = 72, color = 'var(--color-accent)', size = 132 }) {
   const r = size / 2 - 12, c = 2 * Math.PI * r;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={value + '% CPU saturation'}>
       <defs><filter id="dglow"><feGaussianBlur stdDeviation="2.4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--bg-4)" strokeWidth="10" />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-track)" strokeWidth="10" />
       <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
         strokeDasharray={c} strokeDashoffset={c * (1 - value / 100)} filter="url(#dglow)"
         transform={`rotate(-90 ${size / 2} ${size / 2})`} />
-      <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="26" fontWeight="700" fill="var(--fg-1)">{value}%</text>
+      <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="26" fontWeight="700" fill="var(--color-text)">{value}%</text>
     </svg>
   );
 }
@@ -80,8 +83,8 @@ function Sparkline({ data, color, up = true }) {
   const max = Math.max(...data), min = Math.min(...data);
   const pts = data.map((v, i) => [(i / (data.length - 1)) * w, h - ((v - min) / (max - min || 1)) * (h - 4) - 2]);
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: 'block' }}>
-      <polyline points={pts.map(p => p.join(',')).join(' ')} fill="none" stroke={color || (up ? 'var(--success)' : 'var(--danger)')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: 'block', flex: 'none' }} aria-hidden="true">
+      <polyline points={pts.map(p => p.join(',')).join(' ')} fill="none" stroke={color || (up ? 'var(--color-success)' : 'var(--color-danger)')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

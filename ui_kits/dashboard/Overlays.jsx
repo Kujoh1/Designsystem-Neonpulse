@@ -1,56 +1,88 @@
-/* Dashboard — Modal + Toast system */
+/* Dashboard — Deploy modal + toast system (.np-scrim/.np-modal, .np-toast-region/.np-toast) */
+
+// Keep Tab / Shift+Tab inside an open dialog.
+function trapFocus(e, root) {
+  if (e.key !== 'Tab' || !root) return;
+  const f = Array.from(root.querySelectorAll('button, input, a[href], [tabindex]:not([tabindex="-1"])')).filter(el => !el.disabled);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+
 function Modal({ open, onClose, onDeploy }) {
   const [region, setRegion] = React.useState('us-east');
   const [branch, setBranch] = React.useState('main');
+  const [invalid, setInvalid] = React.useState(false);
+  const dialogRef = React.useRef(null);
+  const firstRef = React.useRef(null);
+  const closeRef = React.useRef(onClose);
+  closeRef.current = onClose;
+
+  // focus in on open, Esc closes, focus returns to the trigger on close
+  React.useEffect(() => {
+    if (!open) return;
+    const prev = document.activeElement;
+    if (firstRef.current) firstRef.current.focus();
+    const onKey = e => { if (e.key === 'Escape') { e.preventDefault(); closeRef.current(); } };
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('keydown', onKey); if (prev && prev.focus) prev.focus(); };
+  }, [open]);
+
   if (!open) return null;
   const regions = ['us-east', 'us-west', 'eu-west', 'ap-south'];
+  const submit = e => {
+    e.preventDefault();
+    if (!branch.trim()) { setInvalid(true); firstRef.current.focus(); return; }
+    onClose();
+    onDeploy(region, branch.trim());
+  };
   return (
-    <div onClick={onClose} style={{
-      position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(5,5,10,0.66)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
-      animation: 'np-fade 160ms ease-out'
-    }}>
-      <div onClick={e => e.stopPropagation()} style={{
-        width: 'min(440px, 100%)', background: 'var(--bg-2)', border: '1px solid var(--line-2)',
-        borderRadius: 'var(--r-xl)', boxShadow: 'var(--shadow-2), var(--glow-soft)', overflow: 'hidden',
-        animation: 'np-pop 200ms var(--ease-out)'
-      }}>
-        <div style={{ padding: '20px 22px', borderBottom: '1px solid var(--line-1)', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 'var(--r-md)', background: 'var(--bg-3)', color: 'var(--neon-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(0,229,255,.3)' }}><Icon name="rocket" size={20} /></div>
+    <div className="np-scrim" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div ref={dialogRef} className="np-modal" role="dialog" aria-modal="true" aria-labelledby="deploy-title" aria-describedby="deploy-sub"
+        onKeyDown={e => trapFocus(e, dialogRef.current)}>
+        <div className="np-modal__header">
+          <div className="np-modal__icon"><Icon name="rocket" size={20} /></div>
           <div>
-            <h3 style={{ font: 'var(--h4)', color: 'var(--fg-1)', margin: 0 }}>Deploy aurora-core</h3>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)' }}>Ship the latest build to a region</span>
+            <h2 id="deploy-title" className="np-modal__title">Deploy aurora-core</h2>
+            <span id="deploy-sub" className="np-modal__subtitle">Ship the latest build to a region</span>
           </div>
-          <button className="np-icon-btn" onClick={onClose} style={{ marginLeft: 'auto' }}><Icon name="x" size={16} /></button>
+          <button type="button" className="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Close dialog" onClick={onClose} style={{ marginLeft: 'auto' }}><Icon name="x" size={16} /></button>
         </div>
-        <div style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <div className="np-label" style={{ fontSize: 10, marginBottom: 8 }}>Branch</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg-1)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-md)', padding: '10px 12px' }}>
-              <span style={{ color: 'var(--fg-3)', display: 'flex' }}><Icon name="git-branch" size={15} /></span>
-              <input value={branch} onChange={e => setBranch(e.target.value)} style={{ background: 'transparent', border: 'none', outline: 'none', color: 'var(--fg-1)', fontFamily: 'var(--font-mono)', fontSize: 13, width: '100%' }} />
-            </div>
+        <form onSubmit={submit} noValidate>
+          <div className="np-modal__body">
+            <label className={'np-field' + (invalid ? ' is-invalid' : '')}>
+              <span className="np-field__label">Branch</span>
+              <span className="np-inputgroup" style={invalid ? { borderColor: 'var(--color-danger)' } : undefined}>
+                <Icon name="git-branch" size={16} />
+                <input ref={firstRef} value={branch} spellCheck={false} autoComplete="off"
+                  aria-invalid={invalid} aria-describedby={invalid ? 'branch-hint' : undefined}
+                  onChange={e => { setBranch(e.target.value); if (invalid) setInvalid(false); }}
+                  style={{ fontFamily: 'var(--font-mono)' }} />
+              </span>
+              {invalid && <span id="branch-hint" className="np-field__hint">Branch is required.</span>}
+            </label>
+            <fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+              <legend className="np-field__label" style={{ padding: 0, marginBottom: 7 }}>Region</legend>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {regions.map(r => {
+                  const on = region === r;
+                  return (
+                    <label key={r} className={'np-card np-card--row db-region' + (on ? ' np-card--selected' : '')} style={{ padding: '10px 12px', gap: 8 }}>
+                      <input type="radio" name="region" value={r} checked={on} onChange={() => setRegion(r)} className="np-sr-only" />
+                      <span style={{ display: 'flex', color: on ? 'var(--color-accent)' : 'var(--color-text-muted)' }}><Icon name={on ? 'circle-check' : 'globe'} size={16} /></span>
+                      <span style={{ font: '400 13px/1.2 var(--font-mono)', color: on ? 'var(--color-text-accent)' : 'var(--color-text-secondary)' }}>{r}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
           </div>
-          <div>
-            <div className="np-label" style={{ fontSize: 10, marginBottom: 8 }}>Region</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {regions.map(r => (
-                <button key={r} onClick={() => setRegion(r)} style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 13, padding: '10px 12px', borderRadius: 'var(--r-md)', cursor: 'pointer',
-                  textAlign: 'left', transition: 'all var(--dur)',
-                  border: '1px solid ' + (region === r ? 'transparent' : 'var(--line-2)'),
-                  background: region === r ? 'rgba(0,229,255,0.1)' : 'var(--bg-1)',
-                  color: region === r ? 'var(--neon-cyan)' : 'var(--fg-2)',
-                  boxShadow: region === r ? 'inset 0 0 0 1px var(--neon-cyan)' : 'none'
-                }}>{r}</button>
-              ))}
-            </div>
+          <div className="np-modal__footer">
+            <button type="button" className="np-btn np-btn--ghost" onClick={onClose}><span>Cancel</span></button>
+            <button type="submit" className="np-btn np-btn--primary"><Icon name="rocket" size={16} /><span>Deploy now</span></button>
           </div>
-        </div>
-        <div style={{ padding: '16px 22px', borderTop: '1px solid var(--line-1)', display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button className="np-btn-ghost" onClick={onClose}>Cancel</button>
-          <button className="np-btn-primary" onClick={() => { onClose(); onDeploy(region); }}><Icon name="rocket" size={15} /> Deploy now</button>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -58,26 +90,23 @@ function Modal({ open, onClose, onDeploy }) {
 
 function Toasts({ items, dismiss }) {
   const cfg = {
-    success: { icon: 'check-circle-2', color: 'var(--success)' },
-    info: { icon: 'info', color: 'var(--neon-cyan)' },
-    error: { icon: 'alert-triangle', color: 'var(--danger)' },
+    success: ['circle-check', ' np-toast--success'],
+    info: ['info', ''],
+    warning: ['triangle-alert', ' np-toast--warning'],
+    error: ['circle-alert', ' np-toast--danger'],
   };
   return (
-    <div style={{ position: 'fixed', right: 20, bottom: 20, zIndex: 200, display: 'flex', flexDirection: 'column', gap: 10, width: 320 }}>
+    <div className="np-toast-region" aria-live="polite">
       {items.map(t => {
-        const c = cfg[t.type] || cfg.info;
+        const [icon, mod] = cfg[t.type] || cfg.info;
         return (
-          <div key={t.id} style={{
-            display: 'flex', alignItems: 'flex-start', gap: 12, padding: '13px 14px',
-            background: 'var(--bg-3)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-md)',
-            boxShadow: 'var(--shadow-2)', animation: 'np-slide-in 220ms var(--ease-out)'
-          }}>
-            <span style={{ color: c.color, display: 'flex', marginTop: 1, filter: `drop-shadow(0 0 6px ${c.color})` }}><Icon name={c.icon} size={18} /></span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)', fontWeight: 500 }}>{t.title}</div>
-              {t.body && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', marginTop: 2 }}>{t.body}</div>}
+          <div key={t.id} className={'np-toast' + mod} role="status">
+            <span className="np-toast__icon"><Icon name={icon} size={18} /></span>
+            <div className="np-toast__content">
+              <div className="np-toast__title">{t.title}</div>
+              {t.body && <div className="np-toast__body">{t.body}</div>}
             </div>
-            <button onClick={() => dismiss(t.id)} style={{ background: 'none', border: 'none', color: 'var(--fg-3)', cursor: 'pointer', display: 'flex', padding: 0 }}><Icon name="x" size={15} /></button>
+            <button type="button" className="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Dismiss notification" onClick={() => dismiss(t.id)} style={{ margin: '-5px -6px -5px 0' }}><Icon name="x" size={15} /></button>
           </div>
         );
       })}
@@ -85,4 +114,4 @@ function Toasts({ items, dismiss }) {
   );
 }
 
-Object.assign(window, { Modal, Toasts });
+Object.assign(window, { Modal, Toasts, trapFocus });

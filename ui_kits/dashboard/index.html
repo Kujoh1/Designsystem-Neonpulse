@@ -5,64 +5,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NeonPulse — Dashboard UI Kit</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<meta name="theme-color" content="#0c0c16">
 <link rel="stylesheet" href="../../colors_and_type.css">
+<script>/* theme-color follows the page token — no hardcoded hex */
+  (function () { var m = document.createElement('meta'); m.name = 'theme-color';
+    m.content = getComputedStyle(document.documentElement).getPropertyValue('--color-bg-page').trim(); document.head.appendChild(m); })();
+</script>
 <style>
+  /* Kit-specific layout only — every control comes from colors_and_type.css */
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg-1); }
-  body { font-family: var(--font-body); color: var(--fg-1); -webkit-font-smoothing: antialiased; }
+  html, body { margin: 0; background: var(--color-bg-page); }
+  body { font-family: var(--font-body); color: var(--color-text); -webkit-font-smoothing: antialiased; }
+  .npi svg { width: 100%; height: 100%; display: block; }
 
-  .np-btn-primary, .np-btn-ghost {
-    font-family: var(--font-display); font-weight: 600; font-size: 14px;
-    border-radius: var(--r-md); padding: 9px 16px; border: 1px solid transparent;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur), border-color var(--dur), color var(--dur);
+  /* ---- shell ---- */
+  .db-shell { display: flex; min-height: 100vh; }
+  .db-main { flex: 1; min-width: 0; }
+  .db-sidebar {
+    width: 232px; flex: none; height: 100vh; position: sticky; top: 0; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px; padding: 18px 14px;
+    background: var(--color-bg-void); border-right: 1px solid var(--color-border-subtle);
   }
-  .np-btn-primary { background: var(--grad-pulse); color: var(--fg-on-neon); box-shadow: var(--glow-blue); }
-  .np-btn-primary:hover { box-shadow: 0 0 0 1px rgba(0,229,255,.5), 0 0 26px rgba(0,229,255,.45); }
-  .np-btn-primary:active { transform: scale(0.97); }
-  .np-btn-ghost { background: var(--bg-2); color: var(--fg-1); border-color: var(--line-2); }
-  .np-btn-ghost:hover { border-color: var(--line-glow); color: var(--neon-cyan); }
-  .np-btn-ghost:active { transform: scale(0.97); }
+  .db-nav { display: flex; flex-direction: column; gap: 14px; }
+  .db-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .db-nav ul + ul { border-top: 1px solid var(--color-border-subtle); padding-top: 14px; }
 
-  .np-icon-btn {
-    width: 38px; height: 38px; border-radius: var(--r-md); border: 1px solid var(--line-2);
-    background: var(--bg-2); color: var(--fg-2); display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: all var(--dur);
+  .db-topbar {
+    position: sticky; top: 0; z-index: var(--z-sticky); height: 62px;
+    display: flex; align-items: center; gap: 16px; padding: 0 24px;
+    background: var(--color-bg-translucent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
   }
-  .np-icon-btn:hover { color: var(--neon-cyan); border-color: var(--line-glow); }
-
-  .np-livedot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); animation: np-blink 1.4s infinite; flex: none; }
-  .np-chip-live { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--neon-cyan); background: var(--info-fill); padding: 4px 10px; border-radius: var(--r-full); }
-
-  .np-seg { background: var(--bg-2); border: 1px solid var(--line-2); border-radius: var(--r-full); padding: 4px; display: inline-flex; }
-  .np-seg div { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--fg-3); padding: 7px 14px; border-radius: var(--r-full); cursor: pointer; transition: all var(--dur); }
-  .np-seg div.on { background: var(--grad-pulse); color: var(--fg-on-neon); }
-
-  .np-row { transition: background var(--dur); }
-  .np-row:hover { background: var(--bg-3); }
-
-  button svg, a svg, .np-icon-btn svg { stroke-width: 1.9; }
-  .npi svg { width: 100%; height: 100%; display: block; stroke-width: 1.9; }
-
-  @keyframes np-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes np-pop { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
-  @keyframes np-slide-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+  .db-search { flex: 1; max-width: 360px; margin-left: 18px; cursor: pointer; font: inherit; text-align: left; }
+  .db-search:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .db-search-btn, .db-menu-btn, .db-drawer-close { display: none; }
+  .db-pagehead { align-items: center; padding: 20px 24px 0; }
+  .db-page { padding: 24px; }
+  .db-stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .db-chart-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; }
+  .db-region { cursor: pointer; }
+  .db-region:not(.np-card--selected):hover { border-color: var(--color-border-strong); }
+  .db-region:has(input:focus-visible) { box-shadow: var(--ring-focus); }
+  .np-table-wrap:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .np-palette__footer > span { display: inline-flex; align-items: center; gap: 6px; }
 
   @media (max-width: 920px) {
-    .np-stat-grid { grid-template-columns: 1fr 1fr !important; }
-    .np-chart-grid { grid-template-columns: 1fr !important; }
-    .np-search { display: none !important; }
+    .db-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .db-chart-grid { grid-template-columns: minmax(0, 1fr); }
+    .db-search { display: none; }
+    .db-search-btn { display: inline-flex; }
+  }
+  /* ≤760px: sidebar becomes an off-canvas drawer */
+  @media (max-width: 760px) {
+    .db-menu-btn, .db-drawer-close { display: inline-flex; }
+    .db-sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; z-index: var(--z-modal); width: min(280px, 86vw);
+      transform: translateX(-100%); visibility: hidden; box-shadow: var(--elevation-overlay);
+      transition: transform var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+    }
+    .db-sidebar.is-open { transform: none; visibility: visible; transition: transform var(--dur-slow) var(--ease-out), visibility 0s; }
+    .db-topbar { gap: 10px; padding: 0 16px; }
+    .db-pagehead { padding: 18px 16px 0; }
+    .db-page { padding: 16px; }
+  }
+  @media (min-width: 761px) { .db-drawer-scrim { display: none; } }
+  @media (max-width: 520px) {
+    .db-stat-grid { grid-template-columns: minmax(0, 1fr); }
+    .db-hide-sm, .np-palette__footer > .db-hide-sm { display: none; }
+    .db-topbar { gap: 8px; }
   }
 </style>
 </head>
 <body>
 <div id="root"></div>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
 
 <script type="text/babel">
   function Icon({ name, size = 18 }) {
@@ -80,14 +99,22 @@
 <script type="text/babel" src="Charts.jsx"></script>
 <script type="text/babel" src="Shell.jsx"></script>
 <script type="text/babel" src="Overview.jsx"></script>
+<script type="text/babel" src="Views.jsx"></script>
 <script type="text/babel" src="Overlays.jsx"></script>
+<script type="text/babel" src="CommandPalette.jsx"></script>
 <script type="text/babel">
+  const ENDPOINT = 'https://aurora-core.pulse.app';
+
   function App() {
     useLucide();
     const [active, setActive] = React.useState('Overview');
     const [range, setRange] = React.useState('Live');
     const [modal, setModal] = React.useState(false);
+    const [palette, setPalette] = React.useState(false);
+    const [nav, setNav] = React.useState(false);
     const [toasts, setToasts] = React.useState([]);
+    const modalOpen = React.useRef(false);
+    modalOpen.current = modal;
 
     const pushToast = (t) => {
       const id = Date.now() + Math.random();
@@ -96,39 +123,71 @@
     };
     const dismiss = (id) => setToasts(ts => ts.filter(x => x.id !== id));
 
-    const onDeploy = (region) => {
-      pushToast({ type: 'info', title: 'Deploy started', body: 'building image · ' + region });
+    const onDeploy = (region, branch) => {
+      pushToast({ type: 'info', title: 'Deploy started', body: 'building ' + branch + ' · ' + region });
       setTimeout(() => pushToast({ type: 'success', title: 'Deployed. Live in ' + region, body: '42ms p99 · 3 nodes online' }), 1600);
     };
+    const go = (view) => { setActive(view); setNav(false); };
+    const copyEndpoint = () => {
+      const ok = () => pushToast({ type: 'success', title: 'Endpoint copied', body: ENDPOINT });
+      const fail = () => pushToast({ type: 'warning', title: 'Clipboard unavailable', body: ENDPOINT });
+      try { navigator.clipboard.writeText(ENDPOINT).then(ok, fail); } catch (e) { fail(); }
+    };
+    const act = (a) => {
+      if (a === 'deploy') setModal(true);
+      else if (a === 'copy') copyEndpoint();
+      else if (a.indexOf('nav:') === 0) go(a.slice(4));
+    };
+
+    // ⌘K / Ctrl+K toggles the command palette (not on top of the deploy modal)
+    React.useEffect(() => {
+      const onKey = e => {
+        if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (!modalOpen.current) setPalette(p => !p);
+        }
+      };
+      document.addEventListener('keydown', onKey);
+      return () => document.removeEventListener('keydown', onKey);
+    }, []);
+
+    const commands = [
+      ...NAV_GROUPS.flat().map(([icon, label]) => ({
+        id: 'nav-' + label.toLowerCase().replace(/\W+/g, '-'), group: 'Navigate', icon, label,
+        hint: active === label ? 'current' : undefined, run: () => go(label),
+      })),
+      { id: 'deploy', group: 'Actions', icon: 'rocket', label: 'Deploy…', run: () => setModal(true) },
+      ...RANGES.map(r => ({
+        id: 'range-' + r, group: 'Actions', icon: 'clock', label: 'Time range: ' + r,
+        hint: range === r ? 'active' : undefined, run: () => setRange(r),
+      })),
+      { id: 'copy', group: 'Actions', icon: 'copy', label: 'Copy API endpoint', hint: 'aurora-core', run: copyEndpoint },
+    ];
 
     return (
-      <div style={{ display: 'flex', minHeight: '100vh' }}>
-        <Sidebar active={active} setActive={setActive} />
-        <main style={{ flex: 1, minWidth: 0 }}>
-          <Topbar onDeploy={() => setModal(true)} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 0' }}>
-            <div>
-              <div className="np-label" style={{ fontSize: 10 }}>{active}</div>
-              <h1 style={{ font: 'var(--h2)', color: 'var(--fg-1)', margin: '6px 0 0' }}>
-                {active === 'Overview' ? 'Realtime overview' : active}
-              </h1>
+      <div className="db-shell">
+        <a className="np-skip" href="#main">Skip to content</a>
+        <Sidebar active={active} onNavigate={go} open={nav} onClose={() => setNav(false)} />
+        {nav && <div className="np-scrim db-drawer-scrim" aria-hidden="true" onClick={() => setNav(false)} />}
+        <div className="db-main">
+          <Topbar onDeploy={() => setModal(true)} onSearch={() => setPalette(true)} onMenu={() => setNav(true)} navOpen={nav} />
+          <main id="main" tabIndex={-1} style={{ outline: 'none' }}>
+            <div className="np-pageheader db-pagehead">
+              <div className="np-pageheader__titles">
+                <span className="np-card__eyebrow" style={{ fontSize: 10 }}>{active}</span>
+                <h1 style={{ font: 'var(--h2)', color: 'var(--color-text)', margin: 0 }}>
+                  {active === 'Overview' ? 'Realtime overview' : active}
+                </h1>
+              </div>
+              <RangeControl range={range} setRange={setRange} />
             </div>
-            <div className="np-seg">
-              {['Live', '1H', '24H', '7D'].map(r => (
-                <div key={r} className={range === r ? 'on' : ''} onClick={() => setRange(r)}>{r}</div>
-              ))}
-            </div>
-          </div>
-          {active === 'Overview'
-            ? <Overview range={range} />
-            : <div style={{ padding: 24 }}>
-                <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-lg)', padding: 48, textAlign: 'center', color: 'var(--fg-3)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
-                  <div style={{ marginBottom: 10, color: 'var(--neon-cyan)' }}><Icon name="construction" size={22} /></div>
-                  {active} · placeholder view
-                </div>
-              </div>}
-        </main>
+            {active === 'Overview'
+              ? <Overview range={range} />
+              : <EmptyView view={active} onAction={act} />}
+          </main>
+        </div>
         <Modal open={modal} onClose={() => setModal(false)} onDeploy={onDeploy} />
+        <CommandPalette open={palette} onClose={() => setPalette(false)} commands={commands} />
         <Toasts items={toasts} dismiss={dismiss} />
       </div>
     );

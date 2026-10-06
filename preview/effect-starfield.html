@@ -1,15 +1,18 @@
 <!-- @dsCard group="Brand" -->
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<!DOCTYPE html><html lang="en" data-theme="dark" data-theme-lock><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Starfield</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <link rel="stylesheet" href="../effects/starfield.css">
 <style>
-  html,body{margin:0;height:100%}
-  body{background:var(--bg-0);font-family:var(--font-body);color:var(--fg-1);position:relative;overflow:hidden}
+  /* Scene backdrop is intrinsically dark: data-theme-lock keeps it dark inside a light docs page.
+     No fixed height — the page is as tall as its content; the starfield fills the frame. */
+  html,body{margin:0}
+  body{background:var(--color-bg-page);font-family:var(--font-body);color:var(--color-text);position:relative}
   .content{position:relative;z-index:1;padding:26px 28px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);font-family:var(--font-mono)}
   h3{font:var(--h3);margin:0}
-  p{font:var(--body-sm);color:var(--fg-2);margin:0;max-width:42ch}
-  code{font-family:var(--font-mono);font-size:12px;color:var(--neon-cyan)}
+  p{font:var(--body-sm);color:var(--color-text-secondary);margin:0;max-width:42ch}
+  .np-code{font-size:12px}
 </style></head>
 <body>
   <!-- scene backdrop -->
@@ -21,8 +24,8 @@
   </div>
   <!-- content on top -->
   <div class="content">
-    <div class="lab">Effect · scene backdrop</div>
+    <div class="np-label">Effect · scene backdrop</div>
     <h3>Starfield</h3>
-    <p>Token-driven neon haze + layered stars on the near-black canvas. Static by default; add <code>np-starfield--drift</code> for a slow parallax. Reduced-motion safe.</p>
+    <p>Token-driven neon haze + layered stars on the near-black canvas. Static by default; add <code class="np-code">np-starfield--drift</code> for a slow parallax. Reduced-motion safe.</p>
   </div>
 </body></html>

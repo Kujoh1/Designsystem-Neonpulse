@@ -1,35 +1,74 @@
 <!-- @dsCard group="Components" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inputs &amp; controls</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
-  body{background:var(--bg-1);padding:22px 24px;font-family:var(--font-body)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--fg-3);margin-bottom:16px;font-family:var(--font-mono)}
-  .field{margin-bottom:14px}
-  .flab{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-3);display:block;margin-bottom:7px}
-  input{width:100%;box-sizing:border-box;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-md);padding:11px 14px;color:var(--fg-1);font-family:var(--font-body);font-size:14px;outline:none}
-  input::placeholder{color:var(--fg-4)}
-  .focused{border-color:transparent;box-shadow:var(--glow-cyan)}
-  .row{display:flex;gap:14px}
-  .col{flex:1}
-  .tog{display:flex;align-items:center;gap:10px;margin-top:4px}
-  .switch{width:42px;height:24px;border-radius:var(--r-full);background:var(--grad-pulse);position:relative;box-shadow:var(--glow-blue)}
-  .knob{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff}
-  .sw-off{background:var(--bg-3);box-shadow:none}
-  .sw-off .knob{left:3px;right:auto;background:var(--fg-3)}
-  .st{font-family:var(--font-mono);font-size:11px;color:var(--fg-2)}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:16px}
+  .lab:not(:first-child){margin-top:26px}
+  /* specimen state caption — accent text + hairline, so it never reads as the field label */
+  .state{display:flex;align-items:center;gap:8px;margin-bottom:10px;font:500 10px/1 var(--font-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-accent)}
+  .state::after{content:"";flex:1;height:1px;background:var(--color-border-subtle)}
+  .switches{gap:var(--s-6)}
 </style></head>
 <body>
-  <div class="lab">Inputs &amp; controls</div>
-  <div class="row">
-    <div class="col field"><span class="flab">Project name</span><input value="aurora-core"></div>
-    <div class="col field"><span class="flab">API key · focused</span><input class="focused" value="sk_live_••••4f2a"></div>
-  </div>
-  <div class="row" style="align-items:center">
-    <div class="col field" style="margin:0"><span class="flab">Region</span><input placeholder="us-east-1"></div>
-    <div class="col" style="display:flex;gap:22px;padding-top:6px">
-      <div class="tog"><div class="switch"><div class="knob"></div></div><span class="st">Auto-scale</span></div>
-      <div class="tog"><div class="switch sw-off"><div class="knob"></div></div><span class="st">Verbose</span></div>
+  <div class="np-label lab">Fields · rest · hover · focus · invalid · disabled</div>
+  <div class="np-grid" style="--np-grid-min:150px">
+    <div>
+      <span class="state">Rest</span>
+      <label class="np-field">
+        <span class="np-field__label">Project name</span>
+        <input class="np-input" value="aurora-core">
+      </label>
+    </div>
+    <div>
+      <span class="state">Hover</span>
+      <label class="np-field">
+        <span class="np-field__label">Region</span>
+        <input class="np-input is-hover" placeholder="us-east-1">
+      </label>
+    </div>
+    <div>
+      <span class="state">Focus</span>
+      <label class="np-field">
+        <span class="np-field__label">API key</span>
+        <input class="np-input np-input--mono is-focus" value="sk_live_••••4f2a">
+      </label>
+    </div>
+    <div>
+      <span class="state">Invalid</span>
+      <label class="np-field is-invalid">
+        <span class="np-field__label">Webhook URL</span>
+        <input class="np-input" value="htp://hooks.io" aria-invalid="true" aria-describedby="hook-err">
+        <span class="np-field__hint np-field__hint--error" id="hook-err">Invalid URL. Use https://.</span>
+      </label>
+    </div>
+    <div>
+      <span class="state">Disabled</span>
+      <label class="np-field">
+        <span class="np-field__label">Org ID</span>
+        <input class="np-input np-input--mono" value="org_7f3a" disabled aria-describedby="org-hint">
+        <span class="np-field__hint" id="org-hint">Locked by admin.</span>
+      </label>
     </div>
   </div>
+
+  <div class="np-label lab">Search · input group + shortcut</div>
+  <label class="np-inputgroup" style="max-width:420px">
+    <i data-lucide="search"></i>
+    <input type="search" placeholder="Search nodes, logs, deploys…" aria-label="Search">
+    <kbd class="np-kbd">⌘K</kbd>
+  </label>
+
+  <div class="np-label lab">Switch · real checkbox · on · off · disabled</div>
+  <div class="np-cluster switches">
+    <label class="np-switch"><input type="checkbox" role="switch" checked><span class="np-switch__track" aria-hidden="true"></span>Auto-scale</label>
+    <label class="np-switch"><input type="checkbox" role="switch"><span class="np-switch__track" aria-hidden="true"></span>Verbose logs</label>
+    <label class="np-switch"><input type="checkbox" role="switch" disabled><span class="np-switch__track" aria-hidden="true"></span>Edge cache</label>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>lucide.createIcons();</script>
 </body></html>

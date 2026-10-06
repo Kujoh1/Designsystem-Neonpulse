@@ -1,16 +1,18 @@
 <!-- @dsCard group="Patterns" -->
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Card family</title>
 <link rel="stylesheet" href="../colors_and_type.css">
 <style>
   html,body{margin:0}
   body{background:var(--color-bg-page);padding:22px 24px;font-family:var(--font-body)}
-  .lab{font:var(--mono-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-text-muted);font-family:var(--font-mono);margin:0 0 14px}
+  .lab{display:block;margin:0 0 14px}
   .lab + *{margin-bottom:6px}
   .lab:not(:first-child){margin-top:28px}
-  .avatar{width:34px;height:34px;border-radius:var(--r-full);background:var(--color-action-secondary);flex:none}
+  .row-title{font-size:14px}
 </style></head>
 <body>
-  <div class="lab">Variants · stat · live · content · interactive</div>
+  <div class="np-label lab">Variants · stat · live · content · interactive</div>
   <div class="np-grid" style="--np-grid-min:200px">
     <div class="np-card">
       <span class="np-card__eyebrow">Requests</span>
@@ -34,8 +36,8 @@
     </div>
   </div>
 
-  <div class="lab">Media &amp; row</div>
-  <div class="np-grid" style="--np-grid-min:240px">
+  <div class="np-label lab">Media &amp; row</div>
+  <div class="np-grid" style="--np-grid-min:300px">
     <div class="np-card np-card--media">
       <div class="np-card__media"></div>
       <div class="np-card__pad">
@@ -46,13 +48,13 @@
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div class="np-card np-card--row">
-        <span class="avatar"></span>
-        <div><span class="np-card__title" style="font-size:14px">api-gateway</span><div class="np-card__eyebrow">running</div></div>
+        <span class="np-avatar" aria-hidden="true">AG</span>
+        <div><span class="np-card__title row-title">api-gateway</span><div class="np-card__eyebrow">running</div></div>
         <span class="np-card__delta" style="margin-left:auto">v3.2.0</span>
       </div>
       <div class="np-card np-card--row np-card--selected is-selected">
-        <span class="avatar"></span>
-        <div><span class="np-card__title" style="font-size:14px">worker-node</span><div class="np-card__eyebrow">selected</div></div>
+        <span class="np-avatar" aria-hidden="true">WN</span>
+        <div><span class="np-card__title row-title">worker-node</span><div class="np-card__eyebrow">selected</div></div>
         <span class="np-card__delta" style="margin-left:auto">v3.2.0</span>
       </div>
     </div>
