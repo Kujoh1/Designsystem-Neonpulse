@@ -3,6 +3,11 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.1.2 — 2026-10-06
+
+### Added
+- `governance/check.html` — live check (DE/EN): two pull requests with the same feature card, one built off-system, one with the system. A click runs eleven deterministic Guardian rules (rulebook v1.1) against the shown code in the browser; a session panel turns every check green or red, then shows the merge status and the Guardian comment with line, problem and token fix. Framed as a small eval (expected vs. actual). Linked from the governance page and the showcase.
+
 ## 1.1.1 — 2026-10-06
 
 ### Added

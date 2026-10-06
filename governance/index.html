@@ -201,6 +201,7 @@
   .finding code { font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
   .review__foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-top: 1px solid var(--color-border-subtle); background: var(--color-bg-page); }
   .review__foot > span { font: 400 12px/1.4 var(--font-mono); color: var(--color-text-muted); }
+  .review__foot .np-btn--primary { margin-left: auto; }
   @media (max-width: 1000px) { .example { grid-template-columns: 1fr; } .example__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .example__facts { grid-template-columns: 1fr; } }
 
@@ -260,6 +261,7 @@
       <a href="#how"><span lang="de">So funktioniert's</span><span lang="en">How it works</span></a>
       <a href="#workflow">Workflow</a>
       <a href="#example"><span lang="de">Beispiel</span><span lang="en">Example</span></a>
+      <a href="check.html">Live-Check</a>
       <a href="#value"><span lang="de">Nutzen</span><span lang="en">Value</span></a>
     </nav>
     <div class="nav__end">
@@ -564,6 +566,7 @@
         </div>
         <div class="review__foot">
           <span lang="de">Auszug · 4 von 14 Funden</span><span lang="en">Excerpt · 4 of 14 findings</span>
+          <a class="np-btn np-btn--primary np-btn--sm" href="check.html"><i data-lucide="play" aria-hidden="true"></i><span lang="de">Selbst testen</span><span lang="en">Try it yourself</span></a>
           <a class="np-btn np-btn--ghost np-btn--sm" href="https://github.com/Kujoh1/Designsystem-Neonpulse/pull/1" target="_blank" rel="noopener"><span lang="de">Original auf GitHub</span><span lang="en">Original on GitHub</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
         </div>
       </div>
@@ -670,10 +673,11 @@
     <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Live</span>
     <h2 lang="de">Selbst ansehen.</h2>
     <h2 lang="en">See it yourself.</h2>
-    <p lang="de">Der Workflow, das Regelwerk und ein echtes Review sind öffentlich. Das Design System dahinter ebenfalls.</p>
-    <p lang="en">The workflow, the rulebook and a real review are public. So is the design system behind them.</p>
+    <p lang="de">Zwei Pull Requests live prüfen lassen, dazu Workflow, Regelwerk und ein echtes Review. Alles öffentlich.</p>
+    <p lang="en">Have two pull requests checked live, plus the workflow, the rulebook and a real review. All public.</p>
     <div class="cta__btns">
-      <a class="np-btn np-btn--primary np-btn--lg" href="workflow.html"><i data-lucide="workflow" aria-hidden="true"></i><span lang="de">Workflow öffnen</span><span lang="en">Open workflow</span></a>
+      <a class="np-btn np-btn--primary np-btn--lg" href="check.html"><i data-lucide="play" aria-hidden="true"></i><span lang="de">Live-Check starten</span><span lang="en">Run the live check</span></a>
+      <a class="np-btn np-btn--ghost np-btn--lg" href="workflow.html"><i data-lucide="workflow" aria-hidden="true"></i><span lang="de">Workflow öffnen</span><span lang="en">Open workflow</span></a>
       <a class="np-btn np-btn--ghost np-btn--lg" href="https://github.com/Kujoh1/Designsystem-Neonpulse/pull/1" target="_blank" rel="noopener"><i data-lucide="git-pull-request" aria-hidden="true"></i><span lang="de">Echtes Review</span><span lang="en">Real review</span></a>
       <a class="np-btn np-btn--ghost np-btn--lg" href="../showcase/"><i data-lucide="presentation" aria-hidden="true"></i><span lang="de">Design System</span><span lang="en">Design system</span></a>
     </div>

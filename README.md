@@ -19,7 +19,7 @@
 - **36 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item.
 - **Three interactive UI kits** (marketing, SaaS dashboard, mobile) built from the system's own classes.
 - **Living docs.** Swatches, contrast ratios and the full token table are read from the stylesheet at runtime; theme switch, ⌘K search and the source of every specimen are built in.
-- **Governance built in.** The [PR Guardian](https://github.com/Kujoh1/neonpulse-pr-guardian) — an n8n workflow with Claude — reviews every pull request against this system's rulebook and comments with exact token fixes. [Explained for decision-makers](https://kujoh1.github.io/Designsystem-Neonpulse/governance/) · [live workflow](https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html).
+- **Governance built in.** The [PR Guardian](https://github.com/Kujoh1/neonpulse-pr-guardian) — an n8n workflow with Claude — reviews every pull request against this system's rulebook and comments with exact token fixes. [Explained for decision-makers](https://kujoh1.github.io/Designsystem-Neonpulse/governance/) · [live workflow](https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html) · [live check: one PR fails, one passes](https://kujoh1.github.io/Designsystem-Neonpulse/governance/check.html).
 - **Zero build.** Plain HTML/CSS, self-hosted variable fonts (no Google request), CDN dependencies pinned with SRI hashes. Deploys to GitHub Pages on push.
 
 ---
@@ -97,7 +97,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 |---|---|
 | `index.html` | Docs home — interactive reference (theme switch, ⌘K search, live token table). |
 | `showcase/` | Case-study / marketing page (DE/EN) presenting the system. |
-| `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow. |
+| `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow, + `check.html`, a live check of two pull requests (one fails, one passes). |
 | `colors_and_type.css` | **Single source of truth**: tokens, light theme, elements, patterns. |
 | `fonts/` | Self-hosted variable fonts + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |

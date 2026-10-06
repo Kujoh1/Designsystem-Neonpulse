@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="de" data-lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live-Check — NeonPulse PR Guardian</title>
+<meta name="description" content="Zwei Pull Requests, ein Regelwerk: Der Guardian prüft jede Regel einzeln, bis alles grün oder rot ist.">
+<meta name="theme-color" content="#0c0c16">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="canonical" href="https://kujoh1.github.io/Designsystem-Neonpulse/governance/check.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Live check — NeonPulse PR Guardian">
+<meta property="og:description" content="Two pull requests, one rulebook: the Guardian runs every rule until everything is green or red.">
+<meta property="og:url" content="https://kujoh1.github.io/Designsystem-Neonpulse/governance/check.html">
+<meta property="og:image" content="https://kujoh1.github.io/Designsystem-Neonpulse/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search).get('lang'), s = null;
+    try { s = localStorage.getItem('np-lang'); } catch (e) {}
+    var l = (q === 'de' || q === 'en') ? q : (s === 'de' || s === 'en') ? s
+          : ((navigator.language || 'en').toLowerCase().indexOf('de') === 0 ? 'de' : 'en');
+    var h = document.documentElement; h.dataset.lang = l; h.lang = l; h.classList.add('js');
+  })();
+</script>
+<link rel="preload" href="../fonts/space-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/sora-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; overflow-x: hidden; }
+  a { color: inherit; }
+  [data-lang="de"] [lang="en"], [data-lang="en"] [lang="de"] { display: none !important; }
+
+  /* ---------- nav ---------- */
+  .nav { position: sticky; top: 0; z-index: var(--z-sticky); background: var(--color-bg-translucent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--color-border-subtle); }
+  .nav__in { height: 64px; display: flex; align-items: center; gap: 18px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; border-radius: var(--r-sm); }
+  .brand:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .mark { width: 26px; height: 26px; border-radius: 50%; position: relative; flex: none; background: var(--color-action-primary); box-shadow: var(--glow-accent); }
+  .mark::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--color-bg-void); }
+  .mark::before { content: ""; position: absolute; inset: 10.5px; border-radius: 50%; background: var(--color-accent); z-index: 1; }
+  .brand b { font: 700 16px/1 var(--font-display); letter-spacing: 0.04em; }
+  .brand b span { color: var(--color-text-accent); }
+  .nav__end { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  @media (max-width: 560px) { .nav .np-badge, .nav__back .lbl { display: none; } }
+
+  /* ---------- head ---------- */
+  .head { padding-block: 72px 40px; }
+  .head h1 { font: var(--display-l); letter-spacing: -0.03em; margin: 18px 0 0; max-width: 820px; }
+  .head p.lead { font: var(--body-lg); color: var(--color-text-secondary); max-width: 720px; margin: 18px 0 0; }
+  .grad { background: var(--color-action-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---------- the two runs ---------- */
+  .lab { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; align-items: start; padding-bottom: 88px; }
+  @media (max-width: 1000px) { .lab { grid-template-columns: 1fr; } .run + .run { margin-top: 20px; } }
+  .run { display: flex; flex-direction: column; border-radius: var(--r-xl); background: var(--color-surface); border: 1px solid var(--color-border); overflow: hidden; }
+  /* PR, code and session rows line up across both runs */
+  @supports (grid-template-rows: subgrid) {
+    .run { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-content: start; }
+  }
+  .run[data-result="fail"] { border-color: color-mix(in srgb, var(--color-danger) 45%, transparent); }
+  .run[data-result="pass"] { border-color: color-mix(in srgb, var(--color-success) 45%, transparent); }
+
+  .pr { display: flex; flex-direction: column; gap: 14px; padding: 22px 24px 20px; }
+  .pr__top { display: flex; align-items: center; gap: 12px; }
+  .pr__icon { width: 40px; height: 40px; flex: none; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;
+    background: var(--color-surface-raised); color: var(--color-text-secondary); }
+  .pr__icon svg { width: 20px; height: 20px; }
+  .run[data-result="fail"] .pr__icon { color: var(--color-danger); }
+  .run[data-result="pass"] .pr__icon { color: var(--color-success); }
+  .pr__no { font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; color: var(--color-text-muted); }
+  .pr h2 { font: var(--h4); margin: 4px 0 0; }
+  .pr__expect { margin-left: auto; flex: none; }
+  .pr__meta { font: 400 12px/1.5 var(--font-mono); color: var(--color-text-muted); }
+  .pr__meta b { font-weight: 500; color: var(--color-text-secondary); }
+  .pr__meta .add { color: var(--color-success); }
+  .pr p.pr__desc { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
+  .pr__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: auto; }
+
+  /* code view (diff of the PR, all lines added) */
+  .code { border-top: 1px solid var(--color-border-subtle); }
+  .code summary { display: flex; align-items: center; gap: 8px; padding: 12px 24px; cursor: pointer; list-style: none;
+    font: 500 11px/1 var(--font-mono); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-muted); }
+  .code summary::-webkit-details-marker { display: none; }
+  .code summary svg { width: 15px; height: 15px; transition: transform var(--dur) var(--ease-out); }
+  .code[open] summary svg { transform: rotate(90deg); }
+  .code summary:hover { color: var(--color-text); }
+  @media (max-width: 560px) { .code summary .fn { display: none; } }
+  .code summary:focus-visible { outline: none; box-shadow: inset var(--ring-focus); }
+  .code .np-codeblock { position: relative; margin: 0 16px 16px; padding: 12px 0; max-height: 380px; overflow: auto; font-size: 12px; line-height: 1.65; }
+  .code .np-codeblock code { display: inline-block; min-width: 100%; }
+  .ln { display: block; padding: 0 16px 0 0; border-left: 2px solid transparent; }
+  .ln__n { display: inline-block; width: 40px; padding-right: 14px; text-align: right; color: var(--color-text-muted); user-select: none; }
+  .ln.is-block { background: var(--color-danger-fill); border-left-color: var(--color-danger); color: var(--color-text); }
+  .ln.is-warn { background: var(--color-warning-fill); border-left-color: var(--color-warning); color: var(--color-text); }
+  .ln.is-focus { box-shadow: inset 0 0 0 1px var(--color-border-focus); }
+
+  /* session */
+  .session { border-top: 1px solid var(--color-border-subtle); background: var(--color-bg-page); padding: 18px 24px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .session__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .session__id { font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
+  .session__time { margin-left: auto; font: 500 13px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+  .session .np-meter__bar { transition: width var(--dur) var(--ease-out), background var(--dur); }
+  .run[data-result="fail"] .session .np-meter__bar { background: var(--color-danger); box-shadow: none; }
+  .run[data-result="pass"] .session .np-meter__bar { background: var(--color-success); box-shadow: none; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .steps + .steps { border-top: 1px dashed var(--color-border); padding-top: 6px; }
+  .steps__label { font: var(--mono-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-muted); padding: 4px 0 6px; }
+  .st { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 5px 0;
+    font: 400 13px/1.4 var(--font-body); color: var(--color-text-muted); transition: color var(--dur); }
+  .st__ic { position: relative; width: 18px; height: 18px; }
+  .st__ic svg { position: absolute; inset: 0; width: 18px; height: 18px; opacity: 0; transition: opacity var(--dur-fast); }
+  .st[data-state="wait"] .ic-wait, .st[data-state="run"] .ic-run, .st[data-state="ok"] .ic-ok,
+  .st[data-state="warn"] .ic-warn, .st[data-state="fail"] .ic-fail { opacity: 1; }
+  .ic-wait { color: var(--color-text-muted); opacity: 0.6; }
+  .ic-run { color: var(--color-accent); animation: np-spin 0.9s linear infinite; }
+  .ic-ok { color: var(--color-success); }
+  .ic-warn { color: var(--color-warning); }
+  .ic-fail { color: var(--color-danger); }
+  .st[data-state="run"], .st[data-state="ok"], .st[data-state="warn"], .st[data-state="fail"] { color: var(--color-text); }
+  .st__meta { font: 400 11px/1 var(--font-mono); color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .st[data-state="ok"] .st__meta { color: var(--color-success); }
+  .st[data-state="warn"] .st__meta { color: var(--color-warning); }
+  .st[data-state="fail"] .st__meta { color: var(--color-danger); }
+  .st[data-state="run"] .st__meta { color: var(--color-text-accent); }
+
+  /* result: merge box + guardian comment */
+  .result { display: flex; flex-direction: column; gap: 14px; animation: np-pop var(--dur) var(--ease-out); }
+  .result[hidden] { display: none; }
+  .np-banner b { display: block; font: 600 15px/1.35 var(--font-display); }
+  .np-banner span.d { display: block; margin-top: 2px; color: var(--color-text-secondary); }
+  .np-banner .np-banner__icon { width: 20px; height: 20px; }
+  .eval { display: flex; align-items: center; gap: 8px; font: 400 12px/1.4 var(--font-mono); color: var(--color-text-secondary); }
+  .eval svg { width: 16px; height: 16px; color: var(--color-success); flex: none; }
+  .eval.is-off svg { color: var(--color-danger); }
+
+  .comment { border-radius: var(--r-lg); background: var(--color-surface); border: 1px solid var(--color-border); overflow: hidden; }
+  .comment__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 18px; border-bottom: 1px solid var(--color-border-subtle); }
+  .comment__head .np-avatar { --av: 30px; background: var(--color-surface-raised); color: var(--color-accent); }
+  .comment__head .np-avatar svg { width: 16px; height: 16px; }
+  .comment__who { font: 600 14px/1.3 var(--font-display); }
+  .comment__who span { display: block; font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
+  .comment__head .np-badge { margin-left: auto; }
+  .verdict { padding: 12px 18px; font: 500 12px/1.5 var(--font-mono); letter-spacing: 0.04em; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border-subtle); }
+  .verdict b { color: var(--color-text); font-weight: 600; }
+  .fds { max-height: 460px; overflow-y: auto; }
+  .fd { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 12px; padding: 12px 18px; border-top: 1px solid var(--color-border-subtle); }
+  .fd:first-child { border-top: 0; }
+  .fd .np-badge { grid-row: span 3; align-self: start; justify-content: center; }
+  .fd b { font: 600 14px/1.35 var(--font-display); color: var(--color-text); }
+  .fd__loc { justify-self: start; display: inline-flex; flex-wrap: wrap; gap: 0 8px; padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
+    font: 400 11px/1.5 var(--font-mono); color: var(--color-text-muted); border-radius: var(--r-sm); }
+  .fd__loc span.l { color: var(--color-text-accent); }
+  .fd__loc:hover { color: var(--color-text-secondary); }
+  .fd__loc:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+  .fd__fix { font: var(--body-sm); color: var(--color-text-secondary); }
+  .fd__fix::before { content: "→ "; color: var(--color-text-accent); }
+  .fd__fix code { font: 400 12px/1.4 var(--font-mono); color: var(--color-text); }
+  .clean { display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; font: var(--body-sm); color: var(--color-text-secondary); }
+  .clean svg { width: 18px; height: 18px; flex: none; color: var(--color-success); margin-top: 1px; }
+  .clean b { display: block; color: var(--color-text); font-weight: 600; }
+  .closing { padding: 12px 18px; border-top: 1px solid var(--color-border-subtle); background: var(--color-bg-page); font: 400 12px/1.5 var(--font-mono); color: var(--color-text-muted); }
+
+  /* ---------- how real is this ---------- */
+  .real { padding-block: 88px; border-top: 1px solid var(--color-border-subtle); }
+  .real h2 { font: var(--display-l); letter-spacing: -0.025em; margin: 16px 0 0; max-width: 760px; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 40px; }
+  .tile { padding: 24px; border-radius: var(--r-lg); background: var(--color-surface); border: 1px solid var(--color-border); }
+  .tile__icon { width: 42px; height: 42px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; background: var(--color-surface-raised); color: var(--color-accent); }
+  .tile__icon svg { width: 20px; height: 20px; }
+  .tile h3 { font: var(--h4); margin: 18px 0 8px; }
+  .tile p { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
+  .real__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  @media (max-width: 900px) { .tiles { grid-template-columns: 1fr; } }
+
+  .foot { background: var(--color-bg-void); border-top: 1px solid var(--color-border-subtle); }
+  .foot__in { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px 32px; padding-block: 30px; }
+  .foot__brand { display: flex; align-items: center; gap: 16px; }
+  .foot__brand img { height: 28px; width: auto; }
+  .foot__meta { font: 400 12px/1.6 var(--font-mono); color: var(--color-text-muted); }
+  .foot__links { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 400 14px/1 var(--font-body); }
+
+  /* the running spinner is functional: keep it turning, just slower */
+  @media (prefers-reduced-motion: reduce) { .ic-run { animation: np-spin 1.4s linear infinite !important; } }
+</style>
+</head>
+<body class="np-scope">
+<a class="np-skip" href="#main"><span lang="de">Zum Inhalt springen</span><span lang="en">Skip to content</span></a>
+
+<header class="nav">
+  <div class="np-container nav__in">
+    <a class="brand" href="../showcase/" aria-label="NeonPulse case study"><span class="mark" aria-hidden="true"></span><b>NEON<span>PULSE</span></b></a>
+    <span class="np-badge np-badge--accent">Governance</span>
+    <div class="nav__end">
+      <div class="np-seg" role="group" aria-label="Language / Sprache">
+        <button class="np-seg__item" type="button" data-lang-set="de" aria-pressed="true">DE</button>
+        <button class="np-seg__item" type="button" data-lang-set="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="np-btn np-btn--ghost np-btn--sm nav__back" href="./"><i data-lucide="arrow-left" aria-hidden="true"></i><span class="lbl"><span lang="de">Übersicht</span><span lang="en">Overview</span></span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="head">
+  <div class="np-container">
+    <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span><span lang="de">Live-Check · Guardian-Regelwerk v1.1</span><span lang="en">Live check · Guardian rulebook v1.1</span></span>
+    <h1 lang="de">Zwei Pull Requests. <span class="grad">Ein Regelwerk.</span></h1>
+    <h1 lang="en">Two pull requests. <span class="grad">One rulebook.</span></h1>
+    <p class="lead" lang="de">Dieselbe Feature-Karte, zweimal eingereicht: einmal schnell gebaut, einmal mit dem Design System. Ein Klick startet die Prüfung. Jede Regel läuft einzeln, bis alles grün oder rot ist. Wie ein kleiner Eval: zwei Testfälle mit bekanntem Soll-Ergebnis.</p>
+    <p class="lead" lang="en">The same feature card, submitted twice: once built quickly, once with the design system. One click starts the check. Every rule runs on its own until everything is green or red. Like a small eval: two test cases with a known expected result.</p>
+  </div>
+</section>
+
+<section class="np-container lab" aria-label="Pull requests">
+  <article class="run" id="run-12" data-pr="12">
+    <div class="pr">
+      <div class="pr__top">
+        <span class="pr__icon" aria-hidden="true"><i data-lucide="git-pull-request"></i></span>
+        <div>
+          <div class="pr__no">PR #12</div>
+          <h2 lang="de">Feature-Karte „Live Telemetry“</h2><h2 lang="en">Feature card “Live Telemetry”</h2>
+        </div>
+        <span class="np-badge np-badge--outline pr__expect"><span lang="de">Soll: rot</span><span lang="en">Expected: red</span></span>
+      </div>
+      <div class="pr__meta"><b>feature/telemetry-card</b> → main · 1 <span lang="de">Datei</span><span lang="en">file</span> · <span class="add" data-adds></span></div>
+      <p class="pr__desc" lang="de">Schnell gebaut: Farben und Schrift von Hand, Leuchteffekt dauerhaft an, eigener Button, Icons per „latest“.</p>
+      <p class="pr__desc" lang="en">Built quickly: colours and font by hand, glow always on, a home-made button, icons via “latest”.</p>
+      <div class="pr__actions">
+        <button class="np-btn np-btn--primary" type="button" data-run><i data-lucide="play" aria-hidden="true"></i><span data-run-label><span lang="de">PR #12 prüfen</span><span lang="en">Check PR #12</span></span></button>
+      </div>
+    </div>
+    <details class="code">
+      <summary><i data-lucide="chevron-right" aria-hidden="true"></i><span lang="de">Code ansehen</span><span lang="en">View code</span><span class="fn">· preview/telemetry-card.html</span></summary>
+      <pre class="np-codeblock"><code data-code></code></pre>
+    </details>
+    <div class="session" data-session></div>
+  </article>
+
+  <article class="run" id="run-13" data-pr="13">
+    <div class="pr">
+      <div class="pr__top">
+        <span class="pr__icon" aria-hidden="true"><i data-lucide="git-pull-request"></i></span>
+        <div>
+          <div class="pr__no">PR #13</div>
+          <h2 lang="de">Feature-Karte „Live Telemetry“</h2><h2 lang="en">Feature card “Live Telemetry”</h2>
+        </div>
+        <span class="np-badge np-badge--outline pr__expect"><span lang="de">Soll: grün</span><span lang="en">Expected: green</span></span>
+      </div>
+      <div class="pr__meta"><b>feature/telemetry-card-ds</b> → main · 1 <span lang="de">Datei</span><span lang="en">file</span> · <span class="add" data-adds></span></div>
+      <p class="pr__desc" lang="de">Mit dem System gebaut: Karte, Button und Status aus den Systemklassen, Farben und Schrift als Tokens, Icons gepinnt mit Prüfsumme.</p>
+      <p class="pr__desc" lang="en">Built with the system: card, button and status from the system classes, colours and type as tokens, icons pinned with a checksum.</p>
+      <div class="pr__actions">
+        <button class="np-btn np-btn--primary" type="button" data-run><i data-lucide="play" aria-hidden="true"></i><span data-run-label><span lang="de">PR #13 prüfen</span><span lang="en">Check PR #13</span></span></button>
+      </div>
+    </div>
+    <details class="code">
+      <summary><i data-lucide="chevron-right" aria-hidden="true"></i><span lang="de">Code ansehen</span><span lang="en">View code</span><span class="fn">· preview/telemetry-card.html</span></summary>
+      <pre class="np-codeblock"><code data-code></code></pre>
+    </details>
+    <div class="session" data-session></div>
+  </article>
+</section>
+
+<section class="real">
+  <div class="np-container">
+    <span class="np-eyebrow"><span lang="de">Einordnung</span><span lang="en">Context</span></span>
+    <h2 lang="de">Echte Regeln, echter Code.</h2>
+    <h2 lang="en">Real rules, real code.</h2>
+    <div class="tiles">
+      <div class="tile"><div class="tile__icon"><i data-lucide="scan-search" aria-hidden="true"></i></div>
+        <h3 lang="de">Kein Video</h3><h3 lang="en">Not a video</h3>
+        <p lang="de">Die elf Prüfungen laufen hier tatsächlich gegen den gezeigten Code, regelbasiert und im Browser. Jeder Fund nennt Zeile, Problem und Korrektur.</p>
+        <p lang="en">The eleven checks really run against the code shown here, rule-based and in the browser. Every finding names the line, the problem and the fix.</p></div>
+      <div class="tile"><div class="tile__icon"><i data-lucide="workflow" aria-hidden="true"></i></div>
+        <h3 lang="de">Im Betrieb mit Claude</h3><h3 lang="en">In production with Claude</h3>
+        <p lang="de">Im n8n-Workflow prüft zusätzlich Claude gegen das komplette Regelwerk, auch Prinzipien, Kontext und Tonalität, und schreibt das Ergebnis als Kommentar in GitHub.</p>
+        <p lang="en">In the n8n workflow, Claude also reviews against the full rulebook, including principles, context and tone, and posts the result as a comment on GitHub.</p></div>
+      <div class="tile"><div class="tile__icon"><i data-lucide="user-check" aria-hidden="true"></i></div>
+        <h3 lang="de">Der Mensch entscheidet</h3><h3 lang="en">People decide</h3>
+        <p lang="de">Rot heißt: so nicht freigeben. Grün heißt: bereit für das Review. Die Freigabe selbst bleibt bei einer verantwortlichen Person.</p>
+        <p lang="en">Red means: don't approve as is. Green means: ready for review. The approval itself stays with an accountable person.</p></div>
+    </div>
+    <div class="real__links">
+      <a class="np-btn np-btn--ghost" href="workflow.html"><i data-lucide="workflow" aria-hidden="true"></i><span lang="de">Workflow ansehen</span><span lang="en">View workflow</span></a>
+      <a class="np-btn np-btn--ghost" href="https://github.com/Kujoh1/neonpulse-pr-guardian/blob/main/guardian-system-prompt.md" target="_blank" rel="noopener"><i data-lucide="book-check" aria-hidden="true"></i><span lang="de">Regelwerk lesen</span><span lang="en">Read the rulebook</span></a>
+      <a class="np-btn np-btn--ghost" href="https://github.com/Kujoh1/Designsystem-Neonpulse/pull/1" target="_blank" rel="noopener"><i data-lucide="git-pull-request" aria-hidden="true"></i><span lang="de">Echtes Claude-Review</span><span lang="en">Real Claude review</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="np-container foot__in">
+    <div class="foot__brand">
+      <img src="../assets/kudesi-logo.svg" alt="kudesi" width="65" height="28">
+      <div class="foot__meta"><span lang="de">Konzept, Design &amp; Umsetzung: kudesi</span><span lang="en">Concept, design &amp; build: kudesi</span><br>NeonPulse PR Guardian · © 2026</div>
+    </div>
+    <nav class="foot__links" aria-label="Footer">
+      <a class="np-link" href="./">Governance</a>
+      <a class="np-link" href="../showcase/">Case study</a>
+      <a class="np-link" href="https://github.com/Kujoh1/neonpulse-pr-guardian" target="_blank" rel="noopener">Guardian · GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var L = function (de, en) { return '<span lang="de">' + de + '</span><span lang="en">' + (en == null ? de : en) + '</span>'; };
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- the two pull requests under test ----------
+     PR #12 is deliberately off-system (it is the failing test case),
+     PR #13 is the same card built with the system. */
+  var PRS = {
+    12: { expect: 'fail', file: 'preview/telemetry-card.html', code: [
+      '<!-- @dsCard group="Patterns" -->',
+      '<link rel="stylesheet" href="../colors_and_type.css">',
+      '<style>',
+      "  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700');",
+      '  .telemetry-card {',
+      '    background: #1a1a2b;',
+      '    border-radius: 4px;',
+      '    padding: 22px;',
+      '    box-shadow: 0 0 24px #00e5ff;',
+      "    font-family: 'Inter', sans-serif;",
+      '    transition: all 600ms ease;',
+      '  }',
+      '  .telemetry-card h3 {',
+      '    color: var(--neon-cyan);',
+      '    margin: 0 0 8px;',
+      '  }',
+      '  .telemetry-card__btn {',
+      '    background: linear-gradient(90deg, #7c4dff, #2d7bff);',
+      '    color: #ffffff;',
+      '    border: 0;',
+      '    border-radius: 6px;',
+      '    padding: 12px 20px;',
+      '  }',
+      '  .telemetry-card__btn:focus { outline: none; }',
+      '</style>',
+      '',
+      '<div class="telemetry-card">',
+      '  <h3>Live Telemetry 🚀</h3>',
+      '  <p>All systems are running great!</p>',
+      '  <button class="telemetry-card__btn">Launch now!</button>',
+      '</div>',
+      '',
+      '<script src="https://unpkg.com/lucide@latest"></' + 'script>'
+    ].join('\n') },
+    13: { expect: 'pass', file: 'preview/telemetry-card.html', code: [
+      '<!-- @dsCard group="Patterns" -->',
+      '<link rel="stylesheet" href="../colors_and_type.css">',
+      '<style>',
+      '  .telemetry-card__title { font: var(--h4); color: var(--color-text); margin: 0; }',
+      '  .telemetry-card__copy { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }',
+      '</style>',
+      '',
+      '<article class="np-card np-card--live">',
+      '  <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Live</span>',
+      '  <h3 class="telemetry-card__title">Live telemetry</h3>',
+      '  <p class="telemetry-card__copy">Telemetry active · All systems nominal.</p>',
+      '  <div class="np-card__footer">',
+      '    <button class="np-btn np-btn--primary np-btn--sm" type="button">',
+      '      <i data-lucide="activity" aria-hidden="true"></i>Open feed',
+      '    </button>',
+      '  </div>',
+      '</article>',
+      '',
+      '<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"',
+      '        integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0"',
+      '        crossorigin="anonymous"></' + 'script>'
+    ].join('\n') }
+  };
+
+  /* ---------- the rules (deterministic subset of the Guardian rulebook v1.1) ---------- */
+  var CHECKS = [
+    { id: 'color',  de: 'Farben aus Tokens',          en: 'Colours from tokens' },
+    { id: 'text',   de: 'Textfarben lesbar',          en: 'Readable text colours' },
+    { id: 'glow',   de: 'Glow nur als Zustand',       en: 'Glow only as a state' },
+    { id: 'scale',  de: 'Radien und Abstände auf der Skala', en: 'Radii and spacing on the scale' },
+    { id: 'type',   de: 'Schriften aus dem System',   en: 'System typography' },
+    { id: 'focus',  de: 'Fokus sichtbar',             en: 'Visible focus' },
+    { id: 'class',  de: 'Systemklassen genutzt',      en: 'System classes used' },
+    { id: 'emoji',  de: 'Keine Emoji',                en: 'No emoji' },
+    { id: 'voice',  de: 'Brand Voice',                en: 'Brand voice' },
+    { id: 'deps',   de: 'Abhängigkeiten gepinnt',     en: 'Pinned dependencies' },
+    { id: 'motion', de: 'Bewegung im Rahmen',         en: 'Motion within limits' }
+  ];
+  var ALIAS = { '#07070d': '--color-bg-void', '#0c0c16': '--color-bg-page', '#12121f': '--color-surface',
+    '#1a1a2b': '--color-surface-raised', '#24243a': '--color-surface-overlay', '#eef1fb': '--color-text',
+    '#aab0c8': '--color-text-secondary', '#7c82a2': '--color-text-muted', '#00e5ff': '--color-accent' };
+  var RADIUS = { 8: '--r-sm', 12: '--r-md', 16: '--r-lg', 20: '--r-xl', 28: '--r-2xl' };
+  var SPACE = [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80];
+  var spaceToken = function (n) { return '--s-' + (n / 4); };
+  var IMPORT = /@import\s+(url\([^)]*\)|"[^"]*"|'[^']*')[^;]*;/;
+
+  function analyse(src) {
+    var out = [];
+    var lineOf = function (i) { return src.slice(0, i).split('\n').length; };
+    var blank = function (s) { return s.replace(/[^\n]/g, ' '); };
+    var add = function (check, sev, line, code, de, en, fixDe, fixEn) {
+      out.push({ check: check, sev: sev, line: line, code: code, de: de, en: en, fixDe: fixDe, fixEn: fixEn == null ? fixDe : fixEn });
+    };
+    var c = function (s) { return '<code>' + esc(s) + '</code>'; };
+
+    /* CSS: imports + declarations with their selector */
+    var decls = [], imports = [], m, re = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+    while ((m = re.exec(src))) {
+      var start = m.index + m[0].indexOf(m[1]);
+      var body = m[1].replace(/\/\*[\s\S]*?\*\//g, blank), im, ri = new RegExp(IMPORT.source, 'g');
+      while ((im = ri.exec(body))) imports.push({ val: im[0], line: lineOf(start + im.index) });
+      body = body.replace(new RegExp(IMPORT.source, 'g'), blank);
+      var r, rr = /([^{}]+)\{([^{}]*)\}/g;
+      while ((r = rr.exec(body))) {
+        var off = start + r.index + r[1].length + 1, d, rd = /([-\w]+)\s*:\s*([^;]+)/g;
+        while ((d = rd.exec(r[2]))) decls.push({ sel: r[1].trim(), prop: d[1].toLowerCase(), val: d[2].trim(), rule: r[2], line: lineOf(off + d.index) });
+      }
+    }
+    /* markup with comments, style and script bodies blanked (offsets stay intact) */
+    var html = src.replace(/<!--[\s\S]*?-->/g, blank)
+      .replace(/(<(style|script)[^>]*>)([\s\S]*?)(<\/\2>)/gi, function (all, a, t, b, z) { return a + blank(b) + z; });
+    var texts = [], t, rt = />([^<]+)</g;
+    while ((t = rt.exec(html))) if (/\S/.test(t[1])) texts.push({ text: t[1].trim(), line: lineOf(t.index + 1 + t[1].search(/\S/)) });
+
+    decls.forEach(function (d) {
+      var snip = d.prop + ': ' + d.val;
+      var stateful = /:hover|:focus|:active|--live|\.is-/.test(d.sel);
+      /* colour */
+      if (d.prop.indexOf('--') !== 0 && d.prop !== 'box-shadow' && /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i.test(d.val)) {
+        if (/gradient/.test(d.val)) add('color', 'block', d.line, snip, 'Verlauf mit festen Farben', 'Gradient with hard-coded colours',
+          c('var(--color-action-primary)') + ' · Primär läuft Blau → Cyan', c('var(--color-action-primary)') + ' · primary runs blue → cyan');
+        else {
+          var hex = (d.val.match(/#[0-9a-f]{3,8}\b/i) || [''])[0].toLowerCase();
+          var alias = (d.prop === 'color' && /^#f{3}(f{3})?$/.test(hex)) ? '--color-text-on-accent' : ALIAS[hex];
+          add('color', 'block', d.line, snip, 'Fest eingetragene Farbe', 'Hard-coded colour',
+            alias ? c('var(' + alias + ')') + ' · passt sich auch dem hellen Modus an' : 'Passenden Alias aus colors_and_type.css nutzen',
+            alias ? c('var(' + alias + ')') + ' · also adapts to light mode' : 'Use the matching alias from colors_and_type.css');
+        }
+      }
+      /* neon as text */
+      if (d.prop === 'color' && /var\(--neon-/.test(d.val)) add('text', 'block', d.line, snip, 'Neonfarbe als Textfarbe', 'Neon used as text colour',
+        c('var(--color-text-accent)') + ' · bleibt in beiden Themes lesbar', c('var(--color-text-accent)') + ' · stays legible in both themes');
+      /* ambient glow */
+      if (d.prop === 'box-shadow' && /0 0 \d+px|var\(--glow/.test(d.val) && !stateful) add('glow', 'block', d.line, snip, 'Dauerhafter Leuchteffekt auf statischer Karte', 'Ambient glow on a static card',
+        'Nur bei ' + c(':hover') + ' / ' + c(':focus-visible') + ' oder Live-Daten, via ' + c('var(--glow-accent)'), 'Only on ' + c(':hover') + ' / ' + c(':focus-visible') + ' or live data, via ' + c('var(--glow-accent)'));
+      /* radius + spacing scale */
+      if (d.prop === 'border-radius') (d.val.match(/\d+(?=px)/g) || []).forEach(function (n) {
+        n = +n;
+        if (RADIUS[n]) add('scale', 'warn', d.line, snip, 'Radius als Festwert', 'Radius as a raw value', c('var(' + RADIUS[n] + ')'));
+        else add('scale', 'warn', d.line, snip, 'Radius ' + n + 'px liegt nicht auf der Skala', 'Radius ' + n + 'px is off the scale',
+          c('var(--r-md)') + ' für Buttons, ' + c('var(--r-lg)') + ' für Karten', c('var(--r-md)') + ' for buttons, ' + c('var(--r-lg)') + ' for cards');
+      });
+      if (/^(padding|margin|gap)/.test(d.prop)) (d.val.match(/\d+(?=px)/g) || []).forEach(function (n) {
+        n = +n; if (n % 4 === 0) return;
+        var near = SPACE.slice().sort(function (a, b) { return Math.abs(a - n) - Math.abs(b - n); }).slice(0, 2).sort(function (a, b) { return a - b; });
+        add('scale', 'warn', d.line, snip, 'Abstand ' + n + 'px liegt nicht auf dem 4px-Raster', 'Spacing ' + n + 'px is off the 4px grid',
+          c('var(' + spaceToken(near[0]) + ')') + ' oder ' + c('var(' + spaceToken(near[1]) + ')'), c('var(' + spaceToken(near[0]) + ')') + ' or ' + c('var(' + spaceToken(near[1]) + ')'));
+      });
+      /* typography */
+      if (d.prop === 'font-family' && !/var\(--font-/.test(d.val)) add('type', 'warn', d.line, snip, 'Fremde Schrift statt Systemschrift', 'Foreign font instead of the system font',
+        c('font: var(--body)') + ' bzw. ' + c('var(--font-body)'), c('font: var(--body)') + ' or ' + c('var(--font-body)'));
+      /* focus */
+      if (d.prop === 'outline' && /^(none|0)\b/.test(d.val) && !/--ring-focus/.test(d.rule)) add('focus', 'block', d.line, snip, 'Fokusrahmen entfernt, ohne Ersatz', 'Focus indicator removed with no replacement',
+        c(':focus-visible { box-shadow: var(--ring-focus) }') + ' oder ' + c('.np-btn') + ' nutzen', c(':focus-visible { box-shadow: var(--ring-focus) }') + ' or use ' + c('.np-btn'));
+      /* motion */
+      if (d.prop === 'transition') {
+        var ms = 0; (d.val.match(/\d*\.?\d+m?s\b/g) || []).forEach(function (x) { var v = /ms$/.test(x) ? parseFloat(x) : parseFloat(x) * 1000; ms = Math.max(ms, v); });
+        if (/\ball\b/.test(d.val) || ms > 360) add('motion', 'warn', d.line, snip,
+          (/\ball\b/.test(d.val) ? '„all“ animiert alles' : 'Zu lang') + (ms > 360 ? ' · ' + ms + 'ms über dem Maximum von 360ms' : ''),
+          (/\ball\b/.test(d.val) ? '“all” animates everything' : 'Too long') + (ms > 360 ? ' · ' + ms + 'ms is above the 360ms maximum' : ''),
+          'Gezielte Eigenschaften mit ' + c('var(--dur)'), 'Specific properties with ' + c('var(--dur)'));
+      }
+    });
+    imports.forEach(function (i) {
+      if (/fonts\.googleapis/.test(i.val)) add('type', 'block', i.line, i.val.replace(/;$/, ''), 'Google-Fonts-Import', 'Google Fonts import',
+        'Entfernen · die Schriften sind selbst gehostet', 'Remove · the fonts are self-hosted');
+    });
+    /* tags */
+    var tg, rtag = /<(button|script)\b([^>]*)>/gi;
+    while ((tg = rtag.exec(html))) {
+      var line = lineOf(tg.index), attrs = tg[2];
+      if (tg[1].toLowerCase() === 'button' && !/class="[^"]*\bnp-(icon-)?btn\b/.test(attrs)) add('class', 'warn', line, tg[0].replace(/\s+/g, ' '),
+        'Eigenbau-Button statt Systemklasse', 'Home-made button instead of the system class', c('.np-btn .np-btn--primary') + ' · Fokus, Zustände und Kontrast inklusive', c('.np-btn .np-btn--primary') + ' · focus, states and contrast included');
+      if (tg[1].toLowerCase() === 'script' && /src="https?:/.test(attrs)) {
+        var src2 = (attrs.match(/src="([^"]+)"/) || [])[1], pinned = /@\d+\.\d+\.\d+/.test(src2), sri = /integrity="sha(256|384|512)-/.test(attrs);
+        if (!pinned || !sri) add('deps', 'block', line, 'src="' + src2 + '"',
+          [!pinned && 'Version nicht gepinnt', !sri && 'ohne Integrity-Hash (SRI)'].filter(Boolean).join(', '),
+          [!pinned && 'Version not pinned', !sri && 'no integrity hash (SRI)'].filter(Boolean).join(', '),
+          c('lucide@1.17.0') + ' mit ' + c('integrity') + ' und ' + c('crossorigin'), c('lucide@1.17.0') + ' with ' + c('integrity') + ' and ' + c('crossorigin'));
+      }
+    }
+    /* visible copy */
+    texts.forEach(function (x) {
+      if (/\p{Extended_Pictographic}/u.test(x.text)) add('emoji', 'block', x.line, x.text, 'Emoji im Produkttext', 'Emoji in product copy',
+        'Entfernen · Live-Status zeigt ' + c('.np-livedot') + ' plus Label', 'Remove · live status is ' + c('.np-livedot') + ' plus a label');
+      if (/!/.test(x.text)) add('voice', 'warn', x.line, x.text, 'Ausrufezeichen im Produkttext', 'Exclamation mark in product copy',
+        'Ruhig und knapp: „Telemetry active · All systems nominal.“', 'Calm and terse: “Telemetry active · All systems nominal.”');
+    });
+    return out.sort(function (a, b) { return (a.sev === b.sev ? 0 : a.sev === 'block' ? -1 : 1) || a.line - b.line; });
+  }
+
+  /* ---------- rendering ---------- */
+  var ICONS = '<span class="st__ic" aria-hidden="true"><i class="ic-wait" data-lucide="circle-dashed"></i><i class="ic-run" data-lucide="loader-circle"></i>'
+    + '<i class="ic-ok" data-lucide="circle-check"></i><i class="ic-warn" data-lucide="triangle-alert"></i><i class="ic-fail" data-lucide="circle-alert"></i></span>';
+  var row = function (key, label) { return '<li class="st" data-step="' + key + '" data-state="wait">' + ICONS + '<span>' + label + '</span><span class="st__meta"></span></li>'; };
+  var PIPE = [
+    { id: 'hook',  label: L('Pull Request erkannt', 'Pull request detected') },
+    { id: 'files', label: L('Geänderte Dateien geholt', 'Changed files fetched') },
+    { id: 'rules', label: L('Regelwerk v1.1 geladen', 'Rulebook v1.1 loaded') }
+  ];
+  var IDLE = L('Bereit', 'Ready');
+
+  function renderCode(run, src) {
+    run.querySelector('[data-code]').innerHTML = src.split('\n').map(function (l, i) {
+      return '<span class="ln" data-line="' + (i + 1) + '"><span class="ln__n">' + (i + 1) + '</span>' + (esc(l) || ' ') + '</span>';
+    }).join('');
+    run.querySelector('[data-adds]').textContent = '+' + src.split('\n').length;
+  }
+
+  function renderSession(run) {
+    run.querySelector('[data-session]').innerHTML =
+      '<div class="session__head">'
+      + '<span class="np-eyebrow">Session</span><span class="session__id" data-sid>· ' + L('noch nicht gestartet', 'not started yet') + '</span>'
+      + '<span class="np-badge np-badge--outline" data-status>' + IDLE + '</span>'
+      + '<span class="session__time" data-time>00:00.0</span></div>'
+      + '<div class="np-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Fortschritt / Progress"><div class="np-meter__bar" style="--value:0%"></div></div>'
+      + '<ul class="steps">' + PIPE.map(function (p) { return row(p.id, p.label); }).join('') + '</ul>'
+      + '<ul class="steps"><li class="steps__label">' + L('Checks', 'Checks') + ' · ' + CHECKS.length + '</li>'
+      + CHECKS.map(function (k) { return row(k.id, L(k.de, k.en)); }).join('') + '</ul>'
+      + '<div class="np-sr-only" role="status" data-live></div>'
+      + '<div class="result" data-result hidden></div>';
+  }
+
+  function setRow(run, key, state, meta) {
+    var el = run.querySelector('[data-step="' + key + '"]');
+    el.dataset.state = state;
+    el.querySelector('.st__meta').innerHTML = meta || '';
+  }
+  function setStatus(run, cls, html) {
+    var b = run.querySelector('[data-status]');
+    b.className = 'np-badge ' + cls; b.innerHTML = html;
+  }
+  function setProgress(run, p) {
+    var m = run.querySelector('.np-meter');
+    m.setAttribute('aria-valuenow', String(Math.round(p)));
+    m.firstChild.style.setProperty('--value', p + '%');
+  }
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, reduced ? Math.min(ms, 60) : ms); }); };
+  var jitter = function (a, b) { return a + Math.random() * (b - a); };
+  var plural = function (n, de1, deN, en1, enN) { return L(n + ' ' + (n === 1 ? de1 : deN), n + ' ' + (n === 1 ? en1 : enN)); };
+
+  function markLines(run, findings) {
+    $$('.ln', run).forEach(function (l) { l.classList.remove('is-block', 'is-warn', 'is-focus'); });
+    findings.forEach(function (f) {
+      var l = run.querySelector('.ln[data-line="' + f.line + '"]');
+      if (l && !l.classList.contains('is-block')) { l.classList.remove('is-warn'); l.classList.add(f.sev === 'block' ? 'is-block' : 'is-warn'); }
+    });
+  }
+
+  function renderResult(run, pr, no, findings) {
+    var blocks = findings.filter(function (f) { return f.sev === 'block'; }).length;
+    var warns = findings.length - blocks;
+    var ok = blocks === 0;
+    var asExpected = (ok ? 'pass' : 'fail') === pr.expect;
+    var html = ok
+      ? '<div class="np-banner np-banner--success"><i class="np-banner__icon" data-lucide="circle-check" aria-hidden="true"></i><div><b>' + L('Alle Checks grün', 'All checks green') + '</b><span class="d">'
+        + L('Bereit für das Review. Freigeben kann nur ein Mensch.', 'Ready for review. Only a person can approve.') + '</span></div></div>'
+      : '<div class="np-banner np-banner--danger"><i class="np-banner__icon" data-lucide="circle-alert" aria-hidden="true"></i><div><b>' + L('Merge blockiert', 'Merge blocked') + '</b><span class="d">'
+        + L(blocks + ' blockierende Funde. Erst korrigieren, dann prüft der Guardian automatisch neu.', blocks + ' blocking findings. Fix them first; the Guardian re-checks automatically.') + '</span></div></div>';
+    html += '<div class="eval' + (asExpected ? '' : ' is-off') + '"><i data-lucide="' + (asExpected ? 'circle-check' : 'circle-alert') + '" aria-hidden="true"></i>'
+      + (asExpected ? L('Ist = Soll · Testfall bestanden', 'Actual = expected · test case passed') : L('Ist ≠ Soll · Testfall nicht bestanden', 'Actual ≠ expected · test case failed')) + '</div>';
+    html += '<div class="comment"><div class="comment__head"><span class="np-avatar" aria-hidden="true"><i data-lucide="shield-check"></i></span>'
+      + '<div class="comment__who">Neon Pulse Guardian<span>' + L('Kommentar zu PR #' + no, 'Comment on PR #' + no) + '</span></div>'
+      + '<span class="np-badge ' + (ok ? 'np-badge--success">Pass' : 'np-badge--danger">Changes requested') + '</span></div>'
+      + '<div class="verdict"><b>' + (ok ? 'PASS' : 'CHANGES REQUESTED') + '</b> · ' + blocks + ' blocking · ' + warns + ' warnings · 0 notes</div>';
+    if (ok) {
+      html += '<div class="clean"><i data-lucide="circle-check" aria-hidden="true"></i><div><b>' + esc(pr.file) + '</b>'
+        + L('Sauber. Tokens statt Festwerten, Systemklassen, gepinnte Abhängigkeiten. Keine Funde.', 'Clean. Tokens instead of raw values, system classes, pinned dependencies. No findings.') + '</div></div>';
+    } else {
+      html += '<div class="fds">' + findings.map(function (f) {
+        return '<div class="fd"><span class="np-badge ' + (f.sev === 'block' ? 'np-badge--danger">' + L('Block', 'Block') : 'np-badge--warning">' + L('Warn', 'Warn')) + '</span>'
+          + '<b>' + L(f.de, f.en) + '</b>'
+          + '<button class="fd__loc" type="button" data-goto="' + f.line + '"><span class="l">' + esc(pr.file.split('/').pop()) + ':' + f.line + '</span><span>' + esc(f.code.length > 64 ? f.code.slice(0, 63) + '…' : f.code) + '</span></button>'
+          + '<span class="fd__fix">' + L(f.fixDe, f.fixEn) + '</span></div>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="closing">' + (ok ? L('Tokens sauber · bereit für das Review →', 'Tokens clean · ready for review →') : L(blocks + ' Blocker beheben → erneut pushen · der Guardian prüft automatisch', 'Fix ' + blocks + ' blockers → push again · the Guardian re-checks automatically')) + '</div></div>';
+    var box = run.querySelector('[data-result]');
+    box.innerHTML = html; box.hidden = false;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function goto(run, line) {
+    var det = run.querySelector('details.code'); det.open = true;
+    var l = run.querySelector('.ln[data-line="' + line + '"]'); if (!l) return;
+    $$('.ln.is-focus', run).forEach(function (x) { x.classList.remove('is-focus'); });
+    l.classList.add('is-focus');
+    var pre = det.querySelector('pre');
+    pre.scrollTop = l.offsetTop - pre.clientHeight / 2;
+    det.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+  }
+
+  async function start(run) {
+    var no = run.dataset.pr, pr = PRS[no], btn = run.querySelector('[data-run]');
+    if (run.dataset.busy) return;
+    run.dataset.busy = '1'; btn.setAttribute('aria-busy', 'true'); delete run.dataset.result;
+    renderSession(run); markLines(run, []);
+    if (window.lucide) lucide.createIcons();
+    var live = run.querySelector('[data-live]');
+    var sid = Math.random().toString(16).slice(2, 6), now = new Date();
+    run.querySelector('[data-sid]').textContent = '· run ' + sid + ' · ' + now.toLocaleTimeString(root.lang === 'de' ? 'de-DE' : 'en-GB');
+    setStatus(run, 'np-badge--accent np-badge--live', '<span class="np-badge__dot"></span>' + L('Läuft', 'Running'));
+    live.textContent = root.lang === 'de' ? 'Prüfung von PR #' + no + ' läuft' : 'Checking PR #' + no;
+    var t0 = performance.now(), timer = run.querySelector('[data-time]'), ticking = true;
+    (function tick() {
+      var s = (performance.now() - t0) / 1000;
+      timer.textContent = '00:' + (s < 10 ? '0' : '') + s.toFixed(1);
+      if (ticking) requestAnimationFrame(tick);
+    })();
+
+    var total = PIPE.length + CHECKS.length, done = 0;
+    var findings = analyse(pr.code);
+    var lines = pr.code.split('\n').length;
+    var metas = { hook: 'pull_request.opened · #' + no, files: L('1 Datei', '1 file') + ' · +' + lines, rules: L(CHECKS.length + ' Regeln', CHECKS.length + ' rules') };
+
+    for (var i = 0; i < PIPE.length; i++) {
+      setRow(run, PIPE[i].id, 'run', L('läuft …', 'running …'));
+      await wait(jitter(380, 620));
+      setRow(run, PIPE[i].id, 'ok', metas[PIPE[i].id]);
+      setProgress(run, (++done / total) * 100);
+    }
+    for (var j = 0; j < CHECKS.length; j++) {
+      var k = CHECKS[j];
+      setRow(run, k.id, 'run', L('läuft …', 'running …'));
+      await wait(jitter(320, 700));
+      var mine = findings.filter(function (f) { return f.check === k.id; });
+      var b = mine.filter(function (f) { return f.sev === 'block'; }).length;
+      if (!mine.length) setRow(run, k.id, 'ok', 'OK');
+      else setRow(run, k.id, b ? 'fail' : 'warn', plural(mine.length, 'Fund', 'Funde', 'finding', 'findings'));
+      setProgress(run, (++done / total) * 100);
+    }
+    await wait(450);
+    ticking = false;
+    var blocks = findings.filter(function (f) { return f.sev === 'block'; }).length;
+    var ok = blocks === 0;
+    run.dataset.result = ok ? 'pass' : 'fail';
+    setStatus(run, ok ? 'np-badge--success' : 'np-badge--danger', ok ? L('Bestanden', 'Passed') : L('Änderungen nötig', 'Changes requested'));
+    markLines(run, findings);
+    renderResult(run, pr, no, findings);
+    live.textContent = root.lang === 'de'
+      ? (ok ? 'PR #' + no + ': alle Checks grün' : 'PR #' + no + ': ' + blocks + ' blockierende Funde, Merge blockiert')
+      : (ok ? 'PR #' + no + ': all checks green' : 'PR #' + no + ': ' + blocks + ' blocking findings, merge blocked');
+    btn.removeAttribute('aria-busy');
+    btn.querySelector('[data-run-label]').innerHTML = L('Erneut prüfen', 'Run again');
+    delete run.dataset.busy;
+  }
+
+  /* ---------- init ---------- */
+  $$('.run').forEach(function (run) {
+    renderCode(run, PRS[run.dataset.pr].code);
+    renderSession(run);
+    run.querySelector('[data-run]').addEventListener('click', function () { start(run); });
+    run.addEventListener('click', function (e) {
+      var g = e.target.closest('[data-goto]'); if (g) goto(run, +g.dataset.goto);
+    });
+  });
+  if (window.lucide) lucide.createIcons();
+
+  function setLang(l, persist) {
+    root.dataset.lang = l; root.lang = l;
+    document.title = l === 'de' ? 'Live-Check — NeonPulse PR Guardian' : 'Live check — NeonPulse PR Guardian';
+    $$('[data-lang-set]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.langSet === l)); });
+    if (persist) {
+      try { localStorage.setItem('np-lang', l); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set('lang', l); history.replaceState(null, '', u);
+    }
+  }
+  $$('[data-lang-set]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.langSet, true); }); });
+  setLang(root.dataset.lang, false);
+})();
+</script>
+</body>
+</html>
