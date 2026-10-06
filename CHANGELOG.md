@@ -3,13 +3,20 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.1.1 — 2026-10-06
+
+### Added
+- `governance/` — management-level explanation (DE/EN) of the PR Guardian: design drift, before/after, four-step flow, a real review, value, guardrails, roadmap.
+- `governance/workflow.html` — direct link to the real n8n workflow as an interactive, read-only canvas (official `n8n-demo` component, pinned + SRI; workflow JSON read from the Guardian repo). `?local` adds an "open in my n8n" button for the owner's machine.
+- Showcase section "07 · Governance" and a docs sidebar link.
+
 ## 1.1.0 — 2026-10-05
 
 ### Added
 - **Light theme** — `[data-theme="light"]` mirrors the dark ramp, works on `<html>` or any subtree; dark islands work inside light pages. Accents switch to `--neon-ink`, semantic colours to deeper ink tones (all text pairings ≥ 4.5:1).
 - **Derived tokens** — gradients, glows, `--line-glow`, `--ring-focus` and `--state-hover-glow` are computed from the neon hues with `color-mix()`, so a rebrand swaps two primitives.
 - New aliases: `--color-bg-translucent`, `--color-track`, `--color-scrim`, `--glow-accent`, `--glow-action`, plus primitives `--white`, `--neon-ink`, `--container-max`.
-- **23 new elements & patterns**: `.np-icon-btn`, `.np-livedot`, `.np-eyebrow`, `.np-badge`, `.np-field` / `.np-input` / `.np-inputgroup`, `.np-kbd`, `.np-switch` (real checkbox), `.np-tabs` / `.np-tab`, `.np-seg`, `data-np-tooltip`, `.np-meter`, `.np-avatar`, `.np-code`, `.np-link`, `.np-container`, `.np-navitem`, `.np-table`, `.np-codeblock`, `.np-scrim` + `.np-modal`, `.np-toast-region` + `.np-toast`, `.np-palette` (⌘K), helpers `.np-sr-only`, `.np-skip`, `.np-btn--block`.
+- **23 new elements & patterns**: `.np-icon-btn`, `.np-livedot`, `.np-eyebrow`, `.np-badge`, `.np-field` / `.np-input` / `.np-inputgroup`, `.np-kbd`, `.np-switch` (real checkbox), `.np-tabs` / `.np-tab`, `.np-seg`, `data-np-tooltip`, `.np-meter`, `.np-avatar`, `.np-code`, `.np-link`, `.np-container`, `.np-navitem`, `.np-table`, `.np-codeblock`, `.np-scrim` + `.np-modal`, `.np-toast-region` + `.np-toast`, `.np-palette` (⌘K), helpers `.np-sr-only`, `.np-skip`, `.np-btn--block`. Ghost buttons get an `aria-pressed="true"` toggle state.
 - Specimens `comp-overlays.html` and `comp-data.html`; colour specimens print live values and contrast ratios.
 - Docs: theme switch, ⌘K / `/` search over sections and tokens, mobile drawer navigation, scrollspy, swatches and token table generated from the stylesheet (dark + light columns), source view + copy for every specimen, responsive kit previews, Theming section.
 - Dashboard kit: ⌘K command palette, empty states for every view, off-canvas sidebar on small screens. Mobile kit: Settings screen with switches.

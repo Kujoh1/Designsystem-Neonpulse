@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de" data-lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR Guardian · n8n workflow — NeonPulse</title>
+<meta name="description" content="Der n8n-Workflow des NeonPulse PR Guardian — interaktiv und schreibgeschützt.">
+<meta name="theme-color" content="#07070d">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NeonPulse PR Guardian — the n8n workflow">
+<meta property="og:description" content="The real, interactive n8n workflow behind the AI design reviewer.">
+<meta property="og:url" content="https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html">
+<meta property="og:image" content="https://kujoh1.github.io/Designsystem-Neonpulse/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search).get('lang'), s = null;
+    try { s = localStorage.getItem('np-lang'); } catch (e) {}
+    var l = (q === 'de' || q === 'en') ? q : (s === 'de' || s === 'en') ? s
+          : ((navigator.language || 'en').toLowerCase().indexOf('de') === 0 ? 'de' : 'en');
+    var h = document.documentElement; h.dataset.lang = l; h.lang = l;
+  })();
+</script>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { display: flex; flex-direction: column; min-height: 100vh; background: var(--color-bg-void); }
+  [data-lang="de"] [lang="en"], [data-lang="en"] [lang="de"] { display: none !important; }
+  .bar { flex: none; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 20px;
+    background: var(--color-bg-translucent); border-bottom: 1px solid var(--color-border-subtle); }
+  .bar__title { display: flex; flex-direction: column; gap: 4px; margin-right: auto; min-width: 0; }
+  .bar__title b { font: 600 17px/1.2 var(--font-display); }
+  .bar .np-cluster { gap: 8px; }
+  .wf__stage { flex: 1; display: grid; place-items: stretch; min-height: 0; }
+  .wf__stage > n8n-demo { align-self: stretch; }
+  .wf__gate { place-self: center; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 32px 20px; max-width: 520px; }
+  .wf__gate p { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
+  .legend { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+  .legend .np-label { margin-right: 6px; }
+  .legend .note { margin-left: auto; font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
+  #local-btn[hidden] { display: none; }
+  @media (max-width: 640px) { .bar .lbl { display: none; } .legend .note { margin-left: 0; } }
+</style>
+</head>
+<body class="np-scope">
+  <header class="bar">
+    <a class="np-icon-btn np-icon-btn--ghost" href="./" aria-label="Zurück / Back" data-np-tooltip="Governance" data-np-tooltip-pos="bottom"><i data-lucide="arrow-left" aria-hidden="true"></i></a>
+    <div class="bar__title">
+      <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>n8n · <span lang="de">schreibgeschützte Live-Ansicht</span><span lang="en">read-only live view</span></span>
+      <b>Neon Pulse · PR Guardian</b>
+    </div>
+    <div class="np-cluster">
+      <div class="np-seg" role="group" aria-label="Language / Sprache">
+        <button class="np-seg__item" type="button" data-lang-set="de" aria-pressed="true">DE</button>
+        <button class="np-seg__item" type="button" data-lang-set="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="np-btn np-btn--primary np-btn--sm" id="local-btn" href="http://localhost:5678/workflow/1oR85pst93qZTYjb" target="_blank" rel="noopener" hidden><i data-lucide="external-link" aria-hidden="true"></i><span lang="de">In meinem n8n öffnen</span><span lang="en">Open in my n8n</span></a>
+      <a class="np-btn np-btn--ghost np-btn--sm" id="json-btn" href="https://raw.githubusercontent.com/Kujoh1/neonpulse-pr-guardian/main/pr-guardian.workflow.json" target="_blank" rel="noopener"><i data-lucide="download" aria-hidden="true"></i><span class="lbl">JSON</span></a>
+      <a class="np-btn np-btn--ghost np-btn--sm" href="https://github.com/Kujoh1/neonpulse-pr-guardian" target="_blank" rel="noopener"><i data-lucide="folder-git-2" aria-hidden="true"></i><span class="lbl">Repository</span></a>
+    </div>
+  </header>
+
+  <main class="wf__stage" id="wf-stage" aria-label="n8n workflow"></main>
+
+  <footer class="legend">
+    <span class="np-label"><span lang="de">Ablauf</span><span lang="en">Flow</span></span>
+    <span class="np-badge np-badge--outline">1 · <span lang="de">PR erkannt</span><span lang="en">PR detected</span></span>
+    <span class="np-badge np-badge--outline">2 · <span lang="de">Dateien holen</span><span lang="en">Fetch files</span></span>
+    <span class="np-badge np-badge--outline">3 · <span lang="de">Claude prüft gegen Regelwerk</span><span lang="en">Claude reviews against rulebook</span></span>
+    <span class="np-badge np-badge--outline">4 · <span lang="de">Kommentar in GitHub</span><span lang="en">Comment on GitHub</span></span>
+    <span class="note"><span lang="de">Zoomen · verschieben · Doppelklick öffnet einen Schritt · Darstellung über n8n.cloud</span><span lang="en">Zoom · pan · double-click opens a step · rendered via n8n.cloud</span></span>
+  </footer>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="workflow-embed.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  if (window.lucide) lucide.createIcons();
+  function setLang(l, persist) {
+    root.dataset.lang = l; root.lang = l;
+    $$('[data-lang-set]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.langSet === l)); });
+    if (persist) {
+      try { localStorage.setItem('np-lang', l); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set('lang', l); history.replaceState(null, '', u);
+    }
+  }
+  $$('[data-lang-set]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.langSet, true); }); });
+  setLang(root.dataset.lang, false);
+
+  /* "Open in my n8n" only makes sense on the owner's machine: shown with ?local or on localhost */
+  var q = new URLSearchParams(location.search);
+  if (q.has('local') || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.getElementById('local-btn').hidden = false;
+
+  /* this page exists to show the workflow, so it loads right away; height = remaining viewport */
+  var stage = document.getElementById('wf-stage');
+  window.NPWorkflow.mount(stage, { minHeight: 'calc(100vh - 150px)' });
+})();
+</script>
+</body>
+</html>

@@ -18,6 +18,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 |---|---|
 | `index.html` | Reference/docs home: theme switch, ⌘K search, swatches + token table read live from the CSS. Start here. |
 | `showcase/` | Case-study page (DE/EN via `?lang=de` / `?lang=en`). `showcase/img/` holds the kit screenshots. |
+| `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
 | `colors_and_type.css` | **Single source of truth**: fonts, tokens (primitives + aliases), light theme, elements, patterns. |
 | `fonts/` | Self-hosted variable woff2 (Space Grotesk, Sora, JetBrains Mono) + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
@@ -123,6 +124,8 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - The showcase is bilingual: every visible string exists as a `lang="de"` and a
   `lang="en"` element (CSS hides the inactive one). Keep both in sync. Its facts strip
   counts tokens/components live from the stylesheet (static numbers are only fallbacks).
+- Governance pages: the embedded n8n view loads from n8n.cloud only after an explicit click on `governance/index.html` (privacy); `workflow.html` loads it directly because that is its purpose. Keep `@n8n_io/n8n-demo-component` pinned with SRI.
+- When the token set changes, update the Guardian rulebook (`guardian-system-prompt.md` in the Guardian repo) and rebuild its workflow with `node build-workflow.js`.
 - After visual changes to a kit, regenerate `showcase/img/kit-*.webp` (1340×838) and,
   if the look changed noticeably, `assets/og-image.png`.
 - Icons: use Lucide outline at the icon tokens (`--icon-stroke`, `--icon-sm/md/lg`) and

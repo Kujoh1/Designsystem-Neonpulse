@@ -2,7 +2,7 @@
 
 **NeonPulse** is a dark-first design language for cyberpunk-flavoured web and app products. It pairs **flat, near-black surfaces** with **electric neon accents** (blue → cyan → violet, plus a hot-magenta "pulse") and a **geometric, techy type system** (Space Grotesk / Sora / JetBrains Mono). Depth never comes from heavy shadows — it comes from **surface lightness steps** and a **restrained neon halo** on the elements that matter.
 
-**Live docs:** https://kujoh1.github.io/Designsystem-Neonpulse/ · **Case study:** https://kujoh1.github.io/Designsystem-Neonpulse/showcase/
+**Live docs:** https://kujoh1.github.io/Designsystem-Neonpulse/ · **Case study:** https://kujoh1.github.io/Designsystem-Neonpulse/showcase/ · **Governance:** https://kujoh1.github.io/Designsystem-Neonpulse/governance/
 
 > Built from scratch to a one-line brief ("neon pulse flat design, cyberpunk style") by **kudesi** — concept, visual design, tokens, components, docs and front-end. Not a recreation of an existing brand.
 
@@ -19,6 +19,7 @@
 - **36 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item.
 - **Three interactive UI kits** (marketing, SaaS dashboard, mobile) built from the system's own classes.
 - **Living docs.** Swatches, contrast ratios and the full token table are read from the stylesheet at runtime; theme switch, ⌘K search and the source of every specimen are built in.
+- **Governance built in.** The [PR Guardian](https://github.com/Kujoh1/neonpulse-pr-guardian) — an n8n workflow with Claude — reviews every pull request against this system's rulebook and comments with exact token fixes. [Explained for decision-makers](https://kujoh1.github.io/Designsystem-Neonpulse/governance/) · [live workflow](https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html).
 - **Zero build.** Plain HTML/CSS, self-hosted variable fonts (no Google request), CDN dependencies pinned with SRI hashes. Deploys to GitHub Pages on push.
 
 ---
@@ -96,6 +97,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 |---|---|
 | `index.html` | Docs home — interactive reference (theme switch, ⌘K search, live token table). |
 | `showcase/` | Case-study / marketing page (DE/EN) presenting the system. |
+| `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow. |
 | `colors_and_type.css` | **Single source of truth**: tokens, light theme, elements, patterns. |
 | `fonts/` | Self-hosted variable fonts + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
