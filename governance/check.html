@@ -207,7 +207,7 @@
 <main id="main">
 <section class="head">
   <div class="np-container">
-    <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span><span lang="de">Live-Check · Guardian-Regelwerk v1.1</span><span lang="en">Live check · Guardian rulebook v1.1</span></span>
+    <span class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span><span lang="de">Live-Check · Guardian-Regelwerk v1.2</span><span lang="en">Live check · Guardian rulebook v1.2</span></span>
     <h1 lang="de">Zwei Pull Requests. <span class="grad">Ein Regelwerk.</span></h1>
     <h1 lang="en">Two pull requests. <span class="grad">One rulebook.</span></h1>
     <p class="lead" lang="de">Dieselbe Feature-Karte, zweimal eingereicht: einmal schnell gebaut, einmal mit dem Design System. Ein Klick startet die Prüfung. Jede Regel läuft einzeln, bis alles grün oder rot ist. Wie ein kleiner Eval: zwei Testfälle mit bekanntem Soll-Ergebnis.</p>
@@ -273,8 +273,8 @@
     <div class="tiles">
       <div class="tile"><div class="tile__icon"><i data-lucide="scan-search" aria-hidden="true"></i></div>
         <h3 lang="de">Kein Video</h3><h3 lang="en">Not a video</h3>
-        <p lang="de">Die elf Prüfungen laufen hier tatsächlich gegen den gezeigten Code, regelbasiert und im Browser. Jeder Fund nennt Zeile, Problem und Korrektur.</p>
-        <p lang="en">The eleven checks really run against the code shown here, rule-based and in the browser. Every finding names the line, the problem and the fix.</p></div>
+        <p lang="de">Die zwölf Prüfungen laufen hier tatsächlich gegen den gezeigten Code, regelbasiert und im Browser. Jeder Fund nennt Zeile, Problem und Korrektur.</p>
+        <p lang="en">The twelve checks really run against the code shown here, rule-based and in the browser. Every finding names the line, the problem and the fix.</p></div>
       <div class="tile"><div class="tile__icon"><i data-lucide="workflow" aria-hidden="true"></i></div>
         <h3 lang="de">Im Betrieb mit Claude</h3><h3 lang="en">In production with Claude</h3>
         <p lang="de">Im n8n-Workflow prüft zusätzlich Claude gegen das komplette Regelwerk, auch Prinzipien, Kontext und Tonalität, und schreibt das Ergebnis als Kommentar in GitHub.</p>
@@ -346,6 +346,7 @@
       '    padding: 12px 20px;',
       '  }',
       '  .telemetry-card__btn:focus { outline: none; }',
+      '  @media (max-width: 600px) { .telemetry-card { padding: 12px; } }',
       '</style>',
       '',
       '<div class="telemetry-card">',
@@ -362,6 +363,7 @@
       '<style>',
       '  .telemetry-card__title { font: var(--h4); color: var(--color-text); margin: 0; }',
       '  .telemetry-card__copy { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }',
+      '  @media (min-width: 768px) { .telemetry-card__title { font: var(--h3); } }',
       '</style>',
       '',
       '<article class="np-card np-card--live">',
@@ -381,12 +383,13 @@
     ].join('\n') }
   };
 
-  /* ---------- the rules (deterministic subset of the Guardian rulebook v1.1) ---------- */
+  /* ---------- the rules (deterministic subset of the Guardian rulebook v1.2) ---------- */
   var CHECKS = [
     { id: 'color',  de: 'Farben aus Tokens',          en: 'Colours from tokens' },
     { id: 'text',   de: 'Textfarben lesbar',          en: 'Readable text colours' },
     { id: 'glow',   de: 'Glow nur als Zustand',       en: 'Glow only as a state' },
     { id: 'scale',  de: 'Radien und Abstände auf der Skala', en: 'Radii and spacing on the scale' },
+    { id: 'bp',     de: 'Breakpoints aus dem System', en: 'System breakpoints' },
     { id: 'type',   de: 'Schriften aus dem System',   en: 'System typography' },
     { id: 'focus',  de: 'Fokus sichtbar',             en: 'Visible focus' },
     { id: 'class',  de: 'Systemklassen genutzt',      en: 'System classes used' },
@@ -401,6 +404,7 @@
   var RADIUS = { 8: '--r-sm', 12: '--r-md', 16: '--r-lg', 20: '--r-xl', 28: '--r-2xl' };
   var SPACE = [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80];
   var spaceToken = function (n) { return '--s-' + (n / 4); };
+  var BP = { 480: '--bp-sm', 768: '--bp-md', 1024: '--bp-lg', 1440: '--bp-xl', 1920: '--bp-2xl' };   // the only viewport breakpoints
   var IMPORT = /@import\s+(url\([^)]*\)|"[^"]*"|'[^']*')[^;]*;/;
 
   function analyse(src) {
@@ -419,6 +423,14 @@
       var body = m[1].replace(/\/\*[\s\S]*?\*\//g, blank), im, ri = new RegExp(IMPORT.source, 'g');
       while ((im = ri.exec(body))) imports.push({ val: im[0], line: lineOf(start + im.index) });
       body = body.replace(new RegExp(IMPORT.source, 'g'), blank);
+      var mq, rmq = /@media([^{]*)\{/g;
+      while ((mq = rmq.exec(body))) (mq[1].match(/(?:min|max)-width\s*:\s*[\d.]+px/g) || []).forEach(function (w) {
+        var px = parseFloat(w.match(/[\d.]+/)[0]);
+        if (BP[Math.ceil(px)]) return;   // 479.98 / 767.98 … are the max-width twins of the system values
+        var near = Object.keys(BP).map(Number).sort(function (a, b) { return Math.abs(a - px) - Math.abs(b - px); })[0];
+        add('bp', 'warn', lineOf(start + mq.index), '@media' + mq[1].replace(/\s+/g, ' ').replace(/\s+$/, ''), 'Eigener Breakpoint ' + px + 'px', 'Invented breakpoint ' + px + 'px',
+          c('@media (min-width: ' + near + 'px)') + ' · ' + c('var(' + BP[near] + ')') + ' · nur 480 / 768 / 1024 / 1440 / 1920', c('@media (min-width: ' + near + 'px)') + ' · ' + c('var(' + BP[near] + ')') + ' · only 480 / 768 / 1024 / 1440 / 1920');
+      });
       var r, rr = /([^{}]+)\{([^{}]*)\}/g;
       while ((r = rr.exec(body))) {
         var off = start + r.index + r[1].length + 1, d, rd = /([-\w]+)\s*:\s*([^;]+)/g;
@@ -515,7 +527,7 @@
   var PIPE = [
     { id: 'hook',  label: L('Pull Request erkannt', 'Pull request detected') },
     { id: 'files', label: L('Geänderte Dateien geholt', 'Changed files fetched') },
-    { id: 'rules', label: L('Regelwerk v1.1 geladen', 'Rulebook v1.1 loaded') }
+    { id: 'rules', label: L('Regelwerk v1.2 geladen', 'Rulebook v1.2 loaded') }
   ];
   var IDLE = L('Bereit', 'Ready');
 

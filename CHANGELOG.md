@@ -3,6 +3,12 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.4.1 — 2026-10-12
+
+### Changed
+- `governance/check.html` mirrors Guardian rulebook v1.2: a twelfth check, "System breakpoints" (only 480 / 768 / 1024 / 1440 / 1920 are allowed viewport breakpoints; the finding names the nearest `--bp-*` token). PR #12 now carries an invented 600px query and stays red, PR #13 uses `min-width: 768px` and stays green.
+- Guardian rulebook v1.2 (repo `neonpulse-pr-guardian`): five breakpoints, layout tokens, new canonical classes and a responsive principle.
+
 ## 1.4.0 — 2026-10-12
 
 ### Added

@@ -18,7 +18,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 |---|---|
 | `index.html` | Reference/docs home: theme switch, ⌘K search, swatches + token table read live from the CSS. Start here. |
 | `showcase/` | Case-study page (DE/EN via `?lang=de` / `?lang=en`). `showcase/img/` holds the kit screenshots. |
-| `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas) + `check.html` (live check: two PRs, eleven rules run in the browser). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
+| `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas) + `check.html` (live check: two PRs, twelve rules run in the browser). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
 | `colors_and_type.css` | **Single source of truth**: fonts, tokens (primitives + aliases), light theme, elements, patterns. |
 | `figma/` | Figma library: `export-tokens.mjs` (CSS → `tokens.json` + plugin data), `plugin/` (builder that runs as a Figma plugin and via the Figma MCP `use_figma` tool), Lucide icons. See `figma/README.md`. |
 | `fonts/` | Self-hosted variable woff2 (Space Grotesk, Sora, JetBrains Mono) + licence notes. |
