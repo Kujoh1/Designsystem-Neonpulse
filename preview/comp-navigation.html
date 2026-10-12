@@ -1,0 +1,145 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Navigation controls</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:30px 26px;align-items:start}
+  .below{margin-top:32px}
+  .narrow{max-width:360px}
+  .phone{max-width:360px;border:1px solid var(--color-border);border-radius:var(--r-xl);overflow:hidden;background:var(--color-bg-page)}
+  .phone__screen{padding:var(--s-5) var(--s-4);font:var(--body-sm);color:var(--color-text-secondary);min-height:84px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--r-lg);overflow:hidden}
+</style></head>
+<body>
+  <div class="np-label lab">Pagination · .np-pagination</div>
+  <div class="cols">
+    <div><span class="np-field__hint">Full width</span><div style="margin-top:10px"><nav class="np-pagination" aria-label="Pagination" id="pg1"></nav></div></div>
+    <div class="narrow"><span class="np-field__hint">Narrow container (≤ 420px) folds the numbers</span><div style="margin-top:10px"><nav class="np-pagination" aria-label="Pagination" id="pg2"></nav></div></div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">Breadcrumb · .np-breadcrumb</div>
+      <nav aria-label="Breadcrumb"><ol class="np-breadcrumb">
+        <li><a href="#">Projects</a></li><li><a href="#">aurora-core</a></li><li><a href="#">Nodes</a></li><li aria-current="page">worker-02</li>
+      </ol></nav>
+    </div>
+    <div>
+      <div class="np-label lab">Accordion · .np-accordion</div>
+      <div class="np-accordion">
+        <details open><summary>Billing</summary><div class="np-accordion__body">Usage is billed per node-hour. Invoices are issued on the first of the month.</div></details>
+        <details><summary>Members</summary><div class="np-accordion__body">Invite teammates and assign roles per project.</div></details>
+        <details><summary>Danger zone</summary><div class="np-accordion__body">Deleting a project removes all of its nodes and logs.</div></details>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">Stepper · .np-stepper</div>
+      <ol class="np-stepper" id="st1" aria-label="Deployment steps">
+        <li class="np-step is-done"><span class="np-step__marker">1</span><span class="np-step__label">Account</span></li>
+        <li class="np-step is-done"><span class="np-step__marker">2</span><span class="np-step__label">Region</span></li>
+        <li class="np-step" aria-current="step"><span class="np-step__marker">3</span><span class="np-step__label">Review</span></li>
+        <li class="np-step"><span class="np-step__marker">4</span><span class="np-step__label">Deploy</span></li>
+      </ol>
+      <div class="row" style="margin-top:18px">
+        <button class="np-btn np-btn--ghost np-btn--sm" type="button" data-step="-1">Back</button>
+        <button class="np-btn np-btn--primary np-btn--sm" type="button" data-step="1">Next step</button>
+      </div>
+    </div>
+    <div>
+      <div class="np-label lab">Vertical · .np-stepper--vertical</div>
+      <ol class="np-stepper np-stepper--vertical" aria-label="Setup">
+        <li class="np-step is-done"><span class="np-step__marker">1</span><span class="np-step__label">Connect repository</span></li>
+        <li class="np-step" aria-current="step"><span class="np-step__marker">2</span><span class="np-step__label">Configure build</span></li>
+        <li class="np-step"><span class="np-step__marker">3</span><span class="np-step__label">First deploy</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">Tab bar · .np-tabbar (phones)</div>
+      <div class="phone">
+        <div class="phone__screen" id="tb-screen">Home</div>
+        <nav class="np-tabbar" aria-label="Primary" id="tb">
+          <a class="np-tabbar__item" href="#" aria-current="page" data-label="Home"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Home</span></a>
+          <a class="np-tabbar__item" href="#" data-label="Live"><i data-lucide="activity" aria-hidden="true"></i><span>Live</span></a>
+          <a class="np-tabbar__item" href="#" data-label="Nodes"><i data-lucide="server" aria-hidden="true"></i><span>Nodes</span></a>
+          <a class="np-tabbar__item" href="#" data-label="Alerts"><i data-lucide="bell" aria-hidden="true"></i><span>Alerts</span></a>
+        </nav>
+      </div>
+    </div>
+    <div>
+      <div class="np-label lab">Responsive table · .np-table--stack</div>
+      <div class="card narrow">
+        <div class="np-table-wrap np-table-wrap--stack"><table class="np-table np-table--stack">
+          <thead><tr><th scope="col">Node</th><th scope="col">Region</th><th scope="col">Status</th><th scope="col" class="is-num">p99</th></tr></thead>
+          <tbody>
+            <tr><td class="is-strong" data-label="Node">api-gateway</td><td data-label="Region">us-east-1</td><td data-label="Status"><span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Live</span></td><td class="is-num" data-label="p99">42ms</td></tr>
+            <tr><td class="is-strong" data-label="Node">worker-02</td><td data-label="Region">eu-west-1</td><td data-label="Status"><span class="np-badge np-badge--warning"><span class="np-badge__dot"></span>Degraded</span></td><td class="is-num" data-label="p99">188ms</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+  <div class="below">
+    <span class="np-field__hint">Same markup in a wide container stays a table</span>
+    <div class="card" style="margin-top:10px">
+      <div class="np-table-wrap np-table-wrap--stack"><table class="np-table np-table--stack">
+        <thead><tr><th scope="col">Node</th><th scope="col">Region</th><th scope="col">Status</th><th scope="col" class="is-num">p99</th></tr></thead>
+        <tbody>
+          <tr><td class="is-strong" data-label="Node">api-gateway</td><td data-label="Region">us-east-1</td><td data-label="Status"><span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Live</span></td><td class="is-num" data-label="p99">42ms</td></tr>
+          <tr><td class="is-strong" data-label="Node">worker-02</td><td data-label="Region">eu-west-1</td><td data-label="Status"><span class="np-badge np-badge--warning"><span class="np-badge__dot"></span>Degraded</span></td><td class="is-num" data-label="p99">188ms</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+  lucide.createIcons();
+
+  /* ---- pagination ---- */
+  var TOTAL = 12, pages = [].map.call(document.querySelectorAll('.np-pagination'), function (n) { return { el: n, page: 3 }; });
+  var L = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="';
+  function list(p) {
+    var nums = [1], out = '';
+    for (var i = p - 1; i <= p + 1; i++) if (i > 1 && i < TOTAL) nums.push(i);
+    nums.push(TOTAL);
+    out += '<li><button type="button" class="np-pagination__btn" data-go="' + (p - 1) + '" aria-label="Previous page"' + (p === 1 ? ' disabled' : '') + '>' + L + 'm15 18-6-6 6-6"/></svg></button></li>';
+    nums.forEach(function (n, i) {
+      if (i && n - nums[i - 1] > 1) out += '<li class="np-pagination__gap" aria-hidden="true">…</li>';
+      out += '<li class="np-pagination__num"><a href="#" class="np-pagination__item" data-go="' + n + '" aria-label="Page ' + n + '"' + (n === p ? ' aria-current="page"' : '') + '>' + n + '</a></li>';
+    });
+    out += '<li class="np-pagination__summary" aria-hidden="true">Page ' + p + ' of ' + TOTAL + '</li>';
+    out += '<li><button type="button" class="np-pagination__btn" data-go="' + (p + 1) + '" aria-label="Next page"' + (p === TOTAL ? ' disabled' : '') + '>' + L + 'm9 18 6-6-6-6"/></svg></button></li>';
+    return '<ul class="np-pagination__list">' + out + '</ul>';
+  }
+  pages.forEach(function (o) {
+    function draw() { o.el.innerHTML = list(o.page); }
+    o.el.addEventListener('click', function (e) { var g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); o.page = +g.dataset.go; draw(); var k = o.el.querySelector('[aria-current=page]'); if (k) k.focus(); } });
+    draw();
+  });
+
+  /* ---- stepper ---- */
+  (function () {
+    var steps = [].slice.call(document.querySelectorAll('#st1 .np-step')), cur = 2;
+    function paint() { steps.forEach(function (s, i) { s.classList.toggle('is-done', i < cur); if (i === cur) s.setAttribute('aria-current', 'step'); else s.removeAttribute('aria-current'); }); }
+    document.querySelectorAll('[data-step]').forEach(function (b) { b.addEventListener('click', function () { cur = Math.max(0, Math.min(steps.length - 1, cur + +b.dataset.step)); paint(); }); });
+  })();
+
+  /* ---- tab bar ---- */
+  document.getElementById('tb').addEventListener('click', function (e) {
+    var a = e.target.closest('.np-tabbar__item'); if (!a) return; e.preventDefault();
+    this.querySelectorAll('.np-tabbar__item').forEach(function (x) { x.removeAttribute('aria-current'); });
+    a.setAttribute('aria-current', 'page'); document.getElementById('tb-screen').textContent = a.dataset.label;
+  });
+</script>
+</body></html>

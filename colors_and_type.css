@@ -633,6 +633,188 @@ svg.lucide { stroke-width: var(--icon-stroke); }
 [data-np-tooltip-pos="bottom"]::after { bottom: auto; top: calc(100% + 8px); transform: translate(-50%, -4px); }
 
 /* ------------------------------------------------------------
+   CHECKBOX · RADIO — real inputs, so keyboard + screen readers just work
+   <label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Email alerts</label>
+   <label class="np-radio"><input type="radio" name="plan" checked><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label>
+   Card rows (.np-check--card / .np-radio--card): the whole row is the target and lights up when selected.
+   <label class="np-radio np-radio--card"><input …><span class="np-radio__dot" aria-hidden="true"></span>
+     <span class="np-choice__text"><span class="np-choice__title">Auto</span><span class="np-choice__desc">…</span></span></label>
+   Group: <fieldset class="np-fieldset"><legend>Notify me</legend><div class="np-stack">…</div></fieldset>
+   States: rest · hover · checked · indeterminate (checkbox) · focus-visible · invalid (aria-invalid on the input) · disabled
+   ------------------------------------------------------------ */
+.np-check, .np-radio {
+  position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
+  font: 400 14px/1.3 var(--font-body); color: var(--color-text-secondary);
+}
+.np-check > input, .np-radio > input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+.np-check__box, .np-radio__dot {
+  position: relative; flex: none; box-sizing: border-box; width: 20px; height: 20px;
+  background: var(--color-surface); border: 1px solid var(--color-border-strong);
+  transition: background var(--dur), border-color var(--dur), box-shadow var(--dur);
+}
+.np-check__box { border-radius: 6px; }
+.np-radio__dot { border-radius: 50%; }
+.np-check__box::after, .np-radio__dot::after {
+  content: ""; position: absolute; opacity: 0; transition: opacity var(--dur-fast), transform var(--dur) var(--ease-out); }
+.np-check__box::after { left: 5.5px; top: 2px; width: 5px; height: 10px; border: solid var(--color-text-on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0.6); }
+.np-radio__dot::after { inset: 4px; border-radius: 50%; background: var(--color-text-on-accent); transform: scale(0.4); }
+.np-check:hover .np-check__box, .np-check.is-hover .np-check__box,
+.np-radio:hover .np-radio__dot, .np-radio.is-hover .np-radio__dot { border-color: var(--color-text-muted); }
+.np-check > input:checked + .np-check__box, .np-check > input:indeterminate + .np-check__box,
+.np-radio > input:checked + .np-radio__dot { background: var(--color-action-primary); border-color: transparent; }
+.np-check > input:checked + .np-check__box::after, .np-radio > input:checked + .np-radio__dot::after { opacity: 1; }
+.np-check > input:checked + .np-check__box::after { transform: rotate(45deg) scale(1); }
+.np-radio > input:checked + .np-radio__dot::after { transform: scale(1); }
+.np-check > input:indeterminate + .np-check__box::after {   /* a bar instead of the tick */
+  opacity: 1; left: 4px; top: 7.5px; width: 10px; height: 0; border-width: 2px 0 0; transform: none; }
+.np-check > input:focus-visible + .np-check__box, .np-check.is-focus .np-check__box,
+.np-radio > input:focus-visible + .np-radio__dot, .np-radio.is-focus .np-radio__dot { box-shadow: var(--ring-focus); }
+.np-check > input[aria-invalid="true"] + .np-check__box, .np-radio > input[aria-invalid="true"] + .np-radio__dot { border-color: var(--color-danger); }
+.np-check > input:disabled + .np-check__box, .np-radio > input:disabled + .np-radio__dot { opacity: var(--state-disabled-opacity); }
+.np-check:has(> input:disabled), .np-radio:has(> input:disabled) { cursor: not-allowed; color: var(--color-text-disabled); }
+
+.np-check--card, .np-radio--card {
+  display: flex; align-items: flex-start; box-sizing: border-box; width: 100%; padding: 12px 14px;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-md);
+  transition: border-color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-check--card > .np-check__box, .np-radio--card > .np-radio__dot { margin-top: 1px; }
+.np-check--card:hover, .np-radio--card:hover { border-color: var(--color-border-strong); }
+.np-check--card:has(> input:checked), .np-radio--card:has(> input:checked) {
+  border-color: var(--color-border-focus); background: var(--color-surface-raised); box-shadow: var(--glow-soft); }
+.np-check--card:has(> input:focus-visible), .np-radio--card:has(> input:focus-visible) { box-shadow: var(--ring-focus); }
+.np-choice__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.np-choice__title { font: 500 14px/1.3 var(--font-body); color: var(--color-text); }
+.np-choice__desc { font: var(--caption); color: var(--color-text-muted); }
+
+.np-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.np-fieldset > legend { padding: 0; margin-bottom: var(--s-3); font: 500 11px/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+
+/* ------------------------------------------------------------
+   TEXTAREA · SELECT
+   <textarea class="np-input" rows="4"></textarea>
+   Native:  <select class="np-input"><option>us-east-1</option></select>   (best on phones: the OS picker)
+   Custom:  <button class="np-select" aria-haspopup="listbox" aria-expanded="false">
+              <span class="np-select__value">us-east-1</span><svg class="np-select__chev"…/></button>
+            + a .np-menu[role="listbox"] (see MENU). States: rest · hover · open · focus · invalid · disabled
+   ------------------------------------------------------------ */
+textarea.np-input { display: block; min-height: 96px; resize: vertical; line-height: 1.5; }
+select.np-input {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 40px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%), linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+select.np-input option { background: var(--color-surface-raised); color: var(--color-text); }
+
+.np-select {
+  appearance: none; box-sizing: border-box; width: 100%; min-width: 0; cursor: pointer; text-align: left;
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 10px;
+  font: 400 14px/1.4 var(--font-body); color: var(--color-text); padding: 10px 14px;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-md);
+  transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
+}
+.np-select__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.np-select__value.is-placeholder { color: var(--color-text-muted); }
+.np-select__chev { flex: none; width: var(--icon-sm); height: var(--icon-sm); color: var(--color-text-muted); transition: transform var(--dur) var(--ease-out); }
+.np-select:hover, .np-select.is-hover { border-color: var(--color-border-strong); }
+.np-select:focus-visible, .np-select.is-focus, .np-select[aria-expanded="true"] { outline: none; border-color: transparent; box-shadow: var(--glow-accent); }
+.np-select[aria-expanded="true"] .np-select__chev { transform: rotate(180deg); }
+.np-select[aria-invalid="true"] { border-color: var(--color-danger); }
+.np-select:disabled, .np-select.is-disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+
+/* ------------------------------------------------------------
+   SLIDER — a real <input type="range">. Webkit has no fill pseudo, so set --np-fill
+   (the value as a percentage) on input:
+     el.style.setProperty('--np-fill', (el.value - el.min) / (el.max - el.min) * 100 + '%')
+   <label class="np-field"><span class="np-field__label">Replicas <output class="np-field__value">4</output></span>
+     <input class="np-slider" type="range" min="1" max="10" value="4" style="--np-fill:33%"></label>
+   ------------------------------------------------------------ */
+.np-field__value { margin-left: 8px; color: var(--color-text-accent); }
+.np-slider {
+  --np-fill: 50%;
+  appearance: none; -webkit-appearance: none; display: block; width: 100%; height: 24px; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.np-slider:focus { outline: none; }
+.np-slider::-webkit-slider-runnable-track {
+  height: 6px; border-radius: var(--r-full);
+  background: var(--color-action-primary) left center / var(--np-fill) 100% no-repeat, var(--color-track);
+}
+.np-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; margin-top: -7px; box-sizing: border-box;
+  border-radius: 50%; background: var(--white); border: 2px solid var(--color-accent);
+  transition: box-shadow var(--dur), transform var(--dur-fast) var(--ease-out);
+}
+.np-slider::-moz-range-track { height: 6px; border-radius: var(--r-full); background: var(--color-track); }
+.np-slider::-moz-range-progress { height: 6px; border-radius: var(--r-full); background: var(--color-action-primary); }
+.np-slider::-moz-range-thumb {
+  width: 16px; height: 16px; box-sizing: content-box; border-radius: 50%; background: var(--white); border: 2px solid var(--color-accent);
+  transition: box-shadow var(--dur), transform var(--dur-fast) var(--ease-out);
+}
+.np-slider:active::-webkit-slider-thumb, .np-slider.is-active::-webkit-slider-thumb { box-shadow: var(--glow-accent); transform: scale(var(--state-pressed-scale)); }
+.np-slider:active::-moz-range-thumb { box-shadow: var(--glow-accent); }
+.np-slider:focus-visible::-webkit-slider-thumb, .np-slider.is-focus::-webkit-slider-thumb { box-shadow: var(--ring-focus); }
+.np-slider:focus-visible::-moz-range-thumb { box-shadow: var(--ring-focus); }
+.np-slider:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+
+/* ------------------------------------------------------------
+   DROPZONE — file input with a drop target. The input covers the zone, so click, drop and keyboard all work.
+   <label class="np-dropzone"><input type="file" multiple><svg …/><span class="np-dropzone__title">Drop files or browse</span>
+     <span class="np-dropzone__hint">PNG, SVG · up to 10 MB</span></label>        States: rest · hover · is-over · focus-within
+   ------------------------------------------------------------ */
+.np-dropzone {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s-2); text-align: center;
+  padding: var(--s-8) var(--s-6); cursor: pointer; color: var(--color-text-muted);
+  background: var(--color-surface); border: 1px dashed var(--color-border-strong); border-radius: var(--r-lg);
+  transition: border-color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-dropzone > input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.np-dropzone > svg { width: var(--icon-lg); height: var(--icon-lg); color: var(--color-accent); }
+.np-dropzone__title { font: 500 14px/1.3 var(--font-body); color: var(--color-text); }
+.np-dropzone__hint { font: 400 11px/1.4 var(--font-mono); color: var(--color-text-muted); }
+.np-dropzone:hover, .np-dropzone.is-hover { border-color: var(--color-text-muted); }
+.np-dropzone.is-over, .np-dropzone:focus-within { border-color: var(--color-border-focus); border-style: solid; background: var(--color-surface-raised); box-shadow: var(--glow-soft); }
+
+/* ------------------------------------------------------------
+   CHIP — a compact, interactive tag: filter toggle, selectable option or removable value.
+   (A badge is a status label and not interactive; a chip is.)
+   <button class="np-chip" aria-pressed="true">Production</button>
+   <span class="np-chip np-chip--removable">eu-west<button class="np-chip__x" aria-label="Remove eu-west"><svg …/></button></span>
+   ------------------------------------------------------------ */
+.np-chip {
+  appearance: none; display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; max-width: 100%;
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; text-decoration: none;
+  color: var(--color-text-secondary); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-full);
+  padding: 7px 12px; cursor: pointer;
+  transition: color var(--dur), border-color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-chip > svg { width: 14px; height: 14px; flex: none; }
+.np-chip:hover, .np-chip.is-hover { color: var(--color-text); border-color: var(--color-border-strong); }
+.np-chip:focus-visible, .np-chip.is-focus { outline: none; box-shadow: var(--ring-focus); }
+.np-chip[aria-pressed="true"], .np-chip.is-on { color: var(--color-text-accent); border-color: var(--color-border-focus); background: var(--color-surface-raised); }
+.np-chip:disabled, .np-chip.is-disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
+.np-chip--removable { padding-right: 4px; cursor: default; }
+.np-chip__x {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 20px; height: 20px; padding: 0;
+  border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; transition: background var(--dur), color var(--dur);
+}
+.np-chip__x > svg { width: 12px; height: 12px; }
+.np-chip__x:hover { background: var(--color-track); color: var(--color-text); }
+.np-chip__x:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+
+/* ------------------------------------------------------------
+   SPINNER — indeterminate activity. <span class="np-spinner" role="status" aria-label="Loading"></span>
+   Sizes: --sm 14px · default 20px · --lg 32px. Keeps turning (slower) under reduced motion.
+   ------------------------------------------------------------ */
+.np-spinner {
+  --spin: 20px; display: inline-block; flex: none; box-sizing: border-box; width: var(--spin); height: var(--spin);
+  border: 2px solid var(--color-track); border-top-color: var(--color-accent); border-radius: 50%;
+  animation: np-spin 0.7s linear infinite;
+}
+.np-spinner--sm { --spin: 14px; }
+.np-spinner--lg { --spin: 32px; border-width: 3px; }
+
+/* ------------------------------------------------------------
    METER · AVATAR · INLINE CODE · LINK
    <div class="np-meter" role="meter" aria-valuenow="68" …><div class="np-meter__bar" style="--value:68%"></div></div>
    ------------------------------------------------------------ */
@@ -751,6 +933,8 @@ svg.lucide { stroke-width: var(--icon-stroke); }
      < 1440  the inspector (.np-appshell--aside) is an off-canvas panel (.is-aside-open)
      ≥ 1440  the inspector docks as a third column
      ≥ 1920  the inspector widens to 400px; content stays capped at --container-wide
+   Phones can add a bottom .np-tabbar: put .np-appshell--tabbar on the shell and a <nav class="np-tabbar np-appshell__tabbar">
+   last; it shows below 768.
    <div class="np-appshell np-appshell--aside">
      <header class="np-appshell__top"><button class="np-icon-btn np-appshell__menu" aria-label="Menu">…</button>…</header>
      <nav class="np-appshell__nav" aria-label="Main"><a class="np-navitem" aria-current="page">…</a></nav>
@@ -766,6 +950,8 @@ svg.lucide { stroke-width: var(--icon-stroke); }
   grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "top" "main";
   background: var(--color-bg-page); color: var(--color-text);
 }
+.np-appshell--tabbar { grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "top" "main" "tabbar"; }
+.np-appshell__tabbar { grid-area: tabbar; }
 .np-appshell__top {
   grid-area: top; display: flex; align-items: center; gap: var(--s-3); box-sizing: border-box;
   min-height: calc(var(--topbar-h) + var(--safe-top));
@@ -806,6 +992,10 @@ svg.lucide { stroke-width: var(--icon-stroke); }
 }
 @media (max-width: 1439.98px) {   /* below --bp-xl */
   .np-appshell.is-aside-open .np-appshell__scrim { opacity: 1; pointer-events: auto; }
+}
+@media (min-width: 768px) {       /* --bp-md: the tab bar gives way to the drawer / sidebar */
+  .np-appshell--tabbar { grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "top" "main"; }
+  .np-appshell > .np-appshell__tabbar { display: none; }
 }
 @media (min-width: 1024px) {      /* --bp-lg */
   .np-appshell { grid-template-columns: var(--sidebar-w) minmax(0, 1fr); grid-template-areas: "nav top" "nav main"; }
@@ -938,6 +1128,252 @@ svg.lucide { stroke-width: var(--icon-stroke); }
   font: 400 11px/1 var(--font-mono); color: var(--color-text-muted); }
 .np-palette__empty { padding: 28px 10px; text-align: center; font: 400 13px/1.4 var(--font-mono); color: var(--color-text-muted); }
 
+/* ------------------------------------------------------------
+   POPOVER · MENU — floating surfaces anchored to a trigger. The anchor wrapper places them below the trigger
+   (--end aligns right, --up opens above); flip them with your own script when there is no room (see the specimen).
+   <div class="np-anchor"><button class="np-btn np-btn--ghost" aria-haspopup="menu" aria-expanded="true">Actions</button>
+     <div class="np-menu" role="menu">
+       <button class="np-menu__item" role="menuitem">Rename<span class="np-menu__hint">R</span></button>
+       <hr class="np-menu__sep">
+       <button class="np-menu__item np-menu__item--danger" role="menuitem">Delete</button></div></div>
+   Custom select: role="listbox" on the menu, role="option" + aria-selected on the items. Checkbox/radio items: aria-checked.
+   ------------------------------------------------------------ */
+.np-anchor { position: relative; display: inline-block; max-width: 100%; }
+.np-anchor--block { display: block; }
+.np-popover, .np-menu {
+  position: absolute; z-index: var(--z-dropdown); top: calc(100% + 6px); left: 0; box-sizing: border-box;
+  min-width: max(100%, 200px); max-width: min(360px, calc(100vw - 2 * var(--gutter)));
+  background: var(--color-surface-overlay); border: 1px solid var(--color-border-strong); border-radius: var(--r-lg);
+  box-shadow: var(--elevation-overlay); animation: np-pop var(--dur) var(--ease-out);
+}
+.np-popover[hidden], .np-menu[hidden] { display: none; }
+.np-popover--end, .np-menu--end { left: auto; right: 0; }
+.np-popover--up, .np-menu--up { top: auto; bottom: calc(100% + 6px); }
+.np-popover { padding: var(--s-4); }
+.np-menu { padding: 6px; max-height: min(320px, 60vh); overflow-y: auto; overscroll-behavior: contain; }
+.np-menu__item {
+  appearance: none; display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; padding: 9px 10px; text-align: left;
+  border: 0; border-radius: var(--r-md); background: transparent; cursor: pointer; text-decoration: none;
+  font: 400 14px/1.3 var(--font-body); color: var(--color-text-secondary);
+}
+.np-menu__item > svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; color: var(--color-text-muted); }
+.np-menu__item:hover, .np-menu__item.is-active { background: var(--color-surface-raised); color: var(--color-text); }
+.np-menu__item:focus-visible, .np-menu__item.is-active { outline: none; background: var(--color-surface-raised); color: var(--color-text); box-shadow: inset 2px 0 0 var(--color-accent); }
+.np-menu__item[aria-selected="true"], .np-menu__item[aria-checked="true"] { color: var(--color-text); }
+.np-menu__item[aria-selected="true"]::after, .np-menu__item[aria-checked="true"]::after {   /* tick on the right */
+  content: ""; flex: none; margin-left: auto; width: 5px; height: 10px; border: solid var(--color-accent); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-2px, -1px); }
+.np-menu__item--danger { color: var(--color-danger); }
+.np-menu__item--danger:hover, .np-menu__item--danger:focus-visible { background: var(--color-danger-fill); color: var(--color-danger); }
+.np-menu__item--danger > svg { color: inherit; }
+.np-menu__item[aria-disabled="true"], .np-menu__item:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; pointer-events: none; }
+.np-menu__hint { margin-left: auto; font: 400 11px/1 var(--font-mono); color: var(--color-text-muted); }
+.np-menu__sep { height: 1px; margin: 6px 4px; border: 0; background: var(--color-border-subtle); }
+.np-menu__label { padding: 10px 10px 6px; font: 500 10px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); }
+
+/* ------------------------------------------------------------
+   CALENDAR — month grid for a date picker. Put it in a .np-popover under a .np-select / .np-input trigger.
+   <div class="np-calendar" role="group" aria-label="October 2026">
+     <div class="np-calendar__head"><button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" aria-label="Previous month">…</button>
+       <span class="np-calendar__title" aria-live="polite">October 2026</span><button … aria-label="Next month">…</button></div>
+     <div class="np-calendar__grid"><span class="np-calendar__dow">Mo</span>… <button class="np-calendar__day" aria-pressed="false">12</button>…</div></div>
+   Day states: .is-today · .is-outside (other month) · .is-in-range · aria-pressed="true" (selected) · :disabled
+   ------------------------------------------------------------ */
+.np-calendar { --cal-day: 36px; display: inline-flex; flex-direction: column; gap: var(--s-2); width: calc(var(--cal-day) * 7 + 12px); max-width: 100%; }
+.np-calendar__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.np-calendar__title { font: 600 14px/1 var(--font-display); color: var(--color-text); }
+.np-calendar__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.np-calendar__dow { height: 28px; display: flex; align-items: center; justify-content: center;
+  font: 500 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+.np-calendar__day {
+  appearance: none; position: relative; height: var(--cal-day); padding: 0; border: 0; border-radius: var(--r-sm); background: transparent; cursor: pointer;
+  font: 400 13px/1 var(--font-mono); color: var(--color-text-secondary);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur);
+}
+.np-calendar__day:hover { background: var(--color-surface-raised); color: var(--color-text); }
+.np-calendar__day:focus-visible, .np-calendar__day.is-focus { outline: none; box-shadow: var(--ring-focus); }
+.np-calendar__day.is-today { color: var(--color-text-accent); box-shadow: inset 0 0 0 1px var(--color-border-focus); }
+.np-calendar__day.is-outside { color: var(--color-text-muted); }
+.np-calendar__day.is-in-range { background: var(--color-surface-raised); color: var(--color-text); border-radius: 0; }
+.np-calendar__day[aria-pressed="true"] { background: var(--color-action-primary); color: var(--color-text-on-accent); box-shadow: none; }
+.np-calendar__day:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; pointer-events: none; }
+
+/* ------------------------------------------------------------
+   PAGINATION — prev / numbered pages / next. When the nav is narrower than 420px (its own width, not the
+   viewport) the numbers fold into "Page 3 of 12".
+   <nav class="np-pagination" aria-label="Pagination"><ul class="np-pagination__list">
+     <li><button class="np-pagination__btn" aria-label="Previous page" disabled><svg …/></button></li>
+     <li class="np-pagination__num"><a class="np-pagination__item" href="#" aria-label="Page 1">1</a></li>
+     <li class="np-pagination__num"><a class="np-pagination__item" href="#" aria-current="page" aria-label="Page 2">2</a></li>
+     <li class="np-pagination__gap" aria-hidden="true">…</li>
+     <li class="np-pagination__summary">Page 2 of 12</li>
+     <li><button class="np-pagination__btn" aria-label="Next page"><svg …/></button></li></ul></nav>
+   ------------------------------------------------------------ */
+.np-pagination { container: np-pagination / inline-size; }
+.np-pagination__list { display: flex; align-items: center; justify-content: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.np-pagination__item, .np-pagination__btn {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 36px; height: 36px; padding: 0 10px;
+  border: 1px solid transparent; border-radius: var(--r-md); background: transparent; cursor: pointer; text-decoration: none;
+  font: 500 12px/1 var(--font-mono); color: var(--color-text-secondary);
+  transition: color var(--dur), border-color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.np-pagination__btn { background: var(--color-surface); border-color: var(--color-border); }
+.np-pagination__btn > svg { width: var(--icon-sm); height: var(--icon-sm); }
+.np-pagination__item:hover, .np-pagination__btn:hover { color: var(--color-text); border-color: var(--color-border-strong); background: var(--color-surface); }
+.np-pagination__item:focus-visible, .np-pagination__btn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-pagination__item[aria-current="page"] { background: var(--color-action-primary); color: var(--color-text-on-accent); border-color: transparent; }
+.np-pagination__btn:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; pointer-events: none; }
+.np-pagination__gap { min-width: 24px; text-align: center; font: 500 12px/1 var(--font-mono); color: var(--color-text-muted); }
+.np-pagination__summary { display: none; padding: 0 var(--s-3); white-space: nowrap; font: 500 12px/1 var(--font-mono); color: var(--color-text-secondary); }
+@container np-pagination (max-width: 420px) {
+  .np-pagination__num, .np-pagination__gap { display: none; }
+  .np-pagination__summary { display: block; }
+}
+
+/* ------------------------------------------------------------
+   BREADCRUMB — where you are. The last item is aria-current="page".
+   <nav aria-label="Breadcrumb"><ol class="np-breadcrumb"><li><a href="#">Projects</a></li><li><a href="#">aurora-core</a></li>
+     <li aria-current="page">Nodes</li></ol></nav>
+   ------------------------------------------------------------ */
+.np-breadcrumb {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; list-style: none; margin: 0; padding: 0;
+  font: 500 11px/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted);
+}
+.np-breadcrumb > li { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.np-breadcrumb > li + li::before { content: "/"; color: var(--color-text-muted); }
+.np-breadcrumb a { color: var(--color-text-secondary); text-decoration: none; border-radius: var(--r-sm); transition: color var(--dur); }
+.np-breadcrumb a:hover { color: var(--color-text); }
+.np-breadcrumb a:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-breadcrumb > li[aria-current="page"] { color: var(--color-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ------------------------------------------------------------
+   STEPPER — progress through a flow. Current step: aria-current="step"; finished steps: .is-done.
+   <ol class="np-stepper"><li class="np-step is-done"><span class="np-step__marker">1</span><span class="np-step__label">Account</span></li>
+     <li class="np-step" aria-current="step">…</li><li class="np-step">…</li></ol>
+   --vertical stacks the steps. Below 480px (--bp-sm) only the current step keeps its label.
+   ------------------------------------------------------------ */
+.np-stepper { display: flex; align-items: flex-start; list-style: none; margin: 0; padding: 0; counter-reset: np-step; }
+.np-step { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: var(--s-2); text-align: center; }
+.np-step + .np-step::before {
+  content: ""; position: absolute; top: 15px; left: calc(-50% + 20px); right: calc(50% + 20px); height: 2px; background: var(--color-track); }
+.np-step.is-done + .np-step::before { background: var(--color-action-primary); }
+.np-step__marker {
+  position: relative; z-index: 1; flex: none; box-sizing: border-box; width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font: 600 12px/1 var(--font-mono); color: var(--color-text-muted); background: var(--color-surface); border: 1px solid var(--color-border-strong);
+}
+.np-step[aria-current="step"] .np-step__marker { color: var(--color-text-accent); border-color: var(--color-border-focus); box-shadow: var(--glow-soft); }
+.np-step.is-done .np-step__marker { color: transparent; background: var(--color-action-primary); border-color: transparent; }
+.np-step.is-done .np-step__marker::after {
+  content: ""; position: absolute; left: 12px; top: 7px; width: 5px; height: 10px; border: solid var(--color-text-on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.np-step__label { font: 500 11px/1.3 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); overflow-wrap: anywhere; }
+.np-step[aria-current="step"] .np-step__label, .np-step.is-done .np-step__label { color: var(--color-text); }
+.np-stepper--vertical { flex-direction: column; }
+.np-stepper--vertical .np-step { flex-direction: row; align-items: flex-start; text-align: left; gap: var(--s-3); padding-bottom: var(--s-6); }
+.np-stepper--vertical .np-step:last-child { padding-bottom: 0; }
+.np-stepper--vertical .np-step__label { padding-top: 9px; }
+.np-stepper--vertical .np-step + .np-step::before { display: none; }
+.np-stepper--vertical .np-step:not(:last-child)::after { content: ""; position: absolute; left: 15px; top: 38px; bottom: 4px; width: 2px; background: var(--color-track); }
+.np-stepper--vertical .np-step.is-done:not(:last-child)::after { background: var(--color-action-primary); }
+@media (max-width: 479.98px) {   /* below --bp-sm */
+  .np-stepper:not(.np-stepper--vertical) .np-step:not([aria-current="step"]) .np-step__label { display: none; }
+}
+
+/* ------------------------------------------------------------
+   ACCORDION — disclosure list built on <details>, so it works without script.
+   <div class="np-accordion"><details open><summary>Billing</summary><div class="np-accordion__body">…</div></details>…</div>
+   ------------------------------------------------------------ */
+.np-accordion { display: flex; flex-direction: column; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-lg); overflow: hidden; }
+.np-accordion > details + details { border-top: 1px solid var(--color-border-subtle); }
+.np-accordion summary {
+  display: flex; align-items: center; gap: var(--s-3); padding: 14px 16px; cursor: pointer; list-style: none;
+  font: 600 14px/1.3 var(--font-display); color: var(--color-text); transition: background var(--dur);
+}
+.np-accordion summary::-webkit-details-marker { display: none; }
+.np-accordion summary::after {
+  content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; border: solid var(--color-text-muted); border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-2px, -2px); transition: transform var(--dur) var(--ease-out); }
+.np-accordion details[open] > summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+.np-accordion summary:hover { background: var(--color-surface-raised); }
+.np-accordion summary:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--color-border-focus); }
+.np-accordion__body { padding: 0 16px 16px; font: var(--body-sm); color: var(--color-text-secondary); }
+
+/* ------------------------------------------------------------
+   DRAWER · SHEET — overlays that dock to an edge. Both sit inside a .np-scrim.
+   Drawer (settings, filters, details):
+     <div class="np-scrim np-scrim--end"><aside class="np-drawer" role="dialog" aria-modal="true" aria-labelledby="t">
+       <div class="np-drawer__header"><h2 class="np-drawer__title" id="t">Filters</h2>…</div>
+       <div class="np-drawer__body">…</div><div class="np-drawer__footer">…</div></aside></div>      (--start docks left)
+   Sheet — a bottom sheet on phones that becomes a centred dialog from 768px (--bp-md):
+     <div class="np-scrim np-scrim--sheet"><div class="np-sheet" role="dialog" aria-modal="true" aria-labelledby="t">
+       <span class="np-sheet__handle" aria-hidden="true"></span><div class="np-sheet__header">…</div>…</div></div>
+   ------------------------------------------------------------ */
+.np-scrim--end, .np-scrim--start, .np-scrim--sheet { padding: 0; }
+.np-scrim--end { place-items: stretch end; }
+.np-scrim--start { place-items: stretch start; }
+.np-scrim--sheet { place-items: end center; }
+.np-drawer, .np-sheet {
+  position: relative; z-index: var(--z-modal); display: flex; flex-direction: column; box-sizing: border-box; min-height: 0;
+  background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--elevation-overlay);
+}
+.np-drawer {
+  width: min(420px, 92vw); height: 100%; border-width: 0 0 0 1px; padding: var(--safe-top) var(--safe-right) var(--safe-bottom) 0;
+  animation: np-drawer-in var(--dur) var(--ease-out);
+}
+.np-scrim--start .np-drawer { border-width: 0 1px 0 0; padding: var(--safe-top) 0 var(--safe-bottom) var(--safe-left); animation-name: np-drawer-in-start; }
+.np-sheet {
+  width: 100%; max-width: 560px; max-height: 88vh; max-height: 88dvh; border-bottom: 0; border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+  padding-bottom: var(--safe-bottom); animation: np-sheet-in var(--dur-slow) var(--ease-out);
+}
+.np-sheet__handle { flex: none; width: 36px; height: 4px; margin: 10px auto 2px; border-radius: var(--r-full); background: var(--color-border-strong); }
+.np-drawer__header, .np-sheet__header { flex: none; display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--color-border-subtle); }
+.np-drawer__title, .np-sheet__title { flex: 1; min-width: 0; margin: 0; font: var(--h4); color: var(--color-text); }
+.np-drawer__body, .np-sheet__body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: var(--s-4); }
+.np-drawer__footer, .np-sheet__footer { flex: none; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--color-border-subtle); }
+@keyframes np-drawer-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes np-drawer-in-start { from { transform: translateX(-100%); } to { transform: none; } }
+@keyframes np-sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@media (min-width: 768px) {   /* --bp-md: the sheet becomes a centred dialog */
+  .np-scrim--sheet { place-items: center; padding: 20px; }
+  .np-sheet { border-bottom-width: 1px; border-radius: var(--r-xl); padding-bottom: 0; animation: np-pop var(--dur) var(--ease-out); }
+  .np-sheet__handle { display: none; }
+}
+
+/* ------------------------------------------------------------
+   TAB BAR — bottom navigation for phones: 3–5 destinations, icon + label.
+   <nav class="np-tabbar" aria-label="Primary"><a class="np-tabbar__item" href="#" aria-current="page"><svg …/><span>Home</span></a>…</nav>
+   In the app shell use .np-appshell--tabbar + .np-appshell__tabbar; it shows below 768px (--bp-md).
+   ------------------------------------------------------------ */
+.np-tabbar { display: flex; box-sizing: border-box; background: var(--color-surface); border-top: 1px solid var(--color-border-subtle);
+  padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left); }
+.np-tabbar__item {
+  appearance: none; position: relative; flex: 1; min-width: 0; min-height: 56px; box-sizing: border-box; padding: 6px 4px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  border: 0; background: transparent; cursor: pointer; text-decoration: none;
+  font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); transition: color var(--dur);
+}
+.np-tabbar__item > svg { width: 22px; height: 22px; flex: none; }
+.np-tabbar__item > span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.np-tabbar__item:hover { color: var(--color-text); }
+.np-tabbar__item:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--color-border-focus); }
+.np-tabbar__item[aria-current="page"] { color: var(--color-text-accent); }
+.np-tabbar__item[aria-current="page"]::before {
+  content: ""; position: absolute; top: -1px; left: 25%; right: 25%; height: 2px; background: var(--color-action-primary); box-shadow: var(--glow-soft); }
+
+/* ------------------------------------------------------------
+   RESPONSIVE TABLE — below 560px (of the wrapper's own width) every row becomes a labelled card.
+   Give each cell its column name: <td data-label="Region">…</td>
+   <div class="np-table-wrap np-table-wrap--stack"><table class="np-table np-table--stack">…</table></div>
+   ------------------------------------------------------------ */
+.np-table-wrap--stack { container: np-table / inline-size; }
+@container np-table (max-width: 560px) {
+  .np-table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .np-table--stack, .np-table--stack tbody, .np-table--stack tr { display: block; }
+  .np-table--stack tr { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--color-border-subtle); }
+  .np-table--stack tbody tr:first-child { border-top: 0; }
+  .np-table--stack td { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding: 6px 0; border: 0; white-space: normal; text-align: right; }
+  .np-table--stack td::before { content: attr(data-label); flex: none; text-align: left; font: 500 10px/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-muted); }
+}
+
 /* ============================================================
    TOUCH — coarse pointers (phones, tablets)
    Hit areas reach --touch-target; text fields use 16px so iOS Safari doesn't zoom on focus.
@@ -946,9 +1382,15 @@ svg.lucide { stroke-width: var(--icon-stroke); }
    bare `.np-input` rule for its text style and must not pick up the 16px.)
    ============================================================ */
 @media (pointer: coarse) {
-  .np-btn, .np-tab, .np-seg__item, .np-navitem, .np-list__row { min-height: var(--touch-target); }
+  .np-btn, .np-tab, .np-seg__item, .np-navitem, .np-list__row, .np-chip, .np-check, .np-radio,
+  .np-menu__item, .np-select, .np-tabbar__item { min-height: var(--touch-target); }
+  .np-pagination__item, .np-pagination__btn { min-width: var(--touch-target); height: var(--touch-target); }
+  .np-chip__x { width: 32px; height: 32px; }
   .np-icon-btn, .np-icon-btn--sm { --ib-size: var(--touch-target); }
-  input.np-input, textarea.np-input, select.np-input { min-height: var(--touch-target); font-size: 16px; }
+  .np-calendar { --cal-day: var(--touch-target); }
+  .np-slider { height: var(--touch-target); }
+  input.np-input, textarea.np-input, select.np-input, .np-select { font-size: 16px; }
+  input.np-input, select.np-input { min-height: var(--touch-target); }
 }
 
 /* ============================================================
@@ -977,7 +1419,7 @@ svg.lucide { stroke-width: var(--icon-stroke); }
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .np-btn[aria-busy="true"]::after, .np-btn.is-loading::after {
+  .np-btn[aria-busy="true"]::after, .np-btn.is-loading::after, .np-spinner {
     animation: np-spin 1.4s linear infinite !important;
   }
 }

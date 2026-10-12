@@ -8,7 +8,7 @@ user-invocable: true
 
 Read `README.md` first — it holds the brand context, content + visual foundations and iconography rules. `CLAUDE.md` holds the binding conventions. Then explore:
 
-- `colors_and_type.css` — the single source of truth: fonts, tokens (primitives + semantic aliases), the light theme, and the canonical element/pattern classes (`.np-btn`, `.np-input`, `.np-switch`, `.np-badge`, `.np-card`, `.np-modal`, `.np-toast`, `.np-palette` …). Link it and use the classes before writing any bespoke CSS.
+- `colors_and_type.css` — the single source of truth: fonts, tokens (primitives + semantic aliases), the light theme, and the canonical element/pattern classes (`.np-btn`, `.np-input`, `.np-switch`, `.np-badge`, `.np-card`, `.np-modal`, `.np-toast`, `.np-palette`, `.np-appshell`, `.np-menu`, `.np-sheet` …). Link it and use the classes before writing any bespoke CSS.
 - `index.html` — the live reference; `preview/` — one specimen per component/pattern (copy their markup).
 - `ui_kits/marketing/`, `ui_kits/dashboard/`, `ui_kits/mobile/` — React UI kits (each has its own README). Copy components out and adapt.
 

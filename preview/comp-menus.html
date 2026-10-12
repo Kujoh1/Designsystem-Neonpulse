@@ -1,0 +1,197 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menus &amp; pickers</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:30px 26px;align-items:start}
+  .below{margin-top:30px}
+  .room{min-height:330px}                         /* reserve space so an open popover never changes the frame height */
+  .static .np-menu{position:static;animation:none;max-width:none}
+  [hidden]{display:none !important}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+</style></head>
+<body>
+  <div class="cols">
+    <!-- (a) menu — live -->
+    <div class="room">
+      <div class="np-label lab">Menu · .np-anchor + .np-menu</div>
+      <div class="np-anchor" id="m1">
+        <button class="np-btn np-btn--ghost" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="m1-menu">Actions<i data-lucide="chevron-down" aria-hidden="true"></i></button>
+        <div class="np-menu" id="m1-menu" role="menu" aria-label="Actions" hidden>
+          <div class="np-menu__label" role="presentation">Node</div>
+          <button class="np-menu__item" role="menuitem" tabindex="-1"><i data-lucide="refresh-cw" aria-hidden="true"></i>Restart<span class="np-menu__hint">R</span></button>
+          <button class="np-menu__item" role="menuitem" tabindex="-1"><i data-lucide="copy" aria-hidden="true"></i>Duplicate<span class="np-menu__hint">D</span></button>
+          <button class="np-menu__item" role="menuitem" tabindex="-1" aria-disabled="true"><i data-lucide="lock" aria-hidden="true"></i>Lock</button>
+          <hr class="np-menu__sep">
+          <button class="np-menu__item np-menu__item--danger" role="menuitem" tabindex="-1"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- (b) menu — all item states, static -->
+    <div class="static">
+      <div class="np-label lab">Item states</div>
+      <div class="np-menu" role="menu" aria-label="States">
+        <div class="np-menu__label" role="presentation">View</div>
+        <button class="np-menu__item" role="menuitemcheckbox" aria-checked="true" tabindex="-1">Show grid</button>
+        <button class="np-menu__item" role="menuitemcheckbox" aria-checked="false" tabindex="-1">Show rulers</button>
+        <button class="np-menu__item is-active" role="menuitem" tabindex="-1">Active · hover / arrow keys</button>
+        <button class="np-menu__item" role="menuitem" tabindex="-1" aria-disabled="true">Disabled</button>
+        <hr class="np-menu__sep">
+        <button class="np-menu__item np-menu__item--danger" role="menuitem" tabindex="-1">Danger</button>
+      </div>
+    </div>
+
+    <!-- (c) custom select — live -->
+    <div class="room">
+      <div class="np-label lab">Select · .np-select + listbox</div>
+      <div class="np-field">
+        <span class="np-field__label" id="sel-lab">Region</span>
+        <div class="np-anchor np-anchor--block" id="s1">
+          <button class="np-select" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sel-lab sel-val" aria-controls="s1-list">
+            <span class="np-select__value" id="sel-val">us-east-1</span><i class="np-select__chev" data-lucide="chevron-down" aria-hidden="true"></i></button>
+          <div class="np-menu" id="s1-list" role="listbox" tabindex="-1" aria-labelledby="sel-lab" hidden>
+            <div class="np-menu__item" role="option" id="o1" aria-selected="true">us-east-1</div>
+            <div class="np-menu__item" role="option" id="o2" aria-selected="false">eu-west-1</div>
+            <div class="np-menu__item" role="option" id="o3" aria-selected="false">ap-south-1</div>
+            <div class="np-menu__item" role="option" id="o4" aria-selected="false">sa-east-1</div>
+          </div>
+        </div>
+        <span class="np-field__hint">Arrow keys · Home/End · Enter · Esc</span>
+      </div>
+    </div>
+
+    <!-- (d) date picker — live -->
+    <div class="room">
+      <div class="np-label lab">Date picker · .np-select + .np-popover + .np-calendar</div>
+      <div class="np-field">
+        <span class="np-field__label" id="dp-lab">Deploy on</span>
+        <div class="np-anchor np-anchor--block" id="d1">
+          <button class="np-select" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dp-lab dp-val" aria-controls="d1-pop">
+            <span class="np-select__value is-placeholder" id="dp-val">Pick a date</span><i class="np-select__chev" data-lucide="calendar" aria-hidden="true" style="transform:none"></i></button>
+          <div class="np-popover" id="d1-pop" role="dialog" aria-label="Choose a date" hidden></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">Chips · filters</div>
+      <div class="row" role="group" aria-label="Environment">
+        <button class="np-chip" type="button" aria-pressed="true">Production</button>
+        <button class="np-chip" type="button" aria-pressed="false">Staging</button>
+        <button class="np-chip" type="button" aria-pressed="false"><i data-lucide="git-branch" aria-hidden="true"></i>Preview</button>
+        <button class="np-chip" type="button" disabled>Archived</button>
+      </div>
+      <div class="np-label lab" style="margin-top:22px">Chips · removable</div>
+      <div class="row" id="rm">
+        <span class="np-chip np-chip--removable">eu-west<button class="np-chip__x" type="button" aria-label="Remove eu-west"><i data-lucide="x" aria-hidden="true"></i></button></span>
+        <span class="np-chip np-chip--removable">us-east<button class="np-chip__x" type="button" aria-label="Remove us-east"><i data-lucide="x" aria-hidden="true"></i></button></span>
+        <span class="np-chip np-chip--removable">ap-south<button class="np-chip__x" type="button" aria-label="Remove ap-south"><i data-lucide="x" aria-hidden="true"></i></button></span>
+      </div>
+    </div>
+    <div>
+      <div class="np-label lab">Spinner</div>
+      <div class="row">
+        <span class="np-spinner np-spinner--sm" role="status" aria-label="Loading"></span>
+        <span class="np-spinner" role="status" aria-label="Loading"></span>
+        <span class="np-spinner np-spinner--lg" role="status" aria-label="Loading"></span>
+        <button class="np-btn np-btn--ghost np-btn--sm" type="button" disabled><span class="np-spinner np-spinner--sm" aria-hidden="true"></span>Syncing…</button>
+      </div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+  lucide.createIcons();
+
+  /* ---- shared: open / close / flip ---- */
+  var open = null;
+  function place(trigger, panel) {
+    panel.classList.remove('np-menu--up', 'np-popover--up');
+    panel.hidden = false;
+    var r = trigger.getBoundingClientRect(), h = panel.offsetHeight, below = innerHeight - r.bottom - 14;
+    if (below < h && r.top > below) panel.classList.add(panel.classList.contains('np-popover') ? 'np-popover--up' : 'np-menu--up');
+  }
+  function show(trigger, panel) { if (open) open.close(); place(trigger, panel); trigger.setAttribute('aria-expanded', 'true'); open = { close: close }; function close(focus) { panel.hidden = true; trigger.setAttribute('aria-expanded', 'false'); if (open && open.close === close) open = null; if (focus) trigger.focus(); } return close; }
+  document.addEventListener('click', function (e) { if (open && !e.target.closest('.np-anchor')) open.close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && open) { open.close(true); } });
+
+  /* ---- menu ---- */
+  (function () {
+    var a = document.getElementById('m1'), t = a.querySelector('button'), p = a.querySelector('.np-menu');
+    var items = [].slice.call(p.querySelectorAll('[role=menuitem]:not([aria-disabled=true])')), close;
+    function focusAt(i) { items[(i + items.length) % items.length].focus(); }
+    t.addEventListener('click', function () { if (t.getAttribute('aria-expanded') === 'true') { close(true); } else { close = show(t, p); focusAt(0); } });
+    t.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown') { e.preventDefault(); close = show(t, p); focusAt(0); } });
+    p.addEventListener('keydown', function (e) {
+      var i = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') { e.preventDefault(); focusAt(i + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); focusAt(i - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); focusAt(0); }
+      else if (e.key === 'End') { e.preventDefault(); focusAt(-1); }
+      else if (e.key === 'Tab') { close(false); }
+    });
+    p.addEventListener('click', function (e) { if (e.target.closest('[role=menuitem]')) close(true); });
+  })();
+
+  /* ---- listbox select ---- */
+  (function () {
+    var a = document.getElementById('s1'), t = a.querySelector('.np-select'), p = a.querySelector('[role=listbox]'), v = document.getElementById('sel-val');
+    var opts = [].slice.call(p.querySelectorAll('[role=option]')), cur = 0, close;
+    function mark(i) { cur = (i + opts.length) % opts.length; opts.forEach(function (o, k) { o.classList.toggle('is-active', k === cur); }); p.setAttribute('aria-activedescendant', opts[cur].id); opts[cur].scrollIntoView({ block: 'nearest' }); }
+    function choose(i) { opts.forEach(function (o, k) { o.setAttribute('aria-selected', k === i ? 'true' : 'false'); }); v.textContent = opts[i].textContent; close(true); }
+    function openList() { close = show(t, p); mark(opts.findIndex(function (o) { return o.getAttribute('aria-selected') === 'true'; })); p.focus(); }
+    t.addEventListener('click', function () { if (t.getAttribute('aria-expanded') === 'true') { close(true); } else { openList(); } });
+    t.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); openList(); } });
+    p.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); mark(cur + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); mark(cur - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); mark(0); }
+      else if (e.key === 'End') { e.preventDefault(); mark(-1); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(cur); }
+      else if (e.key === 'Tab') { close(false); }
+    });
+    p.addEventListener('click', function (e) { var i = opts.indexOf(e.target.closest('[role=option]')); if (i > -1) choose(i); });
+    p.addEventListener('mousemove', function (e) { var i = opts.indexOf(e.target.closest('[role=option]')); if (i > -1 && i !== cur) mark(i); });
+  })();
+
+  /* ---- date picker ---- */
+  (function () {
+    var a = document.getElementById('d1'), t = a.querySelector('.np-select'), p = document.getElementById('d1-pop'), v = document.getElementById('dp-val');
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var today = new Date(), view = new Date(today.getFullYear(), today.getMonth(), 1), picked = null, close;
+    var chev = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="';
+    function same(x, y) { return x && y && x.getFullYear() === y.getFullYear() && x.getMonth() === y.getMonth() && x.getDate() === y.getDate(); }
+    function render() {
+      var first = new Date(view.getFullYear(), view.getMonth(), 1), lead = (first.getDay() + 6) % 7, html = '';
+      ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].forEach(function (d) { html += '<span class="np-calendar__dow" aria-hidden="true">' + d + '</span>'; });
+      for (var i = 0; i < 42; i++) {
+        var d = new Date(view.getFullYear(), view.getMonth(), 1 - lead + i), cls = 'np-calendar__day';
+        if (d.getMonth() !== view.getMonth()) cls += ' is-outside'; if (same(d, today)) cls += ' is-today';
+        html += '<button type="button" class="' + cls + '" data-t="' + d.getTime() + '" aria-pressed="' + (same(d, picked) ? 'true' : 'false') + '" aria-label="' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() + '">' + d.getDate() + '</button>';
+      }
+      p.innerHTML = '<div class="np-calendar" role="group" aria-label="' + MONTHS[view.getMonth()] + ' ' + view.getFullYear() + '"><div class="np-calendar__head">' +
+        '<button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" data-n="-1" aria-label="Previous month">' + chev + 'm15 18-6-6 6-6"/></svg></button>' +
+        '<span class="np-calendar__title" aria-live="polite">' + MONTHS[view.getMonth()] + ' ' + view.getFullYear() + '</span>' +
+        '<button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" data-n="1" aria-label="Next month">' + chev + 'm9 18 6-6-6-6"/></svg></button></div>' +
+        '<div class="np-calendar__grid">' + html + '</div></div>';
+    }
+    t.addEventListener('click', function () { if (t.getAttribute('aria-expanded') === 'true') { close(true); } else { render(); close = show(t, p); (p.querySelector('[aria-pressed=true]') || p.querySelector('.is-today') || p.querySelector('.np-calendar__day')).focus(); } });
+    p.addEventListener('click', function (e) {
+      var n = e.target.closest('[data-n]'), d = e.target.closest('[data-t]');
+      if (n) { view = new Date(view.getFullYear(), view.getMonth() + +n.dataset.n, 1); render(); p.querySelector('[data-n="' + n.dataset.n + '"]').focus(); }
+      else if (d) { picked = new Date(+d.dataset.t); v.textContent = picked.getDate() + ' ' + MONTHS[picked.getMonth()].slice(0, 3) + ' ' + picked.getFullYear(); v.classList.remove('is-placeholder'); close(true); }
+    });
+  })();
+
+  /* ---- chips ---- */
+  document.querySelectorAll('.np-chip[aria-pressed]').forEach(function (c) { c.addEventListener('click', function () { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); }); });
+  document.getElementById('rm').addEventListener('click', function (e) { var x = e.target.closest('.np-chip__x'); if (x) x.closest('.np-chip').remove(); });
+</script>
+</body></html>

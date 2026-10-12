@@ -1,0 +1,107 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Form controls</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:30px 26px;align-items:start}
+  .below{margin-top:30px}
+  .states{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px 18px}
+  .tag{font:400 10px/1 var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:7px;display:block}
+</style></head>
+<body>
+  <div class="np-label lab">Checkbox · .np-check — states</div>
+  <div class="states">
+    <div><span class="tag">rest</span><label class="np-check"><input type="checkbox"><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+    <div><span class="tag">hover</span><label class="np-check is-hover"><input type="checkbox"><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+    <div><span class="tag">checked</span><label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+    <div><span class="tag">indeterminate</span><label class="np-check"><input type="checkbox" data-indeterminate><span class="np-check__box" aria-hidden="true"></span>Some</label></div>
+    <div><span class="tag">focus</span><label class="np-check is-focus"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+    <div><span class="tag">invalid</span><label class="np-check"><input type="checkbox" aria-invalid="true"><span class="np-check__box" aria-hidden="true"></span>Accept</label></div>
+    <div><span class="tag">disabled</span><label class="np-check"><input type="checkbox" disabled><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+    <div><span class="tag">disabled · on</span><label class="np-check"><input type="checkbox" checked disabled><span class="np-check__box" aria-hidden="true"></span>Alerts</label></div>
+  </div>
+
+  <div class="np-label lab below">Radio · .np-radio — states</div>
+  <div class="states">
+    <div><span class="tag">rest</span><label class="np-radio"><input type="radio" name="s1"><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+    <div><span class="tag">hover</span><label class="np-radio is-hover"><input type="radio" name="s2"><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+    <div><span class="tag">selected</span><label class="np-radio"><input type="radio" name="s3" checked><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+    <div><span class="tag">focus</span><label class="np-radio is-focus"><input type="radio" name="s4" checked><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+    <div><span class="tag">invalid</span><label class="np-radio"><input type="radio" name="s5" aria-invalid="true"><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+    <div><span class="tag">disabled</span><label class="np-radio"><input type="radio" name="s6" disabled><span class="np-radio__dot" aria-hidden="true"></span>Weekly</label></div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">Group · .np-fieldset + .np-check</div>
+      <fieldset class="np-fieldset">
+        <legend>Notify me about</legend>
+        <div class="np-stack np-stack--tight">
+          <label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Deployments</label>
+          <label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Incidents</label>
+          <label class="np-check"><input type="checkbox"><span class="np-check__box" aria-hidden="true"></span>Weekly digest</label>
+        </div>
+      </fieldset>
+    </div>
+    <div>
+      <div class="np-label lab">Choice cards · .np-radio--card</div>
+      <fieldset class="np-fieldset">
+        <legend>Run mode</legend>
+        <div class="np-stack np-stack--tight">
+          <label class="np-radio np-radio--card"><input type="radio" name="mode" checked><span class="np-radio__dot" aria-hidden="true"></span>
+            <span class="np-choice__text"><span class="np-choice__title">Auto</span><span class="np-choice__desc">Runs without asking.</span></span></label>
+          <label class="np-radio np-radio--card"><input type="radio" name="mode"><span class="np-radio__dot" aria-hidden="true"></span>
+            <span class="np-choice__text"><span class="np-choice__title">Ask first</span><span class="np-choice__desc">Confirms every step.</span></span></label>
+          <label class="np-radio np-radio--card"><input type="radio" name="mode" disabled><span class="np-radio__dot" aria-hidden="true"></span>
+            <span class="np-choice__text"><span class="np-choice__title">Plan only</span><span class="np-choice__desc">Unavailable on this plan.</span></span></label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div class="np-stack">
+      <div class="np-label lab" style="margin:0">Textarea · Select · Slider</div>
+      <label class="np-field"><span class="np-field__label">Description</span>
+        <textarea class="np-input" rows="3" placeholder="What does this node do?"></textarea>
+        <span class="np-field__hint">Markdown is supported.</span></label>
+      <label class="np-field is-invalid"><span class="np-field__label">Notes (invalid)</span>
+        <textarea class="np-input" rows="2" aria-invalid="true">todo</textarea>
+        <span class="np-field__hint">At least 20 characters.</span></label>
+      <label class="np-field"><span class="np-field__label">Region · native select</span>
+        <select class="np-input"><option>us-east-1</option><option>eu-west-1</option><option>ap-south-1</option></select></label>
+      <label class="np-field"><span class="np-field__label">Replicas <output class="np-field__value" id="v1">4</output></span>
+        <input class="np-slider" type="range" min="1" max="10" value="4" data-out="v1"></label>
+      <label class="np-field"><span class="np-field__label">Budget (disabled)</span>
+        <input class="np-slider" type="range" min="0" max="100" value="60" disabled></label>
+    </div>
+    <div class="np-stack">
+      <div class="np-label lab" style="margin:0">Dropzone · .np-dropzone</div>
+      <label class="np-dropzone"><input type="file" multiple><i data-lucide="upload" aria-hidden="true"></i>
+        <span class="np-dropzone__title">Drop files or browse</span><span class="np-dropzone__hint">PNG, SVG · up to 10 MB</span></label>
+      <label class="np-dropzone is-over"><input type="file"><i data-lucide="upload" aria-hidden="true"></i>
+        <span class="np-dropzone__title">Release to upload</span><span class="np-dropzone__hint">is-over · focus-within</span></label>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+  lucide.createIcons();
+  document.querySelectorAll('[data-indeterminate]').forEach(function (i) { i.indeterminate = true; });
+  document.querySelectorAll('.np-slider').forEach(function (el) {
+    function paint() {
+      el.style.setProperty('--np-fill', (el.value - el.min) / (el.max - el.min) * 100 + '%');
+      var out = el.dataset.out && document.getElementById(el.dataset.out); if (out) out.textContent = el.value;
+    }
+    el.addEventListener('input', paint); paint();
+  });
+  document.querySelectorAll('.np-dropzone:not(.is-over)').forEach(function (z) {
+    ['dragenter', 'dragover'].forEach(function (t) { z.addEventListener(t, function () { z.classList.add('is-over'); }); });
+    ['dragleave', 'drop'].forEach(function (t) { z.addEventListener(t, function () { z.classList.remove('is-over'); }); });
+  });
+</script>
+</body></html>

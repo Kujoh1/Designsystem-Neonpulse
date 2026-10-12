@@ -3,6 +3,18 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.4.0 — 2026-10-12
+
+### Added
+- **Form controls:** `.np-check` and `.np-radio` (real inputs; rest · hover · checked · indeterminate · focus · invalid · disabled; `--card` rows that light up when selected; `.np-fieldset` groups), `textarea.np-input`, `select.np-input` (native, themed chevron), `.np-select` (custom select trigger), `.np-slider` (real range input, `--np-fill`), `.np-dropzone`, `.np-field__value`.
+- **Chips and spinner:** `.np-chip` (filter toggle, `--removable`), `.np-spinner` (`--sm` / `--lg`, keeps turning under reduced motion).
+- **Menus and pickers:** `.np-anchor` + `.np-menu` / `.np-popover` (items, danger, disabled, checked, separator, group label, `--up` / `--end`), listbox select, `.np-calendar` for a date picker. The specimen carries a reference script with arrow keys, Home/End, Enter, Esc and flip-up.
+- **Navigation:** `.np-pagination` (folds to "Page 3 of 12" below 420px of its own width), `.np-breadcrumb`, `.np-stepper` (+ `--vertical`), `.np-accordion` (on `<details>`), `.np-tabbar` (bottom navigation) and `.np-appshell--tabbar` (shows below 768).
+- **Overlays:** `.np-drawer` (`.np-scrim--end` / `--start`) and `.np-sheet` (`.np-scrim--sheet`): a bottom sheet on phones, a centred dialog from 768.
+- **Responsive table:** `.np-table--stack` turns rows into labelled cards below 560px of the wrapper's width (`data-label` on each cell).
+- Specimens `comp-forms`, `comp-menus`, `comp-navigation`, `pat-sheet`; docs sections "Form controls", "Menus & pickers", "Navigation controls" and "Drawer & sheet" (live phone and desktop frames).
+- Touch rules cover the new controls (44px targets, 16px text, bigger calendar days).
+
 ## 1.3.0 — 2026-10-12
 
 ### Added

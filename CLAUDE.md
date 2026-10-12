@@ -98,17 +98,19 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
   dedicated `<section id="comp-<name>">` for it in `index.html` and a matching sidebar link.
 - The system is layered: **tokens** (`colors_and_type.css` primitives + aliases) →
   **elements** (`.np-btn`, `.np-icon-btn`, `.np-badge`, `.np-livedot`, `.np-eyebrow`,
-  `.np-field/.np-input/.np-inputgroup`, `.np-kbd`, `.np-switch`, `.np-tabs/.np-tab`,
+  `.np-field/.np-input/.np-inputgroup`, `.np-kbd`, `.np-switch`, `.np-check/.np-radio`, `.np-select`, `.np-slider`,
+  `.np-dropzone`, `.np-chip`, `.np-spinner`, `.np-tabs/.np-tab`,
   `.np-seg`, `data-np-tooltip`, `.np-meter`, `.np-avatar`, `.np-code`, `.np-link`) →
   **patterns** (`.np-card` family; layout `.np-container/.np-stack/.np-cluster/.np-grid/
-  .np-section`; navigation `.np-navitem`, `.np-appshell`; content `.np-pageheader/.np-empty/.np-skeleton/
-  .np-banner/.np-list/.np-table/.np-codeblock`; overlays `.np-scrim/.np-modal/
-  .np-toast-region/.np-toast/.np-palette`). Compose new screens from these; only drop to
+  .np-section`; navigation `.np-navitem`, `.np-appshell`, `.np-tabbar`, `.np-pagination`, `.np-breadcrumb`, `.np-stepper`, `.np-accordion`; menus `.np-anchor/.np-menu/.np-popover/.np-calendar`; content `.np-pageheader/.np-empty/.np-skeleton/
+  .np-banner/.np-list/.np-table(--stack)/.np-codeblock`; overlays `.np-scrim/.np-modal/
+  .np-drawer/.np-sheet/.np-toast-region/.np-toast/.np-palette`). Compose new screens from these; only drop to
   bespoke CSS when no pattern fits — and if a pattern is missing, add it to the patterns
   layer, don't inline it. Pattern specimens live in `preview/pat-*.html` under the
   `group="Patterns"` tag.
 - **Responsive, mobile-first.** The five breakpoints are the `--bp-*` tokens (480 / 768 / 1024 / 1440 / 1920). `@media` can't read
-  `var()`, so write the literal px value from the token table — never invent another breakpoint. Web pages use `.np-container`
+  `var()`, so write the literal px value from the token table — never invent another viewport breakpoint. Components that should
+  react to their own width (pagination, stacked table) use named container queries with a component-specific width instead. Web pages use `.np-container`
   (`--prose` / `--wide` / `--full`, side padding `--gutter`); product UIs use `.np-appshell` (+ `--aside`). On ultrawide the extra
   width goes to panels, not to stretched content. Coarse pointers get `--touch-target` (44px) and 16px text fields (selector
   `input.np-input`, so the Figma export doesn't read the 16px); glow hovers go inside `@media (hover: hover)` and keep a `.is-hover`
@@ -154,7 +156,7 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - [x] Command palette (⌘K), empty states, tooltips.
 - [x] Code view + copy button on each `preview/` card on the docs home.
 - [x] Self-host the three fonts in `/fonts` (Google Fonts `@import` removed).
-- [ ] Add missing components: date picker, pagination, select/combobox, checkbox & radio group.
+- [x] Add missing components: date picker, pagination, select/combobox, checkbox & radio group (v1.4.0; also menu, chip, slider, stepper, drawer, sheet, tab bar …).
 - [ ] Wire real brand/social SVGs (Lucide dropped them; neutral icons used as placeholder).
 - [ ] Add a GitHub Action to lint HTML / check links on push (optional).
 - [ ] Precompile the kits' JSX (drop in-browser Babel) if load time ever matters.

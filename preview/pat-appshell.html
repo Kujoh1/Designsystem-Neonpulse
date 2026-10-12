@@ -17,7 +17,7 @@
   .kv b{font:500 12px/1.4 var(--font-mono);color:var(--color-text)}
 </style></head>
 <body>
-  <div class="np-appshell np-appshell--aside" id="shell">
+  <div class="np-appshell np-appshell--aside np-appshell--tabbar" id="shell">
     <header class="np-appshell__top">
       <button class="np-icon-btn np-icon-btn--ghost np-appshell__menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav" data-toggle="nav"><i data-lucide="menu" aria-hidden="true"></i></button>
       <div class="title"><span class="np-eyebrow">Production</span><b>Overview</b></div>
@@ -80,6 +80,13 @@
       <div class="np-divider" style="margin:var(--s-4) 0"></div>
       <div class="np-banner np-banner--warning"><i class="np-banner__icon" data-lucide="triangle-alert" aria-hidden="true"></i><span>Auto-scale nearing the node limit.</span></div>
     </aside>
+
+    <nav class="np-tabbar np-appshell__tabbar" aria-label="Primary">
+      <a class="np-tabbar__item" href="#" aria-current="page"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Home</span></a>
+      <a class="np-tabbar__item" href="#"><i data-lucide="activity" aria-hidden="true"></i><span>Live</span></a>
+      <a class="np-tabbar__item" href="#"><i data-lucide="server" aria-hidden="true"></i><span>Nodes</span></a>
+      <a class="np-tabbar__item" href="#"><i data-lucide="bell" aria-hidden="true"></i><span>Alerts</span></a>
+    </nav>
 
     <div class="np-appshell__scrim" id="scrim" aria-hidden="true"></div>
   </div>

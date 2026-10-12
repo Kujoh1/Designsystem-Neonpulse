@@ -1,0 +1,103 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Drawer &amp; sheet</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;height:100%}
+  body{background:var(--color-bg-page);color:var(--color-text);font-family:var(--font-body)}
+  .page{box-sizing:border-box;min-height:100%;padding:var(--gutter);display:flex;flex-direction:column;gap:var(--s-4);max-width:var(--container-max);margin:0 auto}
+  .bar{display:flex;align-items:center;gap:var(--s-3);flex-wrap:wrap}
+  .bar .grow{flex:1}
+  h1{font:var(--h2);margin:0;color:var(--color-text)}
+  .row{display:flex;flex-wrap:wrap;gap:10px}
+  .note{font:var(--body-sm);color:var(--color-text-secondary);margin:0}
+</style></head>
+<body>
+  <div class="page">
+    <div class="bar">
+      <div><span class="np-eyebrow">Overlays</span><h1>Node details</h1></div>
+      <span class="grow"></span>
+      <button class="np-btn np-btn--ghost np-btn--sm" type="button" data-open="drawer"><i data-lucide="sliders-horizontal" aria-hidden="true"></i>Filters</button>
+      <button class="np-btn np-btn--primary np-btn--sm" type="button" data-open="sheet"><i data-lucide="upload" aria-hidden="true"></i>Share</button>
+    </div>
+    <p class="note">The sheet is a bottom sheet below 768px and a centred dialog from there on. The drawer docks to the right edge on every size.</p>
+    <div class="np-grid" style="grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr))">
+      <div class="np-card"><span class="np-card__eyebrow">Requests</span><div class="np-card__metric">1.24M</div><span class="np-card__delta">+24.6% ↑</span></div>
+      <div class="np-card np-card--live"><span class="np-card__eyebrow">p99 latency</span><div class="np-card__metric">42ms</div><span class="np-card__delta">us-east</span></div>
+      <div class="np-card"><span class="np-card__eyebrow">Error rate</span><div class="np-card__metric">0.04%</div><span class="np-card__delta">−0.01%</span></div>
+    </div>
+  </div>
+
+  <!-- sheet -->
+  <div class="np-scrim np-scrim--sheet" id="sheet" hidden>
+    <div class="np-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
+      <span class="np-sheet__handle" aria-hidden="true"></span>
+      <div class="np-sheet__header">
+        <h2 class="np-sheet__title" id="sheet-t">Share worker-02</h2>
+        <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" type="button" aria-label="Close" data-close><i data-lucide="x" aria-hidden="true"></i></button>
+      </div>
+      <div class="np-sheet__body">
+        <label class="np-field"><span class="np-field__label">Email</span><input class="np-input" type="email" placeholder="name@team.dev"></label>
+        <fieldset class="np-fieldset"><legend>Access</legend>
+          <div class="np-stack np-stack--tight">
+            <label class="np-radio np-radio--card"><input type="radio" name="acc" checked><span class="np-radio__dot" aria-hidden="true"></span><span class="np-choice__text"><span class="np-choice__title">Can view</span><span class="np-choice__desc">Read-only access.</span></span></label>
+            <label class="np-radio np-radio--card"><input type="radio" name="acc"><span class="np-radio__dot" aria-hidden="true"></span><span class="np-choice__text"><span class="np-choice__title">Can edit</span><span class="np-choice__desc">Change settings and redeploy.</span></span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="np-sheet__footer">
+        <button class="np-btn np-btn--ghost" type="button" data-close>Cancel</button>
+        <button class="np-btn np-btn--primary" type="button" data-close>Share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- drawer -->
+  <div class="np-scrim np-scrim--end" id="drawer" hidden>
+    <aside class="np-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-t">
+      <div class="np-drawer__header">
+        <h2 class="np-drawer__title" id="drawer-t">Filters</h2>
+        <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" type="button" aria-label="Close" data-close><i data-lucide="x" aria-hidden="true"></i></button>
+      </div>
+      <div class="np-drawer__body">
+        <fieldset class="np-fieldset"><legend>Status</legend>
+          <div class="np-stack np-stack--tight">
+            <label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Live</label>
+            <label class="np-check"><input type="checkbox" checked><span class="np-check__box" aria-hidden="true"></span>Degraded</label>
+            <label class="np-check"><input type="checkbox"><span class="np-check__box" aria-hidden="true"></span>Offline</label>
+          </div>
+        </fieldset>
+        <label class="np-field"><span class="np-field__label">Region</span><select class="np-input"><option>All regions</option><option>us-east-1</option><option>eu-west-1</option></select></label>
+        <label class="np-field"><span class="np-field__label">Min. uptime <output class="np-field__value" id="up">95%</output></span>
+          <input class="np-slider" type="range" min="80" max="100" value="95" id="upr" style="--np-fill:75%"></label>
+      </div>
+      <div class="np-drawer__footer">
+        <button class="np-btn np-btn--ghost" type="button" data-close>Reset</button>
+        <button class="np-btn np-btn--primary" type="button" data-close>Apply</button>
+      </div>
+    </aside>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+  lucide.createIcons();
+  (function () {
+    var current = null, opener = null;
+    function show(id, from) {
+      hide(); current = document.getElementById(id); opener = from || null; current.hidden = false;
+      var f = current.querySelector('input, select, button'); if (f) f.focus({ preventScroll: true });
+    }
+    function hide() { if (current) { current.hidden = true; current = null; if (opener) opener.focus(); } }
+    document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.open, b); }); });
+    document.querySelectorAll('.np-scrim').forEach(function (s) {
+      s.addEventListener('click', function (e) { if (e.target === s || e.target.closest('[data-close]')) hide(); });
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+    var r = document.getElementById('upr');
+    r.addEventListener('input', function () { r.style.setProperty('--np-fill', (r.value - r.min) / (r.max - r.min) * 100 + '%'); document.getElementById('up').textContent = r.value + '%'; });
+    var q = new URLSearchParams(location.search).get('open');
+    if (q === 'sheet' || q === 'drawer') show(q);
+  })();
+</script>
+</body></html>

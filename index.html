@@ -231,11 +231,15 @@
       <a class="np-navitem" href="#comp-tabs">Tabs &amp; segmented</a>
       <a class="np-navitem" href="#comp-overlays">Overlays <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-data">Data display <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-forms">Form controls <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-menus">Menus &amp; pickers <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-navigation">Navigation controls <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-wordmark">Wordmark &amp; effects</a>
       <div class="grouplabel">Patterns</div>
       <a class="np-navitem" href="#pat-cards">Cards</a>
       <a class="np-navitem" href="#pat-layout">Layout primitives</a>
       <a class="np-navitem" href="#pat-appshell">App shell <span class="new">New</span></a>
+      <a class="np-navitem" href="#pat-sheet">Drawer &amp; sheet <span class="new">New</span></a>
       <a class="np-navitem" href="#pat-content">Content patterns</a>
       <div class="grouplabel">Kits</div>
       <a class="np-navitem" href="#kits">UI kits</a>
@@ -413,6 +417,36 @@
       <div class="divider"></div>
     </section>
 
+    <section id="comp-forms">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Form controls</h2>
+      <p class="sub">Checkbox and radio (real inputs, so keyboard and screen readers work), choice cards, textarea, native select, slider and dropzone. Every control has rest, hover, focus, invalid and disabled states; groups use <code class="np-code">.np-fieldset</code>. On touch devices they grow to the 44&nbsp;px target and text fields use 16&nbsp;px.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Checkbox · radio · textarea · select · slider · dropzone</span></div><iframe src="preview/comp-forms.html" title="Form controls specimen" height="1180" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-menus">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Menus &amp; pickers</h2>
+      <p class="sub">Floating surfaces anchored to a trigger: action menu, custom select (listbox), date picker with <code class="np-code">.np-calendar</code>, plus chips and the spinner. The CSS places a panel below its trigger (<code class="np-code">--up</code>, <code class="np-code">--end</code> flip it); the specimen shows the script that flips on demand and handles arrow keys, Home/End, Enter and Esc. Prefer the native <code class="np-code">&lt;select&gt;</code> on phones.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Menu · select · date picker · chips · spinner</span></div><iframe src="preview/comp-menus.html" title="Menus and pickers specimen" height="900" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-navigation">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Navigation controls</h2>
+      <p class="sub">Pagination, breadcrumb, stepper, accordion, the phone tab bar and a table that turns into cards. Pagination and the table react to <b>their own width</b> (container queries), so they behave in a narrow column on a wide screen too.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Pagination · breadcrumb · stepper · accordion · tab bar · stacked table</span></div><iframe src="preview/comp-navigation.html" title="Navigation controls specimen" height="1160" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
     <section id="comp-wordmark">
       <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Wordmark &amp; effects</h2>
@@ -477,6 +511,27 @@
         <div class="kit kit--themed">
           <div class="kh"><span class="t">Ultrawide · 2560 px</span><span class="d">sidebar · capped content · docked 400 px inspector</span></div>
           <div class="frame" data-w="2560" style="--w:2560px;--h:1080px"><iframe src="preview/pat-appshell.html" title="App shell at 2560 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="pat-sheet">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
+      <h2 class="sec">Drawer &amp; sheet</h2>
+      <p class="sub">Overlays that dock to an edge, both inside a <code class="np-code">.np-scrim</code>. The <b>sheet</b> is a bottom sheet on phones and becomes a centred dialog from 768&nbsp;px (<code class="np-code">--bp-md</code>); the <b>drawer</b> docks to the right (<code class="np-code">--start</code> for the left) at every size. Both respect the safe areas and use <code class="np-code">role="dialog"</code> with <code class="np-code">aria-modal</code>. Open them inside the frames.</p>
+      <div class="kits">
+        <div class="kit kit--themed phone">
+          <div class="kh"><span class="t">Sheet · phone 390 px</span><span class="d">bottom sheet with grab handle</span><a class="np-btn np-btn--ghost np-btn--sm" href="preview/pat-sheet.html?open=sheet" target="_blank" rel="noopener">Open full size<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame" style="--h:700px;--k:0.78"><iframe src="preview/pat-sheet.html?open=sheet" title="Sheet at 390 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+        <div class="kit kit--themed">
+          <div class="kh"><span class="t">Sheet · 1000 px</span><span class="d">the same markup as a centred dialog</span></div>
+          <div class="frame" data-w="1000" style="--w:1000px;--h:560px"><iframe src="preview/pat-sheet.html?open=sheet" title="Sheet at 1000 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+        <div class="kit kit--themed">
+          <div class="kh"><span class="t">Drawer · 1000 px</span><span class="d">filters, settings, details</span></div>
+          <div class="frame" data-w="1000" style="--w:1000px;--h:560px"><iframe src="preview/pat-sheet.html?open=drawer" title="Drawer at 1000 px" loading="lazy" scrolling="no"></iframe></div>
         </div>
       </div>
       <div class="divider"></div>
