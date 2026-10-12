@@ -1,4 +1,4 @@
-/* Dashboard — Sidebar (drawer ≤760px) + Topbar shell + range control */
+/* Dashboard — Sidebar (drawer ≤760px) + Topbar shell + range control (presets + custom date range) */
 const NAV_GROUPS = [
   [['layout-dashboard', 'Overview'], ['activity', 'Telemetry'], ['server', 'Nodes'], ['git-branch', 'Deploys']],
   [['chart-column', 'Analytics'], ['bell', 'Alerts'], ['key-round', 'API keys'], ['sliders-horizontal', 'Settings']],
@@ -92,14 +92,47 @@ function Topbar({ onDeploy, onSearch, onMenu, navOpen }) {
   );
 }
 
-function RangeControl({ range, setRange }) {
+// React wrapper around js/np-datepicker.js (range mode). onChange(text | null): text = "06/10/2026 – 12/10/2026",
+// null = cleared. `active` false (a preset segment was chosen) clears the picker. apiRef.current = { open, close, set }.
+function DateRangePicker({ active, onChange, apiRef }) {
+  const host = React.useRef(null);
+  const cb = React.useRef(onChange);
+  cb.current = onChange;
+  React.useEffect(() => {
+    const el = host.current;
+    const api = window.NPDatepicker.mount(el, { mode: 'range', presets: 'today,7d,30d,month', max: 'today', locale: 'en-GB' });
+    if (apiRef) apiRef.current = api;
+    const onCh = e => cb.current(e.detail.value ? e.detail.text : null);
+    el.addEventListener('np-datepicker:change', onCh);
+    return () => { el.removeEventListener('np-datepicker:change', onCh); api.close(); };
+  }, []);
+  React.useEffect(() => {
+    const api = host.current.npDatepicker;
+    if (!active && api && api.value.start) api.set({ start: null, end: null });
+  }, [active]);
   return (
-    <div className="np-seg" role="group" aria-label="Time range">
-      {RANGES.map(r => (
-        <button key={r} type="button" className="np-seg__item" aria-pressed={range === r} onClick={() => setRange(r)}>{r}</button>
-      ))}
+    <div ref={host} className="np-datepicker db-rangepick">
+      <span id="db-range-lab" className="np-sr-only">Custom date range</span>
+      <button type="button" id="db-range-btn" className="np-select np-datepicker__trigger" aria-labelledby="db-range-lab db-range-btn"
+        style={{ padding: '9px 14px', font: '400 13px/17px var(--font-body)', borderColor: active ? 'var(--color-border-focus)' : undefined }}>
+        <span className="np-select__chev" style={{ transform: 'none' }}><Icon name="calendar" size={16} /></span>
+      </button>
     </div>
   );
 }
 
-Object.assign(window, { Sidebar, Topbar, RangeControl, Brand, UsageCard, NAV_GROUPS, RANGES, MOD_KEY });
+// Segmented presets + custom date range. `custom` (text | null) set → no segment is pressed.
+function RangeControl({ range, custom, setRange, onCustom, pickerRef }) {
+  return (
+    <div className="db-rangebar">
+      <div className="np-seg" role="group" aria-label="Time range">
+        {RANGES.map(r => (
+          <button key={r} type="button" className="np-seg__item" aria-pressed={!custom && range === r} onClick={() => setRange(r)}>{r}</button>
+        ))}
+      </div>
+      <DateRangePicker active={!!custom} onChange={onCustom} apiRef={pickerRef} />
+    </div>
+  );
+}
+
+Object.assign(window, { Sidebar, Topbar, RangeControl, DateRangePicker, Brand, UsageCard, NAV_GROUPS, RANGES, MOD_KEY });

@@ -16,7 +16,7 @@
 - **Dark + light theme** via one attribute (`data-theme="light"`), nestable on any subtree. Gradients, glows, focus rings and edges are *derived* from the neon hues.
 - **Accessible by construction.** Every text token passes WCAG AA (≥ 4.5:1) in both themes, every control has a visible `:focus-visible` ring, switches are real checkboxes, `prefers-reduced-motion` is respected.
 - **Complete state model.** Rest · hover · focus · active · loading · disabled · invalid · empty are derived from interaction tokens — never hand-painted per component.
-- **55 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, responsive app shell, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item, checkbox, radio, textarea, select, slider, dropzone, chip, spinner, menu and popover, date picker, pagination, breadcrumb, stepper, accordion, drawer, bottom sheet, tab bar, stacked table.
+- **56 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, responsive app shell, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item, checkbox, radio, textarea, select, slider, dropzone, chip, spinner, menu and popover, calendar, responsive date picker, pagination, breadcrumb, stepper, accordion, drawer, bottom sheet, tab bar, stacked table.
 - **Four interactive UI kits** (marketing, SaaS dashboard, mobile, bank order flow) built from the system's own classes.
 - **Figma library from the same source.** Variables (Primitives · Theme Dark/Light · Scale), text/gradient/effect styles and 47 components with variants plus the six breakpoint layouts are generated from `colors_and_type.css` and kept in sync — via a Figma plugin or Claude through the Figma connector. See [`figma/`](figma/README.md).
 - **Living docs.** Swatches, contrast ratios and the full token table are read from the stylesheet at runtime; theme switch, ⌘K search and the source of every specimen are built in.
@@ -100,6 +100,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 | `showcase/` | Case-study / marketing page (DE/EN) presenting the system. |
 | `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow, + `check.html`, a live check of two pull requests (one fails, one passes). |
 | `colors_and_type.css` | **Single source of truth**: tokens, light theme, elements, patterns. |
+| `js/` | `np-datepicker.js` — the one optional script: framework-free behaviour of the responsive date picker (typed or picked dates, ranges, keyboard, popover → bottom sheet). Everything else is CSS. |
 | `figma/` | Figma library builder: token export from the CSS, Figma plugin, icons. |
 | `fonts/` | Self-hosted variable fonts + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |

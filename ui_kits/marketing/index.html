@@ -37,6 +37,10 @@
   .mk-feature:hover { border-color: var(--color-border-strong); }
   .mk-feature:hover .mk-feature__icon { box-shadow: 0 0 18px color-mix(in srgb, var(--feat-accent) 33%, transparent); }
   .mk-foot-grid { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)); gap: 32px; }
+  /* demo booking: one column, two from --bp-md (768px) */
+  .mk-demo { padding: clamp(20px, 4vw, 48px); border-radius: var(--r-xl); }
+  .mk-demo-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; }
+  @media (min-width: 768px) { .mk-demo-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 56px; } }
 
   .mk-mobile { display: none; }
   .mk-mobile[hidden] { display: none !important; }
@@ -56,6 +60,7 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="../../js/np-datepicker.js"></script>
 
 <script type="text/babel">
   // Icon component — renders a lucide <i>, refreshed after each render
@@ -75,6 +80,7 @@
 <script type="text/babel" src="Hero.jsx"></script>
 <script type="text/babel" src="Features.jsx"></script>
 <script type="text/babel" src="Pricing.jsx"></script>
+<script type="text/babel" src="DemoBooking.jsx"></script>
 <script type="text/babel" src="Footer.jsx"></script>
 <script type="text/babel">
   function App() {
@@ -88,6 +94,7 @@
           <LogoStrip />
           <Features />
           <Pricing />
+          <DemoBooking />
           <CTABand />
         </main>
         <Footer />

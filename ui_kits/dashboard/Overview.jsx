@@ -17,15 +17,17 @@ function StatCard({ label, value, delta, good, spark, color }) {
   );
 }
 
-function Overview({ range }) {
+function Overview({ range, custom }) {
   const series = {
     Live: [42, 38, 46, 40, 52, 48, 60, 55, 68, 62, 74, 70, 82, 78, 90],
     '1H': [30, 44, 36, 50, 42, 58, 48, 64, 54, 70, 60, 76, 66, 82, 72],
     '24H': [60, 52, 68, 58, 72, 64, 56, 70, 62, 78, 68, 84, 74, 66, 80],
     '7D': [20, 35, 28, 45, 38, 55, 48, 62, 58, 70, 65, 78, 72, 85, 92],
   };
-  const data = series[range] || series.Live;
-  const live = range === 'Live';
+  // custom = text of a picked date range ("06/10/2026 – 12/10/2026"): history, drawn with the 7D series
+  const label = custom || range;
+  const data = series[custom ? '7D' : range] || series.Live;
+  const live = !custom && range === 'Live';
   return (
     <div className="db-page np-stack">
       <div className="db-stat-grid">
@@ -38,16 +40,16 @@ function Overview({ range }) {
       <div className="db-chart-grid">
         {/* live data earns the live card treatment; history renders flat */}
         <section className={'np-card' + (live ? ' np-card--live' : '')} style={{ padding: 20, gap: 6 }} aria-labelledby="thr-title">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
             <div>
               <h2 id="thr-title" className="np-card__title" style={{ margin: 0 }}>Throughput</h2>
-              <span style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--color-text-muted)' }}>requests / sec · {range}</span>
+              <span style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--color-text-muted)' }}>requests / sec · {custom ? 'custom range' : range}</span>
             </div>
             {live
               ? <span className="np-badge np-badge--accent np-badge--live"><span className="np-badge__dot" />Live</span>
-              : <span className="np-badge np-badge--outline">{range}</span>}
+              : <span className="np-badge np-badge--outline">{label}</span>}
           </div>
-          <AreaChart data={data} id="thr" height={230} label={'Throughput, requests per second, ' + range} />
+          <AreaChart data={data} id="thr" height={230} label={'Throughput, requests per second, ' + label} />
         </section>
         <section className="np-card" style={{ padding: 20, gap: 4 }} aria-labelledby="cpu-title">
           <h2 id="cpu-title" className="np-card__title" style={{ margin: 0 }}>CPU saturation</h2>

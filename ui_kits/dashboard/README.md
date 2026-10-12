@@ -3,14 +3,14 @@
 A dark, cyberpunk SaaS console for the fictional "NeonPulse" realtime-infra product. Built entirely from the canonical classes in `../../colors_and_type.css` — the kit's own `<style>` only holds shell layout (`db-*`) and breakpoints.
 
 ## Run
-Open `index.html` via a static server. Loads React 18.3.1 (production UMD) + Babel 7.29.0 + Lucide 1.17.0 from CDN, all pinned with SRI, plus `../../colors_and_type.css`.
+Open `index.html` via a static server. Loads React 18.3.1 (production UMD) + Babel 7.29.0 + Lucide 1.17.0 from CDN, all pinned with SRI, plus `../../colors_and_type.css` and the framework-free date picker `../../js/np-datepicker.js` (a plain `<script>`, loaded before the Babel scripts).
 
 ## Components
 | File | Exports | Notes |
 |---|---|---|
 | `Charts.jsx` | `AreaChart`, `BarChart`, `Donut`, `Sparkline` | Pure-SVG data-viz, no chart lib. Single series default to `--color-accent`; neon primitives only as a categorical series palette. Track = `--color-track`. |
-| `Shell.jsx` | `Sidebar`, `Topbar`, `RangeControl`, `Brand`, `UsageCard`, `NAV_GROUPS`, `RANGES`, `MOD_KEY` | `<aside>` + `<nav aria-label="Main">` with `aria-current="page"`; `.np-meter` usage bar; topbar search trigger (`.np-inputgroup` + `.np-kbd`), bell `.np-icon-btn` with `data-np-tooltip`, `.np-avatar`. Range control = `.np-seg` with `aria-pressed` buttons. |
-| `Overview.jsx` | `Overview`, `StatCard`, `NodeTable` | `StatCard` = `.np-card` (`__eyebrow/__metric/__delta`). Throughput card switches to `.np-card--live` + `.np-badge--live` only on the Live range. `NodeTable` = `.np-table` in a focusable `.np-table-wrap`, status via `.np-badge--success/--warning/--danger`. |
+| `Shell.jsx` | `Sidebar`, `Topbar`, `RangeControl`, `DateRangePicker`, `Brand`, `UsageCard`, `NAV_GROUPS`, `RANGES`, `MOD_KEY` | `<aside>` + `<nav aria-label="Main">` with `aria-current="page"`; `.np-meter` usage bar; topbar search trigger (`.np-inputgroup` + `.np-kbd`), bell `.np-icon-btn` with `data-np-tooltip`, `.np-avatar`. Range control = `.np-seg` with `aria-pressed` buttons plus a custom date range (`DateRangePicker`, see below). |
+| `Overview.jsx` | `Overview`, `StatCard`, `NodeTable` | `StatCard` = `.np-card` (`__eyebrow/__metric/__delta`). Throughput card switches to `.np-card--live` + `.np-badge--live` only on the Live range; a custom range renders flat with the range text in an outline badge and the 7D series. `NodeTable` = `.np-table` in a focusable `.np-table-wrap`, status via `.np-badge--success/--warning/--danger`. |
 | `Views.jsx` | `EmptyView`, `EMPTY_VIEWS` | `.np-empty` state per non-Overview view, each with a working ghost action (navigate, deploy, copy endpoint). |
 | `Overlays.jsx` | `Modal`, `Toasts`, `trapFocus` | Deploy dialog = `.np-scrim` + `.np-modal` with `.np-field`/`.np-inputgroup` and a radio-group of `.np-card--row` region tiles. Toasts = `.np-toast-region` (`aria-live="polite"`) + `.np-toast--success/--warning/--danger`. |
 | `CommandPalette.jsx` | `CommandPalette` | ⌘K palette on `.np-scrim--top` + `.np-palette`. ARIA combobox: input `role="combobox"` + `aria-activedescendant`, `role="listbox"` with grouped `role="option"` items. |
@@ -18,9 +18,10 @@ Open `index.html` via a static server. Loads React 18.3.1 (production UMD) + Bab
 ## Interactions (all live)
 - **Sidebar** switches views; non-Overview views render an empty state.
 - **Time range** (`Live / 1H / 24H / 7D`) re-renders the throughput chart.
+- **Custom date range** — next to the segments, a range picker (`.np-select np-datepicker__trigger` + calendar icon, presets Today / Last 7 / Last 30 / This month, `data-max` today, `en-GB`). `DateRangePicker` is a ~25-line React wrapper: it calls `NPDatepicker.mount(el, {…})`, listens to `np-datepicker:change` and hands `detail.text` (e.g. `06/10/2026 – 12/10/2026`) up. Choosing a range puts the view in *custom* mode: no segment is pressed, the Throughput badge + subtitle show the range, the chart uses the 7D series. Clicking a segment (or a ⌘K time-range command) leaves custom mode and clears the picker via `el.npDatepicker.set({ start: null, end: null })`; the picker's own *Clear* returns to the last segment. ⌘K → “Time range: Custom…” opens the calendar. Under 768px the calendar is a bottom sheet, from 768px a popover (two months).
 - **Deploy** opens the modal: focus lands in the branch field, Tab is trapped, Esc / scrim click / Cancel close it and focus returns to the trigger. Empty branch shows an inline `aria-invalid` error. **Deploy now** fires an info toast, then a success toast ~1.6s later; toasts auto-dismiss after ~4.2s.
-- **Command palette** — Ctrl+K / ⌘K or the topbar search. Groups *Navigate* (every view) and *Actions* (Deploy…, time range, copy API endpoint → toast). Type to filter, ↑/↓ move, Enter runs, Esc closes, hover selects.
-- **Responsive** — stat grid 4 → 2 (≤920px) → 1 (≤520px) columns; ≤920px the search field collapses to a search icon button; ≤760px the sidebar becomes an off-canvas drawer (menu button, scrim, Esc, closes on navigation, focus managed). The node table scrolls horizontally.
+- **Command palette** — Ctrl+K / ⌘K or the topbar search. Groups *Navigate* (every view) and *Actions* (Deploy…, time range incl. Custom…, copy API endpoint → toast). Type to filter, ↑/↓ move, Enter runs, Esc closes, hover selects.
+- **Responsive** — stat grid 4 → 2 (≤920px) → 1 (≤520px) columns; ≤920px the search field collapses to a search icon button; ≤760px the sidebar becomes an off-canvas drawer (menu button, scrim, Esc, closes on navigation, focus managed); ≤520px the date picker takes its own full-width line under the segments. The node table scrolls horizontally.
 - Skip link (`.np-skip`) jumps to `<main>`.
 
 ## Patterns shown

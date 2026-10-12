@@ -1226,6 +1226,7 @@ select.np-input option { background: var(--color-surface-raised); color: var(--c
      <div class="np-datepicker" data-np-datepicker data-mode="range" data-presets="today,7d,30d,month">
        <button type="button" class="np-select np-datepicker__trigger"><svg class="np-select__chev" …/></button></div>
    Invalid text: aria-invalid="true" on the input (the group turns danger-coloured).
+   A range trigger needs an accessible name: aria-labelledby="<label id>" (a visible label or an .np-sr-only one).
    ------------------------------------------------------------ */
 .np-datepicker { position: relative; display: block; min-width: 0; }
 .np-datepicker__toggle { flex: none; margin-right: -6px; }

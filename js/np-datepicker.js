@@ -106,7 +106,7 @@
     if (input && !input.getAttribute('placeholder')) input.setAttribute('placeholder', order.map(function (t) { return T.ph[t]; }).join(sep));
     if (input) { input.setAttribute('inputmode', 'numeric'); input.setAttribute('maxlength', '10'); }
 
-    var value = null, start = null, end = null, view = firstOf(new Date()), focusDate = day(new Date());
+    var value = null, start = null, end = null, cs = null, ce = null, view = firstOf(new Date()), focusDate = day(new Date());
     var months = function () { return range ? (wantMonths || (mq.matches ? 2 : 1)) : 1; };
     var sheet = function () { return !mq.matches; };
     var inRange = function (d) { return (!min || d >= min) && (!max || d <= max); };
@@ -168,6 +168,7 @@
     }
     function emit(name, detail) { el.dispatchEvent(new CustomEvent('np-datepicker:' + name, { bubbles: true, detail: detail })); }
     function changed() {
+      cs = start; ce = end;
       sync();
       emit('change', { value: range ? (start && end ? iso(start) + '/' + iso(end) : null) : (value ? iso(value) : null), start: range ? start : value, end: range ? end : value, text: label() });
     }
@@ -182,10 +183,13 @@
     var isOpen = false;
     function place() {
       panel.classList.remove('np-datepicker__panel--up', 'np-datepicker__panel--end');
+      panel.style.left = panel.style.right = '';
       if (sheet()) return;
       var r = panel.getBoundingClientRect(), host = el.getBoundingClientRect();
       if (r.bottom > innerHeight - 8 && host.top > r.height + 16) panel.classList.add('np-datepicker__panel--up');
       if (r.right > innerWidth - 8) panel.classList.add('np-datepicker__panel--end');
+      r = panel.getBoundingClientRect();
+      if (r.left < 8) { panel.classList.remove('np-datepicker__panel--end'); panel.style.right = 'auto'; panel.style.left = (8 - host.left) + 'px'; }   // never off-screen on the left
     }
     function open() {
       if (isOpen || (input && input.disabled) || (trigger && trigger.disabled)) return;
@@ -198,6 +202,7 @@
     function close(refocus) {
       if (!isOpen) return;
       isOpen = false; panel.hidden = true; scrim.hidden = true; el.classList.remove('is-open');
+      if (range && start && !end) { start = cs; end = ce; sync(); }                    // half-picked range: back to the last committed one
       if (toggle) { toggle.setAttribute('aria-expanded', 'false'); if (refocus) toggle.focus(); }
       document.removeEventListener('mousedown', outside, true); document.removeEventListener('keydown', keys, true);
     }
@@ -277,8 +282,12 @@
 
     /* typed input (single): digits get their separators, the text is validated on commit */
     function commitText() {
-      var t = input.value.trim();
-      if (!t) { if (value) setValue(null); input.removeAttribute('aria-invalid'); return; }
+      var t = input.value.trim(), wasInvalid = input.hasAttribute('aria-invalid');
+      if (!t) {
+        input.removeAttribute('aria-invalid');
+        if (value) setValue(null); else if (wasInvalid) emit('change', { value: null, start: null, end: null, text: '' });
+        return;
+      }
       var d = parseText(t);
       if (!d) { input.setAttribute('aria-invalid', 'true'); emit('invalid', { text: t, reason: 'format' }); return; }
       if (!inRange(d) || !enabled(d)) { input.setAttribute('aria-invalid', 'true'); emit('invalid', { text: t, reason: 'range' }); return; }
@@ -304,7 +313,8 @@
     sync();
     if (!range) { var seed = value || day(new Date()); if (max && seed > max) seed = max; if (min && seed < min) seed = min; view = firstOf(seed); focusDate = seed; }
 
-    var api = { el: el, open: open, close: function () { close(false); }, set: function (v) { setValue(v, false); },
+    var api = { el: el, open: open, close: function () { close(false); },
+      set: function (v) { var before = label(); setValue(v, true); if (label() !== before) changed(); },
       get value() { return range ? { start: start, end: end } : value; } };
     el.npDatepicker = api;
     return api;

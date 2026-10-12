@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NeonPulse — Design System Case Study</title>
-<meta name="description" content="NeonPulse: ein dark-first Design System von kudesi — Tokens, Komponenten, Theming, drei interaktive UI-Kits.">
+<meta name="description" content="NeonPulse: ein dark-first Design System von kudesi — Tokens, Komponenten, Theming, vier interaktive UI-Kits.">
 <meta name="theme-color" content="#0c0c16">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="canonical" href="https://kujoh1.github.io/Designsystem-Neonpulse/showcase/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="NeonPulse — Design System Case Study">
-<meta property="og:description" content="Dark-first, token-driven, accessible. From colour ramp to three interactive UI kits — by kudesi.">
+<meta property="og:description" content="Dark-first, token-driven, accessible. From colour ramp to four interactive UI kits — by kudesi.">
 <meta property="og:url" content="https://kujoh1.github.io/Designsystem-Neonpulse/showcase/">
 <meta property="og:image" content="https://kujoh1.github.io/Designsystem-Neonpulse/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -200,12 +200,18 @@
     background: var(--color-bg-page); border: 1px solid var(--color-border-subtle);
     font: 500 10px/1 var(--font-mono); letter-spacing: 0.12em; color: var(--color-text-secondary); }
   .icon-map svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--color-accent); flex: none; }
-  @media (max-width: 520px) { .tile__split { grid-template-columns: 1fr; } }
+  /* date picker tile: full width, three columns (single, range, notes); the calendar panel overlays the tile, nothing clips it */
+  .tile--full { grid-column: 1 / -1; }
+  .tile__trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 28px; align-items: start; justify-content: stretch; }
+  .tile__notes { display: flex; flex-direction: column; gap: 12px; }
+  .tile .np-datepicker__trigger .np-select__chev { transform: none; }
+  @media (max-width: 860px) { .tile__trio { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile__notes { grid-column: 1 / -1; } }
+  @media (max-width: 520px) { .tile__split { grid-template-columns: 1fr; } .tile__trio { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 1080px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 720px) { .bento { grid-template-columns: minmax(0, 1fr); } .tile--wide { grid-column: auto; } }
 
   /* ---------- 05 · kits ---------- */
-  .kits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 52px; }
+  .kits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 52px; }
   .kit { display: flex; flex-direction: column; overflow: hidden; text-decoration: none; color: inherit; padding: 0; gap: 0; border-radius: var(--r-xl); }
   .kit__shot { aspect-ratio: 16 / 10; background: var(--color-bg-void); border-bottom: 1px solid var(--color-border-subtle); overflow: hidden; }
   .kit__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform var(--dur-slow) var(--ease-out); }
@@ -215,7 +221,7 @@
   .kit__body p { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; }
   .kit__go { margin-top: auto; padding-top: 14px; display: inline-flex; align-items: center; gap: 8px; font: 500 11px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-accent); }
   .kit__go svg { width: 14px; height: 14px; }
-  @media (max-width: 1080px) { .kits { grid-template-columns: minmax(0, 1fr); max-width: 640px; } }
+  @media (max-width: 720px) { .kits { grid-template-columns: minmax(0, 1fr); } }
 
   /* ---------- 06 · quality ---------- */
   .qgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 52px; }
@@ -314,8 +320,8 @@
       <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>NeonPulse · Case Study</div>
       <h1 lang="de">Neon als <span class="grad">Signal.</span><br>Nicht als Deko.</h1>
       <h1 lang="en">Neon as <span class="grad">signal.</span><br>Not decoration.</h1>
-      <p class="hero__lead" lang="de">NeonPulse ist ein dark-first Design System für Web- und App-Produkte – von der Farbrampe über ein vollständiges Komponenten-Set bis zu drei interaktiven UI-Kits. Konzipiert, gestaltet und in Code umgesetzt von kudesi.</p>
-      <p class="hero__lead" lang="en">NeonPulse is a dark-first design system for web and app products — from the colour ramp through a complete component set to three interactive UI kits. Conceived, designed and built in code by kudesi.</p>
+      <p class="hero__lead" lang="de">NeonPulse ist ein dark-first Design System für Web- und App-Produkte – von der Farbrampe über ein vollständiges Komponenten-Set bis zu vier interaktiven UI-Kits. Konzipiert, gestaltet und in Code umgesetzt von kudesi.</p>
+      <p class="hero__lead" lang="en">NeonPulse is a dark-first design system for web and app products — from the colour ramp through a complete component set to four interactive UI kits. Conceived, designed and built in code by kudesi.</p>
       <div class="hero__cta">
         <a class="np-btn np-btn--primary np-btn--lg np-btn--cta" href="../index.html"><span lang="de">Live-Doku öffnen</span><span lang="en">Open live docs</span><i data-lucide="arrow-right" aria-hidden="true"></i></a>
         <a class="np-btn np-btn--ghost np-btn--lg" href="https://github.com/Kujoh1/Designsystem-Neonpulse" target="_blank" rel="noopener"><i data-lucide="folder-git-2" aria-hidden="true"></i><span lang="de">Code auf GitHub</span><span lang="en">Code on GitHub</span></a>
@@ -377,10 +383,10 @@
 <section class="facts" aria-label="Key facts">
   <div class="np-container">
     <div class="facts__grid">
-      <div class="fact"><div class="fact__n" data-count="tokens">125</div><span class="np-label">Design Tokens</span></div>
-      <div class="fact"><div class="fact__n" data-count="blocks">36</div><span class="np-label"><span lang="de">Komponenten &amp; Patterns</span><span lang="en">Components &amp; patterns</span></span></div>
+      <div class="fact"><div class="fact__n" data-count="tokens">141</div><span class="np-label">Design Tokens</span></div>
+      <div class="fact"><div class="fact__n" data-count="blocks">59</div><span class="np-label"><span lang="de">Komponenten &amp; Patterns</span><span lang="en">Components &amp; patterns</span></span></div>
       <div class="fact"><div class="fact__n">2</div><span class="np-label">Themes · Dark &amp; Light</span></div>
-      <div class="fact"><div class="fact__n">3</div><span class="np-label"><span lang="de">Interaktive UI-Kits</span><span lang="en">Interactive UI kits</span></span></div>
+      <div class="fact"><div class="fact__n">4</div><span class="np-label"><span lang="de">Interaktive UI-Kits</span><span lang="en">Interactive UI kits</span></span></div>
       <div class="fact"><div class="fact__n">AA</div><span class="np-label"><span lang="de">Kontrast aller Text-Tokens</span><span lang="en">Contrast on all text tokens</span></span></div>
       <div class="fact"><div class="fact__n">0</div><span class="np-label"><span lang="de">Build-Steps</span><span lang="en">Build steps</span></span></div>
     </div>
@@ -520,7 +526,7 @@
         <span class="layer__n">05 · UI-KITS</span>
         <h3 lang="de">Echte Screens</h3><h3 lang="en">Real screens</h3>
         <p lang="de">Der Praxistest: Produkte, gebaut nur aus dem System.</p><p lang="en">The proof: products built from the system alone.</p>
-        <div class="layer__demo"><div class="kit-pills"><span class="np-badge np-badge--accent">Marketing</span><span class="np-badge np-badge--accent">Dashboard</span><span class="np-badge np-badge--accent">Mobile</span></div></div>
+        <div class="layer__demo"><div class="kit-pills"><span class="np-badge np-badge--accent">Marketing</span><span class="np-badge np-badge--accent">Dashboard</span><span class="np-badge np-badge--accent">Mobile</span><span class="np-badge np-badge--accent">Bank</span></div></div>
       </div>
     </div>
 
@@ -613,8 +619,8 @@
       <span class="np-eyebrow">04 · <span lang="de">Komponenten</span><span lang="en">Components</span></span>
       <h2 lang="de">Jeder Zustand definiert.</h2>
       <h2 lang="en">Every state defined.</h2>
-      <p class="sec__lead" lang="de">Hover, Fokus, Aktiv, Laden, Deaktiviert, Fehler, Leer: Zustände werden aus Tokens und Pseudo-Klassen abgeleitet statt pro Komponente gemalt. Alles hier ist echt – fahr mit der Maus drüber oder navigiere per Tastatur.</p>
-      <p class="sec__lead" lang="en">Hover, focus, active, loading, disabled, error, empty: states are derived from tokens and pseudo-classes instead of being painted per component. Everything here is real — hover it or tab through it.</p>
+      <p class="sec__lead" lang="de">Hover, Fokus, Aktiv, Laden, Deaktiviert, Fehler, Leer: Zustände werden aus Tokens und Pseudo-Klassen abgeleitet statt pro Komponente gemalt. Alles hier ist echt – fahr mit der Maus drüber oder navigiere per Tastatur. Und alles ist mobile-first: fünf Breakpoints vom Smartphone bis zum Ultrawide, eine App-Shell, 44-px-Touch-Ziele.</p>
+      <p class="sec__lead" lang="en">Hover, focus, active, loading, disabled, error, empty: states are derived from tokens and pseudo-classes instead of being painted per component. Everything here is real — hover it or tab through it. And everything is mobile-first: five breakpoints from phone to ultrawide, an app shell, 44px touch targets.</p>
     </div>
 
     <div class="bento">
@@ -750,6 +756,35 @@
           <span class="tile__cls"><span lang="de">Ein Name pro Bedeutung – für Design und Code.</span><span lang="en">One name per meaning — shared by design and code.</span></span>
         </div>
       </div>
+
+      <div class="tile tile--full reveal">
+        <div class="tile__head"><span class="np-eyebrow"><span lang="de">Datum &amp; Zeitraum</span><span lang="en">Date &amp; range</span></span><span class="tile__cls">.np-datepicker · popover → bottom sheet</span></div>
+        <div class="tile__body tile__trio">
+          <div class="np-field">
+            <label class="np-field__label" for="sc-dob"><span lang="de">Geburtsdatum</span><span lang="en">Birth date</span></label>
+            <div class="np-datepicker" id="sc-dp-dob" data-np-datepicker data-selects="true" data-min="1900-01-01" data-max="-18y">
+              <div class="np-inputgroup"><input id="sc-dob" autocomplete="bday" aria-describedby="sc-dob-hint"><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle"></button></div>
+            </div>
+            <span class="np-field__hint" id="sc-dob-hint"><span lang="de">Tippen oder wählen. Monat und Jahr als Dropdown, ab 18.</span><span lang="en">Type or pick. Month and year as dropdowns, 18 or older.</span></span>
+          </div>
+          <div class="np-field">
+            <span class="np-field__label" id="sc-range-label"><span lang="de">Zeitraum</span><span lang="en">Period</span></span>
+            <div class="np-datepicker" id="sc-dp-range" data-np-datepicker data-mode="range" data-presets="7d,30d,month" data-max="today">
+              <button type="button" class="np-select np-datepicker__trigger" aria-labelledby="sc-range-label"><i class="np-select__chev" data-lucide="calendar" aria-hidden="true"></i></button>
+            </div>
+            <span class="np-field__hint"><span lang="de">Voreinstellungen, auf breiten Schirmen zwei Monate.</span><span lang="en">Presets, two months on wide screens.</span></span>
+          </div>
+          <div class="tile__notes">
+            <span class="np-label"><span lang="de">Verhalten</span><span lang="en">Behaviour</span></span>
+            <div class="np-cluster" style="gap:8px">
+              <span class="np-badge np-badge--outline">≥ 768 px · popover</span>
+              <span class="np-badge np-badge--outline">&lt; 768 px · bottom sheet</span>
+              <span class="np-badge np-badge--outline">min / max · -18y</span>
+            </div>
+            <span class="tile__cls"><span lang="de">Tastatur: Pfeile, Pos1, Ende, Bild auf / ab, Esc. Tippen geht auch.</span><span lang="en">Keyboard: arrows, Home, End, PageUp / PageDown, Esc. Typing works too.</span></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -759,10 +794,10 @@
   <div class="np-container">
     <div class="sec__head reveal">
       <span class="np-eyebrow">05 · UI-Kits</span>
-      <h2 lang="de">Der Praxistest: drei Produkte.</h2>
-      <h2 lang="en">The proof: three products.</h2>
-      <p class="sec__lead" lang="de">Ein System ist erst fertig, wenn man damit echte Screens baut. Drei interaktive Kits zeigen NeonPulse im Einsatz – zusammengesetzt aus den Klassen und Tokens des Systems.</p>
-      <p class="sec__lead" lang="en">A system is only done when you build real screens with it. Three interactive kits show NeonPulse at work — assembled from the system's own classes and tokens.</p>
+      <h2 lang="de">Der Praxistest: vier Produkte.</h2>
+      <h2 lang="en">The proof: four products.</h2>
+      <p class="sec__lead" lang="de">Ein System ist erst fertig, wenn man damit echte Screens baut. Vier interaktive Kits zeigen NeonPulse im Einsatz – zusammengesetzt aus den Klassen und Tokens des Systems.</p>
+      <p class="sec__lead" lang="en">A system is only done when you build real screens with it. Four interactive kits show NeonPulse at work — assembled from the system's own classes and tokens.</p>
     </div>
     <div class="kits">
       <a class="np-card np-card--interactive kit reveal" href="../ui_kits/marketing/index.html" target="_blank" rel="noopener">
@@ -770,8 +805,8 @@
         <div class="kit__body">
           <span class="np-card__eyebrow">Marketing</span>
           <h3 lang="de">Landingpage</h3><h3 lang="en">Landing page</h3>
-          <p lang="de">Hero mit animierter Deploy-Konsole, Feature-Grid, Pricing mit Monats-/Jahres-Umschalter, responsive Navigation.</p>
-          <p lang="en">Hero with an animated deploy console, feature grid, pricing with a monthly/annual toggle, responsive navigation.</p>
+          <p lang="de">Hero mit animierter Deploy-Konsole, Feature-Grid, Pricing mit Monats-/Jahres-Umschalter, responsive Navigation, dazu Demo-Buchung mit Datepicker.</p>
+          <p lang="en">Hero with an animated deploy console, feature grid, pricing with a monthly/annual toggle, responsive navigation, plus a demo-booking card with a date picker.</p>
           <span class="kit__go"><span lang="de">Live öffnen</span><span lang="en">Open live</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
         </div>
       </a>
@@ -780,8 +815,8 @@
         <div class="kit__body">
           <span class="np-card__eyebrow">Dashboard</span>
           <h3>SaaS-Dashboard</h3>
-          <p lang="de">KPIs mit Sparklines, Live-Charts in reinem SVG, Deploy-Dialog mit Toasts und eine ⌘K-Befehlspalette.</p>
-          <p lang="en">KPIs with sparklines, live charts in plain SVG, a deploy dialog with toasts and a ⌘K command palette.</p>
+          <p lang="de">KPIs mit Sparklines, Live-Charts in reinem SVG, Deploy-Dialog mit Toasts, ⌘K-Befehlspalette und freiem Zeitraum-Picker.</p>
+          <p lang="en">KPIs with sparklines, live charts in plain SVG, a deploy dialog with toasts, a ⌘K command palette and a custom date-range picker.</p>
           <span class="kit__go"><span lang="de">Live öffnen</span><span lang="en">Open live</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
         </div>
       </a>
@@ -792,6 +827,16 @@
           <h3 lang="de">Mobile App</h3><h3 lang="en">Mobile app</h3>
           <p lang="de">iOS-Rahmen, Tab-Bar, Status-Karten, Node-Liste und Einstellungen mit echten, zugänglichen Switches.</p>
           <p lang="en">iOS frame, tab bar, status cards, node list and settings with real, accessible switches.</p>
+          <span class="kit__go"><span lang="de">Live öffnen</span><span lang="en">Open live</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
+        </div>
+      </a>
+      <a class="np-card np-card--interactive kit reveal" href="../ui_kits/bank-order/index.html" target="_blank" rel="noopener">
+        <div class="kit__shot"><img src="img/kit-bank.webp" alt="" loading="lazy" width="1340" height="838"></div>
+        <div class="kit__body">
+          <span class="np-card__eyebrow">Banking</span>
+          <h3 lang="de">Bestellstrecke</h3><h3 lang="en">Order flow</h3>
+          <p lang="de">Kontoeröffnung in fünf Schritten: eine Seite, ab 768 px Web-Layout, darunter App-Layout – mit Validierung und einem Bottom Sheet für die Vertragsunterlagen.</p>
+          <p lang="en">Current-account opening in five steps: one page that is a web layout from 768px and an app layout below — with validation and a bottom sheet for contract documents.</p>
           <span class="kit__go"><span lang="de">Live öffnen</span><span lang="en">Open live</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
         </div>
       </a>
@@ -929,8 +974,8 @@
       <li class="step reveal">
         <span class="step__n">05</span>
         <h3 lang="de">Kits &amp; Doku</h3><h3 lang="en">Kits &amp; docs</h3>
-        <p lang="de">Drei Kits als Praxistest, eine interaktive Referenz – und Veröffentlichung per Push auf GitHub Pages.</p>
-        <p lang="en">Three kits as the proof, an interactive reference — and publishing with a push to GitHub Pages.</p>
+        <p lang="de">Vier Kits als Praxistest, eine interaktive Referenz – und Veröffentlichung per Push auf GitHub Pages.</p>
+        <p lang="en">Four kits as the proof, an interactive reference — and publishing with a push to GitHub Pages.</p>
       </li>
     </ol>
   </div>
@@ -970,6 +1015,7 @@
 <div class="np-toast-region" aria-live="polite" id="toasts"></div>
 
 <script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="../js/np-datepicker.js"></script>
 <script>
 (function () {
   var root = document.documentElement;
@@ -980,8 +1026,8 @@
 
   /* ---------- language ---------- */
   var META = {
-    de: { title: 'NeonPulse — Design System Case Study', desc: 'NeonPulse: ein dark-first Design System von kudesi — Tokens, Komponenten, Theming, drei interaktive UI-Kits.' },
-    en: { title: 'NeonPulse — Design System Case Study', desc: 'NeonPulse: a dark-first design system by kudesi — tokens, components, theming, three interactive UI kits.' }
+    de: { title: 'NeonPulse — Design System Case Study', desc: 'NeonPulse: ein dark-first Design System von kudesi — Tokens, Komponenten, Theming, vier interaktive UI-Kits.' },
+    en: { title: 'NeonPulse — Design System Case Study', desc: 'NeonPulse: a dark-first design system by kudesi — tokens, components, theming, four interactive UI kits.' }
   };
   function setLang(l, persist) {
     root.dataset.lang = l; root.lang = l;
@@ -993,6 +1039,7 @@
       var u = new URL(location.href); u.searchParams.set('lang', l); history.replaceState(null, '', u);
     }
     renderThemeCode();
+    mountPickers(l);
   }
   $$('[data-lang-set]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.langSet, true); }); });
 
@@ -1083,6 +1130,28 @@
   });
   $('#ctl-theme').addEventListener('np-change', function (e) { state.theme = e.detail; renderThemeCode(); });
   $('#ctl-brand').addEventListener('np-change', function (e) { state.brand = e.detail; renderThemeCode(); });
+
+  /* ---------- date pickers ----------
+     np-datepicker reads its locale once, when it mounts. So the page mounts each picker with the current language
+     (de-DE or en-GB, dd.mm.yyyy / dd/mm/yyyy, weeks from Monday) and, on a language switch, swaps it for a fresh
+     copy of its original markup that keeps the chosen value. */
+  var DP_LOCALE = { de: 'de-DE', en: 'en-GB' }, dpTpl = {};
+  $$('[data-np-datepicker]').forEach(function (el) { dpTpl[el.id] = el.outerHTML; });
+  function isoOf(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function mountPickers(l) {
+    if (!window.NPDatepicker) return;
+    $$('[data-np-datepicker]').forEach(function (el) {
+      var loc = DP_LOCALE[l], api = el.npDatepicker, v, val = null, tmp, fresh;
+      if (!api) { el.setAttribute('data-locale', loc); NPDatepicker.mount(el); return; }
+      if (el.getAttribute('data-locale') === loc || !dpTpl[el.id]) return;
+      v = api.value; api.close();
+      if (v && v.start !== undefined) { if (v.start && v.end) val = isoOf(v.start) + '/' + isoOf(v.end); }
+      else if (v) val = isoOf(v);
+      tmp = document.createElement('div'); tmp.innerHTML = dpTpl[el.id]; fresh = tmp.firstElementChild;
+      fresh.setAttribute('data-locale', loc); if (val) fresh.setAttribute('data-value', val);
+      el.replaceWith(fresh); NPDatepicker.mount(fresh);
+    });
+  }
 
   setLang(root.dataset.lang, false);
 

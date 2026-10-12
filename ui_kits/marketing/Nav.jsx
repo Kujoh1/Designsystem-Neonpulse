@@ -1,5 +1,5 @@
 /* Marketing — sticky nav with in-page anchors + accessible mobile menu */
-const NAV_LINKS = [['Product', '#product'], ['Platform', '#platform'], ['Pricing', '#pricing'], ['Docs', '#docs']];
+const NAV_LINKS = [['Product', '#product'], ['Platform', '#platform'], ['Pricing', '#pricing'], ['Demo', '#demo'], ['Docs', '#docs']];
 
 function NPLogo({ size = 30 }) {
   return (
