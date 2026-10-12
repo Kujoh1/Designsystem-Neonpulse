@@ -52,6 +52,12 @@ Laptop 1280, Desktop 1440, Full HD 1920, Ultrawide 3440 — each with the app sh
 column layout grid on the content area (toggle with Ctrl + G). The breakpoints and container sizes are the
 `layout/*` variables in the Scale collection.
 
+**Order flow (on the Foundations page, below the layouts):** the bank order flow of `ui_kits/bank-order/` as 12 frames — six
+screens (model, personal data, personal data with errors, identification, review, confirmation) in the web layout
+(1280) and in the app layout (390). Built only from instances of the library: Button, Input, Select, Choice card,
+Checkbox, Banner, Dropzone, Chip, Step, Meter, Accordion item and Badge. Run `node figma/mcp-script.mjs flows` for the
+connector or the plugin's *Build or sync everything* / *Rebuild documentation pages* (phase `flows`).
+
 ## Connect Claude to Figma (once per machine)
 
 The Figma plugin from Anthropic's plugin directory is enabled for this project in
@@ -103,7 +109,7 @@ connector. The connector is for incremental work:
 
 - Load the `figma-use` skill first (mandatory for `use_figma`) and pass `skillNames: "figma-use"`.
 - Generate the script: `node figma/mcp-script.mjs components Drawer,Sheet` (add `--rebuild` to replace existing ones) or
-  `node figma/mcp-script.mjs layouts`. It prints a trimmed script ending in `return await NP.run([...])`; paste it as `code`.
+  `node figma/mcp-script.mjs layouts` or `flows`. It prints a trimmed script ending in `return await NP.run([...])`; paste it as `code`.
   Keep a call under about 12 components. Dependants instance earlier components (Pagination → Page item, Drawer →
   Checkbox, Select, Button …), so build in LIB order or let the missing ones fail and rerun.
 - The file must already hold the variables and styles: run **Sync tokens** in the plugin first.

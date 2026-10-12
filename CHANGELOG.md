@@ -3,6 +3,11 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.6.1 — 2026-10-12
+
+### Added
+- **Figma order flow:** the bank order flow as 12 frames on the Foundations page — six screens in the web layout (1280) and six in the app layout (390), built from instances of the library (new phase `flows`, `node figma/mcp-script.mjs flows`).
+
 ## 1.6.0 — 2026-10-12
 
 ### Added

@@ -9,6 +9,7 @@
      node figma/mcp-script.mjs components Drawer,Sheet            build what is missing among these
      node figma/mcp-script.mjs components Drawer,Sheet --rebuild  remove and rebuild them
      node figma/mcp-script.mjs layouts                            the six breakpoint layout frames
+     node figma/mcp-script.mjs flows [--part web|app]             the order flow (open a current account), web and app
      add  --out script.js  to write a file instead of stdout
 
    The file must already hold the variables and styles (run “Sync tokens” in the plugin first): the script
@@ -23,9 +24,10 @@ const args = process.argv.slice(2);
 const flag = n => { const i = args.indexOf(n); if (i < 0) return null; const v = args[i + 1]; args.splice(i, v && !v.startsWith('--') ? 2 : 1); return v && !v.startsWith('--') ? v : true; };
 const out = flag('--out');
 const rebuild = !!flag('--rebuild');
+const part = flag('--part');
 const [mode, only] = args;
-if (!['components', 'layouts'].includes(mode) || (mode === 'components' && !only)) {
-  console.error('usage: node figma/mcp-script.mjs components <Key,Key,…> [--rebuild] [--out file]\n       node figma/mcp-script.mjs layouts [--out file]');
+if (!['components', 'layouts', 'flows'].includes(mode) || (mode === 'components' && !only)) {
+  console.error('usage: node figma/mcp-script.mjs components <Key,Key,…> [--rebuild] [--out file]\n       node figma/mcp-script.mjs layouts|flows [--part web|app] [--out file]');
   process.exit(2);
 }
 const keys = mode === 'components' ? only.split(',').map(s => s.trim()) : [];
@@ -46,7 +48,8 @@ for (const k of keys) if (!(k in builderOf)) { console.error(`Unknown component 
 const keep = new Set(keys.map(k => builderOf[k]));
 
 /* 3 · drop what a trimmed run does not need: every other builder and every phase but the ones used */
-const phaseKeep = new Set(mode === 'components' ? ['phaseComponents'] : ['phaseLayouts']);
+const phaseName = mode === 'components' ? 'phaseComponents' : mode === 'layouts' ? 'phaseLayouts' : 'phaseFlows';
+const phaseKeep = new Set([phaseName]);
 const L0 = src.split('\n');
 const names = [];
 L0.forEach((l, i) => { const m = l.match(/^  (?:async )?function ((?:build|phase)[A-Za-z]*)\(/); if (m) names.push([m[1], i]); });
@@ -67,19 +70,38 @@ for (const n of ['fontFor', 'swatch', 'describeVar', 'toValue', 'linearTransform
   L.splice(start, end - start + 1);
   src = L.join('\n');
 }
+/* helpers that belong to another mode */
+const dropBlock = (startRe) => {
+  const L = src.split('\n');
+  const start = L.findIndex(l => startRe.test(l));
+  if (start < 0) return;
+  const oneLine = /[;}]\s*$/.test(L[start]) && !/[\[{(]\s*$/.test(L[start]);
+  const end = oneLine ? start : L.findIndex((l, i) => i > start && (l === '  ];' || l === '  }' || l === '  };'));
+  L.splice(start, end - start + 1);
+  src = L.join('\n');
+};
+const others = [];
+if (mode !== 'layouts') others.push(/^  (async )?function deviceFrame\(/, /^  (async )?function sideEdge\(/, /^  const DEVICES = \[/);
+if (mode !== 'flows') {
+  const fnNames = [...src.matchAll(/^  (?:async )?function (flow[A-Za-z]*)\(/gm)].map(m => m[1]);
+  for (const n of fnNames) others.push(new RegExp(`^  (async )?function ${n}\\(`));
+  others.push(/^  const FLOW_STEPS = /, /^  const FLOW_SCREENS = \[/, /^  const flowInput = /, /^  const flowSelect = /);
+}
+for (const re of others) dropBlock(re);
 /* the LIB still lists every component (registerSets finds the existing ones by name); builders of the others become null */
 src = src.split('\n').map(l => { const m = l.match(libRe); return m && !keep.has(m[3]) ? l.replace(`, ${m[3]}, `, ', null, ') : l; }).join('\n');
 src = src.replace('  const LIB = [', "  async function buildIcons() { return []; }\n  async function buildThemeCheck() { return null; }\n  const LIB = [");
 
 /* 4 · runner, no plugin entry point */
-src = src.replace(/const PHASES = \{[^}]*\};/, mode === 'components' ? 'const PHASES = { components: phaseComponents };' : 'const PHASES = { layouts: phaseLayouts };');
+src = src.replace(/const PHASES = \{[^}]*\};/, `const PHASES = { ${mode}: ${phaseName} };`);
 src = src.replace(/const ALL = \[[^\]]*\];/, `const ALL = ['${mode}'];`);
 src = src.slice(0, src.indexOf('// Plugin entry.'));
 
 /* 5 · light minify: comments, indentation, blank lines */
 src = src.replace(/^\/\*[\s\S]*?\*\/\n/, '').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//')).join('\n');
 src = src.replace(/\n\/\*[\s\S]*?\*\//g, '\n').replace(/\n{2,}/g, '\n');
-src += `\nreturn await NP.run(['${mode}']${mode === 'components' ? `, { only: ${JSON.stringify(keys)}${rebuild ? ', rebuild: true' : ''} }` : ''});\n`;
+const runArgs = mode === 'components' ? `, { only: ${JSON.stringify(keys)}${rebuild ? ', rebuild: true' : ''} }` : mode === 'flows' && part ? `, { part: '${part}' }` : '';
+src += `\nreturn await NP.run(['${mode}']${runArgs});\n`;
 
 if (out) writeFileSync(out, src); else process.stdout.write(src);
 console.error(`use_figma script: ${src.length} characters${src.length > 50000 ? ' — OVER the 50,000 limit, ask for fewer components' : ' (limit 50,000)'}`);
