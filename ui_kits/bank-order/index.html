@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0c16">
+<title>Pulse Bank · Girokonto eröffnen</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  html, body { margin: 0; }
+  body { background: var(--color-bg-page); color: var(--color-text); font-family: var(--font-body); min-height: 100vh; min-height: 100dvh; }
+  [hidden] { display: none !important; }
+
+  /* ---------- page frame ---------- */
+  .bo-top { position: sticky; top: 0; z-index: var(--z-sticky); background: var(--color-bg-translucent);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--color-border-subtle); padding-top: var(--safe-top); }
+  .bo-top__row { display: flex; align-items: center; gap: var(--s-3); min-height: var(--topbar-h); box-sizing: border-box; }
+  .bo-brand { display: flex; align-items: center; gap: 8px; font: 700 17px/1 var(--font-display); letter-spacing: 0.03em; color: var(--color-text); text-decoration: none; }
+  .bo-brand b { font-weight: 700; color: var(--color-text-accent); }
+  .bo-grow { flex: 1; }
+  .bo-step-label { font: 500 11px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); }
+  .bo-progress { padding-bottom: var(--s-3); }
+  .bo-main { padding-block: var(--s-6) var(--s-12); }
+  .bo-grid { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .bo-card { padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-6); }
+  .bo-head { display: flex; flex-direction: column; gap: var(--s-2); }
+  .bo-head h1 { font: var(--h2); letter-spacing: -0.01em; margin: 0; color: var(--color-text); outline: none; }
+  .bo-head p { font: var(--body-sm); color: var(--color-text-secondary); margin: 0; max-width: 56ch; }
+  .bo-form { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .bo-span { grid-column: 1 / -1; }
+  .bo-actions { display: flex; gap: var(--s-3); justify-content: space-between; align-items: center; }
+  .bo-actions .np-btn--ghost { flex: none; }
+  .bo-plans { display: flex; flex-direction: column; gap: var(--s-3); }
+  .bo-plan { align-items: flex-start; }
+  .bo-plan__top { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+  .bo-plan__price { margin-left: auto; font: 500 13px/1 var(--font-mono); color: var(--color-text-accent); white-space: nowrap; }
+  .bo-plan__list { margin: var(--s-2) 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font: var(--caption); color: var(--color-text-secondary); }
+  .bo-plan__list li { display: flex; gap: 8px; align-items: baseline; }
+  .bo-plan__list li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); flex: none; transform: translateY(-1px); }
+  .bo-sum { position: sticky; top: calc(var(--topbar-h) + var(--s-12) + var(--s-6)); display: none; padding: var(--s-5); gap: var(--s-4); }
+  .bo-sum h2 { font: var(--h4); margin: 0; }
+  .bo-sum dl { margin: 0; display: grid; gap: var(--s-3); }
+  .bo-sum dt { font: 500 10px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); }
+  .bo-sum dd { margin: 4px 0 0; font: var(--body-sm); color: var(--color-text); }
+  .bo-price { font: 700 28px/1 var(--font-display); color: var(--color-text); }
+  .bo-price small { font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); margin-left: 6px; }
+  .bo-lock { display: inline-flex; gap: 6px; align-items: center; font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+  .bo-lock svg { width: 14px; height: 14px; color: var(--color-success); }
+  .bo-mini { display: flex; flex-direction: row; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); }
+  .bo-mini b { font: 600 14px/1.2 var(--font-display); color: var(--color-text); }
+  .bo-mini span { font: 500 12px/1 var(--font-mono); color: var(--color-text-accent); margin-left: auto; }
+  .bo-docs { display: flex; flex-direction: column; gap: var(--s-2); }
+  .bo-done { align-items: center; text-align: center; padding-block: var(--s-10); }
+  .bo-done__ic { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--color-success); background: var(--color-success-fill); }
+  .bo-done__ic svg { width: 32px; height: 32px; }
+  .bo-ref { font: 500 12px/1 var(--font-mono); letter-spacing: 0.1em; color: var(--color-text-muted); }
+  .bo-next { align-self: stretch; text-align: left; }
+  .bo-files { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .bo-web-only { display: none; }
+  .bo-app-only { display: block; }
+  .bo-stepper-wrap { display: none; padding-bottom: var(--s-4); }
+  .bo-help { font: 500 13px/1 var(--font-display); }
+
+  /* ---------- web: from 768 (--bp-md) ---------- */
+  @media (min-width: 768px) {
+    .bo-web-only { display: block; }
+    .bo-app-only { display: none; }
+    .bo-back, .bo-meter { display: none; }
+    .bo-stepper-wrap { display: block; }
+    .bo-progress { padding-bottom: 0; }
+    .bo-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bo-card { padding: var(--s-8); }
+    .bo-head h1 { font: var(--h1); }
+  }
+  /* ---------- summary column: from 1024 (--bp-lg) ---------- */
+  @media (min-width: 1024px) {
+    .bo-grid { grid-template-columns: minmax(0, 1fr) 340px; }
+    .bo-sum { display: flex; flex-direction: column; }
+    .bo-mini { display: none; }
+  }
+  /* ---------- app: below 768 — one column, sticky action bar ---------- */
+  @media (max-width: 767.98px) {
+    .bo-brand, .bo-secure, .bo-help { display: none; }
+    .bo-main { padding-block: var(--s-4) 0; }
+    .bo-card { border: 0; background: transparent; box-shadow: none; padding: 0; border-radius: 0; }
+    .bo-actions { position: sticky; bottom: 0; z-index: var(--z-sticky); margin-inline: calc(-1 * var(--gutter)); margin-top: var(--s-2);
+      padding: var(--s-3) calc(var(--gutter) + var(--safe-right)) calc(var(--s-3) + var(--safe-bottom)) calc(var(--gutter) + var(--safe-left));
+      background: var(--color-bg-translucent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border-subtle); }
+    .bo-actions .np-btn { flex: 1; }
+    .bo-done { padding-block: var(--s-6); }
+  }
+</style>
+</head>
+<body class="np-scope">
+
+<header class="bo-top">
+  <div class="np-container">
+    <div class="bo-top__row">
+      <button class="np-icon-btn np-icon-btn--ghost bo-back" type="button" id="back" aria-label="Zurück"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+      <a class="bo-brand" href="#" aria-label="Pulse Bank"><span class="np-livedot" aria-hidden="true"></span>Pulse<b>Bank</b></a>
+      <span class="bo-step-label bo-app-only" id="step-label" aria-live="polite"></span>
+      <span class="bo-grow"></span>
+      <span class="bo-lock bo-secure"><i data-lucide="lock" aria-hidden="true"></i>Verschlüsselte Verbindung</span>
+      <a class="np-link bo-help" href="#help">Hilfe</a>
+    </div>
+    <div class="bo-progress">
+      <div class="np-meter bo-meter" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" id="meter"><div class="np-meter__bar" id="meter-bar" style="--value:25%"></div></div>
+      <div class="bo-stepper-wrap"><ol class="np-stepper" aria-label="Fortschritt" id="stepper"></ol></div>
+    </div>
+  </div>
+</header>
+
+<main class="bo-main">
+  <div class="np-container">
+    <div class="bo-grid">
+      <div id="col"></div>
+      <aside class="np-card bo-sum" id="sum" aria-label="Deine Auswahl"></aside>
+    </div>
+  </div>
+</main>
+
+<!-- bottom sheet with the contract documents (app) -->
+<div class="np-scrim np-scrim--sheet" id="sheet" hidden>
+  <div class="np-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
+    <span class="np-sheet__handle" aria-hidden="true"></span>
+    <div class="np-sheet__header"><h2 class="np-sheet__title" id="sheet-t">Vertragsunterlagen</h2>
+      <button class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" type="button" aria-label="Schließen" data-close><i data-lucide="x" aria-hidden="true"></i></button></div>
+    <div class="np-sheet__body" id="sheet-body"></div>
+    <div class="np-sheet__footer"><button class="np-btn np-btn--primary np-btn--block" type="button" data-close>Verstanden</button></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var ic = function (n) { return '<i data-lucide="' + n + '" aria-hidden="true"></i>'; };
+
+  /* ---------- data ---------- */
+  var PLANS = {
+    basis:   { name: 'Basis',   price: '0,00',  note: 'Der Einstieg', list: ['Kostenloses Girokonto', 'Virtuelle Debitkarte', '1 Bargeldabhebung pro Monat gratis'] },
+    plus:    { name: 'Plus',    price: '4,90',  note: 'Empfohlen',    list: ['Physische Debitkarte aus Metall', '5 Abhebungen weltweit gratis', 'Echtzeit-Überweisungen'] },
+    premium: { name: 'Premium', price: '9,90',  note: 'Alles drin',   list: ['Alles aus Plus', 'Kreditkarte inklusive', 'Reiseversicherung und Priority-Support'] }
+  };
+  var STEPS = ['Kontomodell', 'Deine Daten', 'Identifikation', 'Abschluss'];
+  var DOCS = [['Allgemeine Geschäftsbedingungen', 'file-text'], ['Preis- und Leistungsverzeichnis', 'file-text'], ['Datenschutzhinweise', 'shield-check'], ['Informationen zur Einlagensicherung', 'landmark']];
+  var S = { step: 1, plan: 'plus', ident: 'video', files: [], busy: false, ref: '',
+    f: { anrede: 'Frau', vorname: '', nachname: '', dob: '', email: '', mobil: '', strasse: '', plz: '', ort: '', land: 'Deutschland' },
+    c: { agb: false, privacy: false, marketing: false, wechsel: false }, err: {} };
+  var LAND = ['Deutschland', 'Österreich', 'Schweiz', 'Frankreich', 'Italien', 'Niederlande', 'Spanien'];
+
+  /* ---------- validation (returns { field: message }) ---------- */
+  function validate(step) {
+    var e = {}, f = S.f;
+    if (step === 2) {
+      if (f.vorname.trim().length < 2) e.vorname = 'Bitte gib deinen Vornamen an.';
+      if (f.nachname.trim().length < 2) e.nachname = 'Bitte gib deinen Nachnamen an.';
+      var m = f.dob.match(/^(\d{2})\.(\d{2})\.(\d{4})$/), d = m && new Date(+m[3], +m[2] - 1, +m[1]);
+      if (!m || d.getDate() !== +m[1] || d.getMonth() !== +m[2] - 1) e.dob = 'Bitte im Format TT.MM.JJJJ eingeben.';
+      else { var min = new Date(d.getFullYear() + 18, d.getMonth(), d.getDate()); if (min > new Date()) e.dob = 'Du musst mindestens 18 Jahre alt sein.'; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)) e.email = 'Das sieht nicht nach einer E-Mail-Adresse aus.';
+      if (!/^\+?[0-9 ()\/-]{7,20}$/.test(f.mobil)) e.mobil = 'Bitte gib eine gültige Mobilnummer an.';
+      if (f.strasse.trim().length < 3) e.strasse = 'Bitte gib Straße und Hausnummer an.';
+      if (!/^\d{5}$/.test(f.plz)) e.plz = 'Die Postleitzahl hat 5 Ziffern.';
+      if (f.ort.trim().length < 2) e.ort = 'Bitte gib deinen Wohnort an.';
+    }
+    if (step === 3 && S.ident === 'upload' && !S.files.length) e.files = 'Lade mindestens ein Foto oder PDF deines Ausweises hoch.';
+    if (step === 4) {
+      if (!S.c.agb) e.agb = 'Ohne Zustimmung zu den Geschäftsbedingungen können wir das Konto nicht eröffnen.';
+      if (!S.c.privacy) e.privacy = 'Bitte bestätige, dass du die Datenschutzhinweise gelesen hast.';
+    }
+    return e;
+  }
+
+  /* ---------- building blocks ---------- */
+  function field(id, label, o) {
+    o = o || {};
+    var err = S.err[id], v = S.f[id], desc = id + '-h';
+    var ctl = o.options
+      ? '<select class="np-input" id="' + id + '" name="' + id + '" autocomplete="' + (o.ac || 'off') + '">' + o.options.map(function (x) { return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>'
+      : '<input class="np-input" id="' + id + '" name="' + id + '" value="' + esc(v) + '" type="' + (o.type || 'text') + '"' + (o.mode ? ' inputmode="' + o.mode + '"' : '') + (o.ac ? ' autocomplete="' + o.ac + '"' : '') +
+        (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.max ? ' maxlength="' + o.max + '"' : '') + (err ? ' aria-invalid="true"' : '') + ' aria-describedby="' + desc + '" required>';
+    return '<div class="np-field' + (err ? ' is-invalid' : '') + (o.span ? ' bo-span' : '') + '"><label class="np-field__label" for="' + id + '">' + label + '</label>' + ctl +
+      '<span class="np-field__hint" id="' + desc + '">' + esc(err || o.hint || '') + '</span></div>';
+  }
+  function head(title, sub) { return '<div class="bo-head"><h1 id="h1" tabindex="-1">' + title + '</h1><p>' + sub + '</p></div>'; }
+  function actions(next, back) {
+    return '<div class="bo-actions">' + (back ? '<button class="np-btn np-btn--ghost bo-web-only" type="button" data-go="' + (S.step - 1) + '">' + ic('arrow-left') + 'Zurück</button>' : '<span></span>') +
+      '<button class="np-btn np-btn--primary" type="submit" id="next"' + (S.busy ? ' aria-busy="true"' : '') + '>' + next + '</button></div>';
+  }
+  function errorBanner() {
+    var n = Object.keys(S.err).length;
+    return n ? '<div class="np-banner np-banner--danger" role="alert"><i class="np-banner__icon" data-lucide="circle-alert" aria-hidden="true"></i><span>' + (n === 1 ? 'Bitte prüfe eine Angabe.' : 'Bitte prüfe ' + n + ' Angaben.') + '</span></div>' : '';
+  }
+
+  /* ---------- screens ---------- */
+  function planCard(k) {
+    var p = PLANS[k];
+    return '<label class="np-radio np-radio--card bo-plan"><input type="radio" name="plan" value="' + k + '"' + (S.plan === k ? ' checked' : '') + '><span class="np-radio__dot" aria-hidden="true"></span>' +
+      '<span class="np-choice__text" style="flex:1"><span class="bo-plan__top"><span class="np-choice__title">' + p.name + '</span>' +
+      (k === 'plus' ? '<span class="np-badge np-badge--accent">Empfohlen</span>' : '') + '<span class="bo-plan__price">' + p.price + ' € / Monat</span></span>' +
+      '<ul class="bo-plan__list">' + p.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></span></label>';
+  }
+  function screen1() {
+    return head('Welches Konto passt zu dir?', 'Du kannst das Modell später jederzeit wechseln. Alle Modelle sind ohne Mindestguthaben.') +
+      '<fieldset class="np-fieldset"><legend class="np-sr-only">Kontomodell</legend><div class="bo-plans">' + ['basis', 'plus', 'premium'].map(planCard).join('') + '</div></fieldset>' +
+      '<label class="np-check"><input type="checkbox" name="wechsel"' + (S.c.wechsel ? ' checked' : '') + '><span class="np-check__box" aria-hidden="true"></span>Ich möchte den Kontowechselservice nutzen</label>' +
+      actions('Weiter');
+  }
+  function screen2() {
+    var F = function (id, l, o) { return field(id, l, o); };
+    return head('Wer eröffnet das Konto?', 'Bitte gib die Daten so an, wie sie in deinem Ausweis stehen.') + errorBanner() +
+      '<div class="bo-form">' + F('anrede', 'Anrede', { options: ['Frau', 'Herr', 'Divers'], ac: 'honorific-prefix' }) + F('land', 'Staatsangehörigkeit', { options: LAND, ac: 'country-name' }) +
+      F('vorname', 'Vorname', { ac: 'given-name' }) + F('nachname', 'Nachname', { ac: 'family-name' }) +
+      F('dob', 'Geburtsdatum', { ph: 'TT.MM.JJJJ', mode: 'numeric', ac: 'bday', max: 10, hint: 'Du musst mindestens 18 sein.' }) + F('mobil', 'Mobilnummer', { type: 'tel', ac: 'tel', ph: '+49 151 2345678' }) +
+      F('email', 'E-Mail', { type: 'email', ac: 'email', span: true, ph: 'name@beispiel.de' }) +
+      F('strasse', 'Straße und Hausnummer', { ac: 'street-address', span: true }) + F('plz', 'Postleitzahl', { mode: 'numeric', ac: 'postal-code', max: 5 }) + F('ort', 'Ort', { ac: 'address-level2' }) + '</div>' +
+      actions('Weiter', true);
+  }
+  function screen3() {
+    var up = S.ident === 'upload', err = S.err.files;
+    var m = function (v, t, d, i) { return '<label class="np-radio np-radio--card"><input type="radio" name="ident" value="' + v + '"' + (S.ident === v ? ' checked' : '') + '><span class="np-radio__dot" aria-hidden="true"></span><span class="np-choice__text"><span class="np-choice__title">' + t + '</span><span class="np-choice__desc">' + d + '</span></span></label>'; };
+    return head('Bestätige, dass du es bist', 'Gesetzlich sind wir zur Identifikation verpflichtet. Dein Ausweis wird verschlüsselt übertragen.') + errorBanner() +
+      '<fieldset class="np-fieldset"><legend class="np-sr-only">Identifikation</legend><div class="bo-plans">' + m('video', 'Video-Ident', 'Ca. 5 Minuten, täglich von 7 bis 22 Uhr.') + m('upload', 'Ausweis hochladen', 'Foto oder PDF, Vorder- und Rückseite.') + '</div></fieldset>' +
+      (up ? '<div class="np-field' + (err ? ' is-invalid' : '') + '"><label class="np-dropzone" for="files"><input type="file" id="files" accept="image/*,application/pdf" multiple' + (err ? ' aria-invalid="true"' : '') + ' aria-describedby="files-h">' + ic('upload') +
+        '<span class="np-dropzone__title">Dateien ablegen oder auswählen</span><span class="np-dropzone__hint">JPG, PNG, PDF · bis 10 MB</span></label>' +
+        '<div class="bo-files" aria-live="polite">' + S.files.map(function (n, i) { return '<span class="np-chip np-chip--removable">' + esc(n) + '<button class="np-chip__x" type="button" data-rm="' + i + '" aria-label="' + esc(n) + ' entfernen">' + ic('x') + '</button></span>'; }).join('') + '</div>' +
+        '<span class="np-field__hint" id="files-h">' + esc(err || '') + '</span></div>'
+      : '<div class="np-banner np-banner--info"><i class="np-banner__icon" data-lucide="info" aria-hidden="true"></i><span>Halte deinen Personalausweis oder Reisepass bereit. Das Gespräch startet direkt nach dem Abschluss.</span></div>') +
+      actions('Weiter', true);
+  }
+  function screen4() {
+    var p = PLANS[S.plan], f = S.f;
+    var row = function (k, v, step) { return '<div class="np-list__row"><div style="flex:1;min-width:0"><div class="np-field__label">' + k + '</div><div style="font:var(--body-sm);color:var(--color-text);margin-top:4px">' + v + '</div></div>' +
+      '<button class="np-btn np-btn--ghost np-btn--sm" type="button" data-go="' + step + '">Ändern</button></div>'; };
+    var chk = function (id, html, req) { var e = S.err[id]; return '<div class="np-field' + (e ? ' is-invalid' : '') + '"><label class="np-check"><input type="checkbox" name="' + id + '"' + (S.c[id] ? ' checked' : '') + (e ? ' aria-invalid="true"' : '') + ' aria-describedby="' + id + '-h"><span class="np-check__box" aria-hidden="true"></span><span>' + html + '</span></label><span class="np-field__hint" id="' + id + '-h">' + esc(e || '') + '</span></div>'; };
+    return head('Prüfe deine Angaben', 'Wenn alles stimmt, schließt du den Antrag mit einem Tipp ab.') + errorBanner() +
+      '<div class="np-list">' + row('Kontomodell', p.name + ' · ' + p.price + ' € pro Monat', 1) + row('Name', esc(f.anrede + ' ' + f.vorname + ' ' + f.nachname), 2) +
+      row('Adresse', esc(f.strasse) + ', ' + esc(f.plz) + ' ' + esc(f.ort), 2) + row('Kontakt', esc(f.email) + ' · ' + esc(f.mobil), 2) + row('Identifikation', S.ident === 'video' ? 'Video-Ident' : 'Ausweis-Upload (' + S.files.length + ')', 3) + '</div>' +
+      '<div class="bo-web-only"><div class="np-accordion">' + DOCS.map(function (d, i) { return '<details' + (i ? '' : ' open') + '><summary>' + d[0] + '</summary><div class="np-accordion__body">Dieses Dokument ist in der Demo nicht hinterlegt. Es lädt als PDF in einem neuen Tab.</div></details>'; }).join('') + '</div></div>' +
+      '<button class="np-btn np-btn--ghost bo-app-only" type="button" data-sheet>' + ic('file-text') + 'Vertragsunterlagen ansehen</button>' +
+      '<div class="bo-docs">' + chk('agb', 'Ich akzeptiere die <a class="np-link" href="#agb">Geschäftsbedingungen</a> und das Preis- und Leistungsverzeichnis.') +
+      chk('privacy', 'Ich habe die <a class="np-link" href="#datenschutz">Datenschutzhinweise</a> gelesen.') +
+      '<label class="np-check"><input type="checkbox" name="marketing"' + (S.c.marketing ? ' checked' : '') + '><span class="np-check__box" aria-hidden="true"></span><span>Ich möchte Angebote per E-Mail erhalten (optional).</span></label></div>' +
+      actions(p.price === '0,00' ? 'Konto eröffnen' : 'Konto kostenpflichtig eröffnen', true);
+  }
+  function screen5() {
+    var p = PLANS[S.plan];
+    return '<div class="bo-card bo-done" style="gap:var(--s-5)"><span class="bo-done__ic">' + ic('circle-check') + '</span>' +
+      '<div class="bo-head" style="align-items:center"><h1 id="h1" tabindex="-1">Dein Antrag ist raus, ' + esc(S.f.vorname) + '.</h1><p>Wir haben eine Bestätigung an ' + esc(S.f.email) + ' geschickt.</p></div>' +
+      '<span class="bo-ref">Antragsnummer · ' + S.ref + '</span>' +
+      '<div class="np-card bo-next" style="padding:var(--s-5)"><span class="np-eyebrow" style="margin-bottom:var(--s-4)"><span class="np-livedot" aria-hidden="true"></span>So geht es weiter</span>' +
+      '<ol class="np-stepper np-stepper--vertical" aria-label="Nächste Schritte">' +
+      '<li class="np-step is-done"><span class="np-step__marker">1</span><span class="np-step__label">Antrag eingegangen</span></li>' +
+      '<li class="np-step" aria-current="step"><span class="np-step__marker">2</span><span class="np-step__label">' + (S.ident === 'video' ? 'Video-Ident abschließen' : 'Ausweis wird geprüft (ca. 1 Std.)') + '</span></li>' +
+      '<li class="np-step"><span class="np-step__marker">3</span><span class="np-step__label">' + (p.name === 'Basis' ? 'Virtuelle Karte in der App' : 'Karte wird verschickt (2 bis 3 Tage)') + '</span></li></ol></div>' +
+      '<div class="bo-actions" style="width:100%;flex-direction:column"><button class="np-btn np-btn--primary np-btn--block" type="button" data-restart>' + ic('smartphone') + 'Zur Banking-App</button>' +
+      '<button class="np-btn np-btn--ghost np-btn--block" type="button" data-restart>Neuen Antrag starten</button></div></div>';
+  }
+  function summaryAside() {
+    var p = PLANS[S.plan];
+    return '<h2>Deine Auswahl</h2><div><div class="bo-price">' + p.price + ' €<small>pro Monat</small></div></div>' +
+      '<dl><div><dt>Modell</dt><dd>' + p.name + '</dd></div>' + p.list.map(function (x) { return '<div><dd>' + esc(x) + '</dd></div>'; }).join('') + '</dl>' +
+      '<span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Einlagen bis 100.000 € gesichert</span>';
+  }
+
+  /* ---------- render ---------- */
+  function render(focus) {
+    var col = $('#col'), n = S.step, done = n === 5;
+    var html = [null, screen1, screen2, screen3, screen4, screen5][n]();
+    var mini = !done && n > 1 ? '<div class="np-card bo-mini" style="margin-bottom:var(--s-4)"><b>' + PLANS[S.plan].name + '</b><span>' + PLANS[S.plan].price + ' € / Monat</span></div>' : '';
+    col.innerHTML = done ? html : '<form class="np-card bo-card" id="form" novalidate>' + mini + html + '</form>';
+    $('#sum').hidden = done;
+    $('#sum').innerHTML = summaryAside();
+    $('.bo-grid').style.gridTemplateColumns = done ? '1fr' : '';
+    $('#stepper').innerHTML = STEPS.map(function (s, i) {
+      var k = i + 1, cls = k < Math.min(n, 5) ? ' is-done' : '';
+      return '<li class="np-step' + cls + '"' + (k === n ? ' aria-current="step"' : '') + '><span class="np-step__marker">' + (k < n ? '' : k) + '</span><span class="np-step__label">' + s + '</span></li>';
+    }).join('');
+    var pct = Math.min(100, Math.round((done ? 4 : n) / 4 * 100));
+    $('#meter').setAttribute('aria-valuenow', pct); $('#meter-bar').style.setProperty('--value', pct + '%');
+    $('#step-label').textContent = done ? 'Fertig' : 'Schritt ' + n + ' von 4 · ' + STEPS[n - 1];
+    $('#back').hidden = done || n === 1 ? true : false;
+    document.title = (done ? 'Antrag eingegangen' : STEPS[n - 1]) + ' · Pulse Bank';
+    if (window.lucide) lucide.createIcons();
+    if (focus === 'step') { var h = $('#h1'); if (h) { h.focus({ preventScroll: true }); window.scrollTo(0, 0); } }
+    if (focus === 'error') { var bad = $('[aria-invalid="true"]'); if (bad) bad.focus(); else { var b = $('[role=alert]'); if (b) b.scrollIntoView({ block: 'center' }); } }
+  }
+  function go(n, focus) { S.err = {}; S.step = Math.max(1, Math.min(5, n)); render(focus || 'step'); }
+
+  /* ---------- events ---------- */
+  document.addEventListener('input', function (e) {
+    var t = e.target, name = t.name || t.id;
+    if (t.closest('#form') && name in S.f) { S.f[name] = t.value; if (S.err[name]) { delete S.err[name]; t.removeAttribute('aria-invalid'); var f = t.closest('.np-field'); if (f) { f.classList.remove('is-invalid'); var h = $('.np-field__hint', f); if (h) h.textContent = ''; } } }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.name === 'plan') { S.plan = t.value; $('#sum').innerHTML = summaryAside(); var mini = $('.bo-mini'); if (mini) mini.innerHTML = '<b>' + PLANS[S.plan].name + '</b><span>' + PLANS[S.plan].price + ' € / Monat</span>'; }
+    else if (t.name === 'ident') { S.ident = t.value; S.err = {}; render(); var r = $('input[name=ident]:checked'); if (r) r.focus(); }
+    else if (t.name in S.c) { S.c[t.name] = t.checked; delete S.err[t.name]; var fld = t.closest('.np-field'); if (fld) { fld.classList.remove('is-invalid'); t.removeAttribute('aria-invalid'); var hh = $('.np-field__hint', fld); if (hh) hh.textContent = ''; } }
+    else if (t.id === 'files') { S.files = S.files.concat([].map.call(t.files, function (f) { return f.name; })).slice(0, 4); delete S.err.files; render(); $('#files') && $('#files').focus(); }
+  });
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest('[data-go]'); if (g) { go(+g.dataset.go); return; }
+    var rm = e.target.closest('[data-rm]'); if (rm) { S.files.splice(+rm.dataset.rm, 1); render(); return; }
+    if (e.target.closest('#back')) { go(S.step - 1); return; }
+    if (e.target.closest('[data-restart]')) { S.step = 1; S.files = []; S.c = { agb: false, privacy: false, marketing: false, wechsel: false }; go(1); return; }
+    if (e.target.closest('[data-sheet]')) {
+      $('#sheet-body').innerHTML = '<div class="np-list">' + DOCS.map(function (d) { return '<a class="np-list__row" href="#doc" style="text-decoration:none;color:var(--color-text)">' + ic(d[1]) + '<span style="flex:1">' + d[0] + '</span>' + ic('chevron-right') + '</a>'; }).join('') + '</div>';
+      $('#sheet').hidden = false; if (window.lucide) lucide.createIcons(); $('#sheet [data-close]').focus(); return;
+    }
+    if (e.target.closest('#sheet [data-close]') || e.target === $('#sheet')) { $('#sheet').hidden = true; var o = $('[data-sheet]'); if (o) o.focus(); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#sheet').hidden) { $('#sheet').hidden = true; var o = $('[data-sheet]'); if (o) o.focus(); } });
+  document.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (S.busy) return;
+    var n = S.step, err = validate(n);
+    if (Object.keys(err).length) { S.err = err; render('error'); return; }
+    if (n === 4) {
+      S.busy = true; render(); var b = $('#next'); if (b) b.setAttribute('aria-busy', 'true');
+      setTimeout(function () { S.busy = false; S.ref = 'PB-' + (new Date().getFullYear()) + '-' + String(Math.floor(10000 + Math.random() * 89999)); go(5); }, 900);
+      return;
+    }
+    go(n + 1);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

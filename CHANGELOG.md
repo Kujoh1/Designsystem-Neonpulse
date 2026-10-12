@@ -3,6 +3,12 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.6.0 — 2026-10-12
+
+### Added
+- **Bank order flow kit** (`ui_kits/bank-order/`): a typical B2C order flow for an online bank — open a current account at the fictional "Pulse Bank" in five steps (model, personal data, identification, review and consent, confirmation). One page, two presentations: web layout from 768 (stepper, form card, sticky summary from 1024) and app layout below (progress bar, one column, sticky action bar with safe area, contract documents in a bottom sheet). Validation with `aria-invalid` and an error summary, focus management, German copy. Built only from system classes. Shown in the docs as web and app frames.
+- `.np-dropzone` turns danger-coloured when its input is `aria-invalid`.
+
 ## 1.5.0 — 2026-10-12
 
 ### Added

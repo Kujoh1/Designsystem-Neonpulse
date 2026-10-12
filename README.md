@@ -17,7 +17,7 @@
 - **Accessible by construction.** Every text token passes WCAG AA (≥ 4.5:1) in both themes, every control has a visible `:focus-visible` ring, switches are real checkboxes, `prefers-reduced-motion` is respected.
 - **Complete state model.** Rest · hover · focus · active · loading · disabled · invalid · empty are derived from interaction tokens — never hand-painted per component.
 - **55 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, responsive app shell, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item, checkbox, radio, textarea, select, slider, dropzone, chip, spinner, menu and popover, date picker, pagination, breadcrumb, stepper, accordion, drawer, bottom sheet, tab bar, stacked table.
-- **Three interactive UI kits** (marketing, SaaS dashboard, mobile) built from the system's own classes.
+- **Four interactive UI kits** (marketing, SaaS dashboard, mobile, bank order flow) built from the system's own classes.
 - **Figma library from the same source.** Variables (Primitives · Theme Dark/Light · Scale), text/gradient/effect styles and 47 components with variants plus the six breakpoint layouts are generated from `colors_and_type.css` and kept in sync — via a Figma plugin or Claude through the Figma connector. See [`figma/`](figma/README.md).
 - **Living docs.** Swatches, contrast ratios and the full token table are read from the stylesheet at runtime; theme switch, ⌘K search and the source of every specimen are built in.
 - **Governance built in.** The [PR Guardian](https://github.com/Kujoh1/neonpulse-pr-guardian) — an n8n workflow with Claude — reviews every pull request against this system's rulebook and comments with exact token fixes. [Explained for decision-makers](https://kujoh1.github.io/Designsystem-Neonpulse/governance/) · [live workflow](https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html) · [live check: one PR fails, one passes](https://kujoh1.github.io/Designsystem-Neonpulse/governance/check.html).
@@ -107,6 +107,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 | `ui_kits/marketing/` | Landing page kit (React via CDN). |
 | `ui_kits/dashboard/` | SaaS dashboard kit — charts, modal, toasts, ⌘K palette. |
 | `ui_kits/mobile/` | Mobile app kit — iOS frame, tab bar, settings. |
+| `ui_kits/bank-order/` | B2C order flow (open a current account, 5 steps) — web layout from 768, app layout below. |
 | `assets/` | kudesi wordmark, social preview image. |
 | `CLAUDE.md` · `SKILL.md` | Machine-readable rules and conventions for coding agents. |
 | `CHANGELOG.md` | Release notes. |

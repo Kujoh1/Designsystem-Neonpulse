@@ -10,7 +10,7 @@ Read `README.md` first — it holds the brand context, content + visual foundati
 
 - `colors_and_type.css` — the single source of truth: fonts, tokens (primitives + semantic aliases), the light theme, and the canonical element/pattern classes (`.np-btn`, `.np-input`, `.np-switch`, `.np-badge`, `.np-card`, `.np-modal`, `.np-toast`, `.np-palette`, `.np-appshell`, `.np-menu`, `.np-sheet` …). Link it and use the classes before writing any bespoke CSS.
 - `index.html` — the live reference; `preview/` — one specimen per component/pattern (copy their markup).
-- `ui_kits/marketing/`, `ui_kits/dashboard/`, `ui_kits/mobile/` — React UI kits (each has its own README). Copy components out and adapt.
+- `ui_kits/marketing/`, `ui_kits/dashboard/`, `ui_kits/mobile/` — React UI kits, `ui_kits/bank-order/` — a responsive B2C order flow in plain HTML/JS (each has its own README). Copy components out and adapt.
 
 ## How to use
 - **Visual artifacts** (slides, mocks, throwaway prototypes): produce standalone HTML that links `colors_and_type.css` (and `fonts/`), wrap the page in `class="np-scope"`, and compose from the `.np-*` classes. Use semantic aliases (`var(--color-surface)`, `var(--color-text-muted)`, `var(--color-accent)`, `var(--ring-focus)`) for anything custom.

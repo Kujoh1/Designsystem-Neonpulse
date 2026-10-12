@@ -30,6 +30,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 | `ui_kits/marketing/` | Landing-page kit (React via CDN). |
 | `ui_kits/dashboard/` | SaaS dashboard kit (charts, modal, toasts, ⌘K palette, empty states). |
 | `ui_kits/mobile/` | Mobile app kit (iOS frame, tab bar, settings). |
+| `ui_kits/bank-order/` | B2C order flow (open a current account at the fictional "Pulse Bank"): one page, web layout from 768, app layout below. Plain HTML + JS. |
 | `assets/` | kudesi wordmark, `og-image.png` social preview (1200×630). |
 | `404.html` | On-brand not-found page (resolves URLs against the site root). |
 
