@@ -138,10 +138,12 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - When the token set changes, update the Guardian rulebook (`guardian-system-prompt.md` in the Guardian repo) and rebuild its workflow with `node build-workflow.js`.
 - **Figma stays in sync with the CSS.** After any change to tokens, the light theme, or the font rules of
   elements, run `node figma/export-tokens.mjs` (commit `figma/tokens.json` + `figma/plugin/code.js`;
-  `--check` must pass), then sync the Figma file — "Sync tokens" in the NeonPulse Library plugin, or via the
-  Figma connector (`use_figma` with `figma/plugin/code.js` + `return await NP.run(['variables', 'styles'])`,
-  load the `figma-use` skill first). New components in Figma get a builder in `figma/plugin/code.js` (`LIB`),
-  bound to Theme/Scale variables and styles only — no raw colours. Never edit the `@generated` block by hand.
+  `--check` must pass), then sync the Figma file with "Sync tokens" in the NeonPulse Library plugin (the
+  connector can't: `use_figma` takes 50,000 characters per call, `code.js` is ~150,000). Single components and the layout
+  frames can go through the connector: `node figma/mcp-script.mjs components <Keys>` prints a trimmed script (load the
+  `figma-use` skill first). New components in Figma get a builder in `figma/plugin/code.js` (`LIB`), bound to
+  Theme/Scale variables and styles only — no raw colours. Never edit the `@generated` block by hand. The Figma file
+  is on the Starter plan: one mode per collection (no Light mode yet) and three pages. See `figma/README.md`.
 - The Figma connector is the official Figma plugin, enabled in `.claude/settings.json`
   (`figma@anthropic-plugin-directory`); authenticate once per machine with `/mcp` → figma → Authenticate.
 - After visual changes to a kit, regenerate `showcase/img/kit-*.webp` (1340×838) and,

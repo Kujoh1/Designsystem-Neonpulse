@@ -3,6 +3,16 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.5.0 — 2026-10-12
+
+### Added
+- **Figma:** builders for the 24 components of v1.4 (Checkbox, Radio, Choice card, Textarea, Select, Slider, Chip, Spinner, Dropzone, Menu item, Menu, Page item, Pagination, Breadcrumb, Step, Stepper, Accordion item, Accordion, Tab bar item, Tab bar, Calendar day, Calendar, Drawer, Sheet) — 47 components in total, all bound to Theme/Scale variables and styles. Five more Lucide icons (`chevron-left`, `calendar`, `menu`, `panel-right`, `layout-dashboard`, 39 in total).
+- **Figma layouts:** six device frames (Phone 390 · Tablet 768 · Laptop 1280 · Desktop 1440 · Full HD 1920 · Ultrawide 3440) on the Foundations page, showing the app shell at each breakpoint with a hidden column grid; new `layouts` phase.
+- `figma/mcp-script.mjs` prints a trimmed script (< 50,000 characters) for the Figma MCP `use_figma` tool, to build single components or the layouts through the connector.
+
+### Changed
+- `figma/README.md` and `CLAUDE.md`: the connector cannot run the whole builder (the `use_figma` limit is 50,000 characters, `code.js` has about 150,000); token sync goes through the plugin. Starter-plan limits (one mode per collection, three pages) are documented.
+
 ## 1.4.1 — 2026-10-12
 
 ### Changed
