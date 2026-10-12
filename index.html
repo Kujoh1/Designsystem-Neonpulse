@@ -233,6 +233,7 @@
       <a class="np-navitem" href="#comp-data">Data display <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-forms">Form controls <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-menus">Menus &amp; pickers <span class="new">New</span></a>
+      <a class="np-navitem" href="#comp-datepicker">Date picker <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-navigation">Navigation controls <span class="new">New</span></a>
       <a class="np-navitem" href="#comp-wordmark">Wordmark &amp; effects</a>
       <div class="grouplabel">Patterns</div>
@@ -430,9 +431,29 @@
     <section id="comp-menus">
       <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
       <h2 class="sec">Menus &amp; pickers</h2>
-      <p class="sub">Floating surfaces anchored to a trigger: action menu, custom select (listbox), date picker with <code class="np-code">.np-calendar</code>, plus chips and the spinner. The CSS places a panel below its trigger (<code class="np-code">--up</code>, <code class="np-code">--end</code> flip it); the specimen shows the script that flips on demand and handles arrow keys, Home/End, Enter and Esc. Prefer the native <code class="np-code">&lt;select&gt;</code> on phones.</p>
+      <p class="sub">Floating surfaces anchored to a trigger: action menu, custom select (listbox) and the date picker (see <a class="np-link" href="#comp-datepicker">Date picker</a>), plus chips and the spinner. The CSS places a panel below its trigger (<code class="np-code">--up</code>, <code class="np-code">--end</code> flip it); the specimen shows the script that flips on demand and handles arrow keys, Home/End, Enter and Esc. Prefer the native <code class="np-code">&lt;select&gt;</code> on phones.</p>
       <div class="cards cards--1">
         <div class="pcard"><div class="ph"><span class="t">Menu · select · date picker · chips · spinner</span></div><iframe src="preview/comp-menus.html" title="Menus and pickers specimen" height="900" loading="lazy"></iframe></div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
+    <section id="comp-datepicker">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Components</div>
+      <h2 class="sec">Date picker</h2>
+      <p class="sub">One responsive date picker for a birth date, a booking day and a reporting period. Type the date (separators are added while you type) or pick it: the calendar is a <b>popover from 768&nbsp;px</b> (<code class="np-code">--bp-md</code>) and a <b>bottom sheet below</b> with a grab handle and 44&nbsp;px days. Month and year dropdowns, <code class="np-code">data-min</code> / <code class="np-code">data-max</code> (ISO, <code class="np-code">today</code>, <code class="np-code">+30d</code>, <code class="np-code">-18y</code>), disabled weekends, ranges with presets and two months on wide screens. Fully keyboard-operable and locale-aware. The CSS is the component; <code class="np-code">js/np-datepicker.js</code> (no dependencies) fills and positions the panel and emits <code class="np-code">np-datepicker:change</code>.</p>
+      <div class="cards cards--1">
+        <div class="pcard"><div class="ph"><span class="t">Single · booking · range · states</span></div><iframe src="preview/comp-datepicker.html" title="Date picker specimen" height="1240" loading="lazy"></iframe></div>
+      </div>
+      <div class="kits">
+        <div class="kit kit--themed phone">
+          <div class="kh"><span class="t">Phone · 390 px</span><span class="d">the same markup as a bottom sheet</span><a class="np-btn np-btn--ghost np-btn--sm" href="preview/comp-datepicker.html?open=single" target="_blank" rel="noopener">Open full size<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame" style="--h:700px;--k:0.78"><iframe src="preview/comp-datepicker.html?open=single" title="Date picker at 390 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+        <div class="kit kit--themed">
+          <div class="kh"><span class="t">Laptop · 1000 px</span><span class="d">range with presets and two months</span></div>
+          <div class="frame" data-w="1000" style="--w:1000px;--h:640px"><iframe src="preview/comp-datepicker.html?open=range" title="Date picker range at 1000 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
       </div>
       <div class="divider"></div>
     </section>

@@ -65,16 +65,15 @@
       </div>
     </div>
 
-    <!-- (d) date picker — live -->
+    <!-- (d) date picker — the real component, see Date picker -->
     <div class="room">
-      <div class="np-label lab">Date picker · .np-select + .np-popover + .np-calendar</div>
+      <div class="np-label lab">Date picker · .np-datepicker</div>
       <div class="np-field">
-        <span class="np-field__label" id="dp-lab">Deploy on</span>
-        <div class="np-anchor np-anchor--block" id="d1">
-          <button class="np-select" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dp-lab dp-val" aria-controls="d1-pop">
-            <span class="np-select__value is-placeholder" id="dp-val">Pick a date</span><i class="np-select__chev" data-lucide="calendar" aria-hidden="true" style="transform:none"></i></button>
-          <div class="np-popover" id="d1-pop" role="dialog" aria-label="Choose a date" hidden></div>
+        <label class="np-field__label" for="dp-val">Deploy on</label>
+        <div class="np-datepicker" data-np-datepicker data-min="today" data-max="+90d" data-weekends="false" data-locale="en-GB">
+          <div class="np-inputgroup"><input id="dp-val" aria-describedby="dp-h"><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle"></button></div>
         </div>
+        <span class="np-field__hint" id="dp-h">Typed or picked. Details under Date picker.</span>
       </div>
     </div>
   </div>
@@ -107,6 +106,7 @@
   </div>
 
 <script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="../js/np-datepicker.js"></script>
 <script>
   lucide.createIcons();
 
@@ -161,34 +161,6 @@
     p.addEventListener('mousemove', function (e) { var i = opts.indexOf(e.target.closest('[role=option]')); if (i > -1 && i !== cur) mark(i); });
   })();
 
-  /* ---- date picker ---- */
-  (function () {
-    var a = document.getElementById('d1'), t = a.querySelector('.np-select'), p = document.getElementById('d1-pop'), v = document.getElementById('dp-val');
-    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var today = new Date(), view = new Date(today.getFullYear(), today.getMonth(), 1), picked = null, close;
-    var chev = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="';
-    function same(x, y) { return x && y && x.getFullYear() === y.getFullYear() && x.getMonth() === y.getMonth() && x.getDate() === y.getDate(); }
-    function render() {
-      var first = new Date(view.getFullYear(), view.getMonth(), 1), lead = (first.getDay() + 6) % 7, html = '';
-      ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].forEach(function (d) { html += '<span class="np-calendar__dow" aria-hidden="true">' + d + '</span>'; });
-      for (var i = 0; i < 42; i++) {
-        var d = new Date(view.getFullYear(), view.getMonth(), 1 - lead + i), cls = 'np-calendar__day';
-        if (d.getMonth() !== view.getMonth()) cls += ' is-outside'; if (same(d, today)) cls += ' is-today';
-        html += '<button type="button" class="' + cls + '" data-t="' + d.getTime() + '" aria-pressed="' + (same(d, picked) ? 'true' : 'false') + '" aria-label="' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() + '">' + d.getDate() + '</button>';
-      }
-      p.innerHTML = '<div class="np-calendar" role="group" aria-label="' + MONTHS[view.getMonth()] + ' ' + view.getFullYear() + '"><div class="np-calendar__head">' +
-        '<button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" data-n="-1" aria-label="Previous month">' + chev + 'm15 18-6-6 6-6"/></svg></button>' +
-        '<span class="np-calendar__title" aria-live="polite">' + MONTHS[view.getMonth()] + ' ' + view.getFullYear() + '</span>' +
-        '<button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost" data-n="1" aria-label="Next month">' + chev + 'm9 18 6-6-6-6"/></svg></button></div>' +
-        '<div class="np-calendar__grid">' + html + '</div></div>';
-    }
-    t.addEventListener('click', function () { if (t.getAttribute('aria-expanded') === 'true') { close(true); } else { render(); close = show(t, p); (p.querySelector('[aria-pressed=true]') || p.querySelector('.is-today') || p.querySelector('.np-calendar__day')).focus(); } });
-    p.addEventListener('click', function (e) {
-      var n = e.target.closest('[data-n]'), d = e.target.closest('[data-t]');
-      if (n) { view = new Date(view.getFullYear(), view.getMonth() + +n.dataset.n, 1); render(); p.querySelector('[data-n="' + n.dataset.n + '"]').focus(); }
-      else if (d) { picked = new Date(+d.dataset.t); v.textContent = picked.getDate() + ' ' + MONTHS[picked.getMonth()].slice(0, 3) + ' ' + picked.getFullYear(); v.classList.remove('is-placeholder'); close(true); }
-    });
-  })();
 
   /* ---- chips ---- */
   document.querySelectorAll('.np-chip[aria-pressed]').forEach(function (c) { c.addEventListener('click', function () { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); }); });

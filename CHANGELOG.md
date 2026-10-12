@@ -3,6 +3,18 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.7.0 — 2026-10-12
+
+### Added
+- **Responsive date picker** (`.np-datepicker`, `js/np-datepicker.js`, specimen `preview/comp-datepicker.html`, docs section "Date picker"): type the date (separators are added while you type) or pick it. The calendar is a popover from 768px (`--bp-md`) and a bottom sheet below, with a grab handle and 44px days. Single dates with month/year dropdowns, `data-min` / `data-max` (ISO date, `today`, `+30d`, `-18y`), disabled weekends, ranges with presets (today, 7 days, 30 days, this month) and two months on wide screens; keyboard navigation (arrows, Home/End, PageUp/PageDown, Esc), locale-aware formatting (`de-DE`, `en-GB`, …), invalid text sets `aria-invalid`, events `np-datepicker:change` / `np-datepicker:invalid`. No dependencies; the CSS is the component, the script fills and positions the panel.
+- Calendar: range states (`.is-range-start`, `.is-range-end`, a tinted `.is-in-range` band), `.np-calendar__select` for month/year dropdowns, `.np-calendar__gap`.
+- `.np-inputgroup` turns danger-coloured when its input is `aria-invalid`.
+- Used where it makes sense: the birth date in the bank order flow (typed or picked, 18 or older), a custom date range in the dashboard kit and a demo-booking card in the marketing kit; shown in the showcase.
+
+### Changed
+- The calendar prototype in the "Menus & pickers" specimen is replaced by the real component.
+- Guardian rulebook v1.3 mirrors this release; the live check labels follow.
+
 ## 1.6.1 — 2026-10-12
 
 ### Added

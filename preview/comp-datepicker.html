@@ -1,0 +1,91 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Date picker</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);color:var(--color-text);padding:22px 24px;font-family:var(--font-body)}
+  .lab{display:block;margin-bottom:14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:30px 26px;align-items:start}
+  .room{min-height:440px}
+  .below{margin-top:6px}
+  .out{font:400 12px/1.4 var(--font-mono);color:var(--color-text-muted);margin-top:8px;min-height:17px}
+  .out b{color:var(--color-text-accent);font-weight:500}
+</style></head>
+<body>
+  <div class="cols">
+    <div class="room">
+      <div class="np-label lab">Single · typed or picked</div>
+      <div class="np-field">
+        <label class="np-field__label" for="dob">Birth date</label>
+        <div class="np-datepicker" id="dp-dob" data-np-datepicker data-selects="true" data-min="1900-01-01" data-max="-18y" data-locale="en-GB">
+          <div class="np-inputgroup"><input id="dob" autocomplete="bday" aria-describedby="dob-h"><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle"></button></div>
+        </div>
+        <span class="np-field__hint" id="dob-h">Month and year dropdowns, 18 or older. Try typing 12041991.</span>
+      </div>
+      <div class="out" id="out-dob"></div>
+    </div>
+
+    <div class="room">
+      <div class="np-label lab">Single · booking</div>
+      <div class="np-field">
+        <label class="np-field__label" for="day">Pick a day</label>
+        <div class="np-datepicker" id="dp-day" data-np-datepicker data-min="today" data-max="+90d" data-weekends="false" data-locale="en-GB">
+          <div class="np-inputgroup"><input id="day" aria-describedby="day-h"><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle"></button></div>
+        </div>
+        <span class="np-field__hint" id="day-h">From today, within 90 days, no weekends.</span>
+      </div>
+      <div class="out" id="out-day"></div>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div class="room" style="grid-column:1/-1">
+      <div class="np-label lab">Range · presets, two months on wide screens</div>
+      <div class="np-field" style="max-width:340px">
+        <span class="np-field__label" id="rg-lab">Period</span>
+        <div class="np-datepicker" id="dp-range" data-np-datepicker data-mode="range" data-presets="today,7d,30d,month" data-max="today" data-locale="en-GB">
+          <button type="button" class="np-select np-datepicker__trigger" aria-labelledby="rg-lab"><i class="np-select__chev" data-lucide="calendar" aria-hidden="true" style="transform:none"></i></button>
+        </div>
+      </div>
+      <div class="out" id="out-range"></div>
+    </div>
+  </div>
+
+  <div class="cols below">
+    <div>
+      <div class="np-label lab">States</div>
+      <div class="np-stack">
+        <div class="np-field is-invalid"><label class="np-field__label" for="inv">Invalid</label>
+          <div class="np-datepicker"><div class="np-inputgroup"><input id="inv" value="31.02.2026" aria-invalid="true" aria-describedby="inv-h"><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle" aria-label="Open calendar"><i data-lucide="calendar" aria-hidden="true"></i></button></div></div>
+          <span class="np-field__hint" id="inv-h">That day doesn't exist.</span></div>
+        <div class="np-field"><label class="np-field__label" for="dis">Disabled</label>
+          <div class="np-datepicker"><div class="np-inputgroup" style="opacity:var(--state-disabled-opacity)"><input id="dis" value="12.10.2026" disabled><button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle" aria-label="Open calendar" disabled><i data-lucide="calendar" aria-hidden="true"></i></button></div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="np-label lab">How it behaves</div>
+      <ul style="margin:0;padding-left:18px;font:var(--body-sm);color:var(--color-text-secondary);display:flex;flex-direction:column;gap:6px">
+        <li>From <b>768 px</b> the calendar opens as a popover under the field; below it becomes a <b>bottom sheet</b> with a grab handle and 44 px days.</li>
+        <li>Keyboard: arrows move by day and week, Home / End by week, PageUp / PageDown by month (Shift: year), Esc closes.</li>
+        <li>Typing works too: separators are added while you type, invalid text sets <code class="np-code">aria-invalid</code>.</li>
+        <li>The script reads <code class="np-code">data-min</code> / <code class="np-code">data-max</code> as ISO dates, <code class="np-code">today</code> or <code class="np-code">+30d</code> / <code class="np-code">-18y</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="../js/np-datepicker.js"></script>
+<script>
+  lucide.createIcons();
+  [['dp-dob', 'out-dob'], ['dp-day', 'out-day'], ['dp-range', 'out-range']].forEach(function (p) {
+    document.getElementById(p[0]).addEventListener('np-datepicker:change', function (e) {
+      document.getElementById(p[1]).innerHTML = 'np-datepicker:change → <b>' + (e.detail.value || 'cleared') + '</b>';
+    });
+  });
+  var q = new URLSearchParams(location.search).get('open');
+  var target = { single: 'dp-dob', booking: 'dp-day', range: 'dp-range' }[q];
+  if (target) { var el = document.getElementById(target); (el.npDatepicker || NPDatepicker.mount(el)).open(); }
+</script>
+</body></html>

@@ -131,6 +131,7 @@
 </div>
 
 <script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script src="../../js/np-datepicker.js"></script>
 <script>
 (function () {
   'use strict';
@@ -185,6 +186,14 @@
     return '<div class="np-field' + (err ? ' is-invalid' : '') + (o.span ? ' bo-span' : '') + '"><label class="np-field__label" for="' + id + '">' + label + '</label>' + ctl +
       '<span class="np-field__hint" id="' + desc + '">' + esc(err || o.hint || '') + '</span></div>';
   }
+  function dobField() {                                      // the date picker: typed or picked, month/year dropdowns, 18 or older
+    var err = S.err.dob;
+    return '<div class="np-field' + (err ? ' is-invalid' : '') + '"><label class="np-field__label" for="dob">Geburtsdatum</label>' +
+      '<div class="np-datepicker" data-np-datepicker data-selects="true" data-min="1900-01-01" data-max="-18y" data-locale="de-DE">' +
+      '<div class="np-inputgroup"><input id="dob" name="dob" value="' + esc(S.f.dob) + '" autocomplete="bday" aria-describedby="dob-h"' + (err ? ' aria-invalid="true"' : '') + ' required>' +
+      '<button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle" aria-label="Kalender öffnen"></button></div></div>' +
+      '<span class="np-field__hint" id="dob-h">' + esc(err || 'Du musst mindestens 18 sein.') + '</span></div>';
+  }
   function head(title, sub) { return '<div class="bo-head"><h1 id="h1" tabindex="-1">' + title + '</h1><p>' + sub + '</p></div>'; }
   function actions(next, back) {
     return '<div class="bo-actions">' + (back ? '<button class="np-btn np-btn--ghost bo-web-only" type="button" data-go="' + (S.step - 1) + '">' + ic('arrow-left') + 'Zurück</button>' : '<span></span>') +
@@ -214,7 +223,7 @@
     return head('Wer eröffnet das Konto?', 'Bitte gib die Daten so an, wie sie in deinem Ausweis stehen.') + errorBanner() +
       '<div class="bo-form">' + F('anrede', 'Anrede', { options: ['Frau', 'Herr', 'Divers'], ac: 'honorific-prefix' }) + F('land', 'Staatsangehörigkeit', { options: LAND, ac: 'country-name' }) +
       F('vorname', 'Vorname', { ac: 'given-name' }) + F('nachname', 'Nachname', { ac: 'family-name' }) +
-      F('dob', 'Geburtsdatum', { ph: 'TT.MM.JJJJ', mode: 'numeric', ac: 'bday', max: 10, hint: 'Du musst mindestens 18 sein.' }) + F('mobil', 'Mobilnummer', { type: 'tel', ac: 'tel', ph: '+49 151 2345678' }) +
+      dobField() + F('mobil', 'Mobilnummer', { type: 'tel', ac: 'tel', ph: '+49 151 2345678' }) +
       F('email', 'E-Mail', { type: 'email', ac: 'email', span: true, ph: 'name@beispiel.de' }) +
       F('strasse', 'Straße und Hausnummer', { ac: 'street-address', span: true }) + F('plz', 'Postleitzahl', { mode: 'numeric', ac: 'postal-code', max: 5 }) + F('ort', 'Ort', { ac: 'address-level2' }) + '</div>' +
       actions('Weiter', true);
@@ -284,6 +293,7 @@
     $('#step-label').textContent = done ? 'Fertig' : 'Schritt ' + n + ' von 4 · ' + STEPS[n - 1];
     $('#back').hidden = done || n === 1 ? true : false;
     document.title = (done ? 'Antrag eingegangen' : STEPS[n - 1]) + ' · Pulse Bank';
+    if (window.NPDatepicker) NPDatepicker.init($('#col'));
     if (window.lucide) lucide.createIcons();
     if (focus === 'step') { var h = $('#h1'); if (h) { h.focus({ preventScroll: true }); window.scrollTo(0, 0); } }
     if (focus === 'error') { var bad = $('[aria-invalid="true"]'); if (bad) bad.focus(); else { var b = $('[role=alert]'); if (b) b.scrollIntoView({ block: 'center' }); } }
@@ -291,6 +301,14 @@
   function go(n, focus) { S.err = {}; S.step = Math.max(1, Math.min(5, n)); render(focus || 'step'); }
 
   /* ---------- events ---------- */
+  document.addEventListener('np-datepicker:change', function (e) {
+    var i = e.target.querySelector('input'); if (!i || !(i.name in S.f)) return;
+    S.f[i.name] = i.value; delete S.err[i.name]; i.removeAttribute('aria-invalid');
+    var f = i.closest('.np-field'); if (f) { f.classList.remove('is-invalid'); var h = $('.np-field__hint', f); if (h) h.textContent = 'Du musst mindestens 18 sein.'; }
+  });
+  document.addEventListener('np-datepicker:invalid', function (e) {
+    var i = e.target.querySelector('input'); if (i && i.name in S.f) S.f[i.name] = i.value;
+  });
   document.addEventListener('input', function (e) {
     var t = e.target, name = t.name || t.id;
     if (t.closest('#form') && name in S.f) { S.f[name] = t.value; if (S.err[name]) { delete S.err[name]; t.removeAttribute('aria-invalid'); var f = t.closest('.np-field'); if (f) { f.classList.remove('is-invalid'); var h = $('.np-field__hint', f); if (h) h.textContent = ''; } } }

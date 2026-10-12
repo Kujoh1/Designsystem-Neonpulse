@@ -20,6 +20,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 | `showcase/` | Case-study page (DE/EN via `?lang=de` / `?lang=en`). `showcase/img/` holds the kit screenshots. |
 | `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas) + `check.html` (live check: two PRs, twelve rules run in the browser). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
 | `colors_and_type.css` | **Single source of truth**: fonts, tokens (primitives + aliases), light theme, elements, patterns. |
+| `js/` | `np-datepicker.js`: the one optional script of the system — framework-free behaviour for `.np-datepicker` (typed or picked dates, ranges, keyboard, popover → bottom sheet). Everything else is CSS. |
 | `figma/` | Figma library: `export-tokens.mjs` (CSS → `tokens.json` + plugin data), `plugin/` (builder that runs as a Figma plugin and via the Figma MCP `use_figma` tool), Lucide icons. See `figma/README.md`. |
 | `fonts/` | Self-hosted variable woff2 (Space Grotesk, Sora, JetBrains Mono) + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
@@ -100,7 +101,7 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - The system is layered: **tokens** (`colors_and_type.css` primitives + aliases) →
   **elements** (`.np-btn`, `.np-icon-btn`, `.np-badge`, `.np-livedot`, `.np-eyebrow`,
   `.np-field/.np-input/.np-inputgroup`, `.np-kbd`, `.np-switch`, `.np-check/.np-radio`, `.np-select`, `.np-slider`,
-  `.np-dropzone`, `.np-chip`, `.np-spinner`, `.np-tabs/.np-tab`,
+  `.np-dropzone`, `.np-chip`, `.np-spinner`, `.np-datepicker` (+ `js/np-datepicker.js`), `.np-tabs/.np-tab`,
   `.np-seg`, `data-np-tooltip`, `.np-meter`, `.np-avatar`, `.np-code`, `.np-link`) →
   **patterns** (`.np-card` family; layout `.np-container/.np-stack/.np-cluster/.np-grid/
   .np-section`; navigation `.np-navitem`, `.np-appshell`, `.np-tabbar`, `.np-pagination`, `.np-breadcrumb`, `.np-stepper`, `.np-accordion`; menus `.np-anchor/.np-menu/.np-popover/.np-calendar`; content `.np-pageheader/.np-empty/.np-skeleton/
@@ -160,6 +161,7 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - [x] Code view + copy button on each `preview/` card on the docs home.
 - [x] Self-host the three fonts in `/fonts` (Google Fonts `@import` removed).
 - [x] Add missing components: date picker, pagination, select/combobox, checkbox & radio group (v1.4.0; also menu, chip, slider, stepper, drawer, sheet, tab bar …).
+- [x] Responsive date picker (v1.7.0): `.np-datepicker` + `js/np-datepicker.js`, used in the bank order flow, the dashboard (custom range) and the marketing kit (demo booking).
 - [ ] Wire real brand/social SVGs (Lucide dropped them; neutral icons used as placeholder).
 - [ ] Add a GitHub Action to lint HTML / check links on push (optional).
 - [ ] Precompile the kits' JSX (drop in-browser Babel) if load time ever matters.

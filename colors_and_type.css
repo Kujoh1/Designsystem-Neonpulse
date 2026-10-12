@@ -1194,9 +1194,71 @@ select.np-input option { background: var(--color-surface-raised); color: var(--c
 .np-calendar__day:focus-visible, .np-calendar__day.is-focus { outline: none; box-shadow: var(--ring-focus); }
 .np-calendar__day.is-today { color: var(--color-text-accent); box-shadow: inset 0 0 0 1px var(--color-border-focus); }
 .np-calendar__day.is-outside { color: var(--color-text-muted); }
-.np-calendar__day.is-in-range { background: var(--color-surface-raised); color: var(--color-text); border-radius: 0; }
+.np-calendar__day.is-in-range { background: color-mix(in srgb, var(--color-accent) 16%, transparent); color: var(--color-text); border-radius: 0; }
 .np-calendar__day[aria-pressed="true"] { background: var(--color-action-primary); color: var(--color-text-on-accent); box-shadow: none; }
 .np-calendar__day:disabled { opacity: var(--state-disabled-opacity); cursor: not-allowed; pointer-events: none; }
+.np-calendar__day.is-range-start { border-radius: var(--r-sm) 0 0 var(--r-sm); }
+.np-calendar__day.is-range-end { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.np-calendar__gap { flex: none; width: 30px; height: 30px; }   /* keeps the title centred when only one arrow is shown */
+.np-calendar__selects { display: inline-flex; gap: 4px; }
+.np-calendar__select {
+  appearance: none; -webkit-appearance: none; cursor: pointer; box-sizing: border-box; padding: 6px 22px 6px 8px;
+  border: 1px solid transparent; border-radius: var(--r-sm); background-color: transparent;
+  font: 600 13px/1 var(--font-display); color: var(--color-text);
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%), linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 12px) 50%, calc(100% - 8px) 50%; background-size: 4px 4px, 4px 4px; background-repeat: no-repeat;
+  transition: border-color var(--dur), background-color var(--dur);
+}
+.np-calendar__select:hover { border-color: var(--color-border-strong); }
+.np-calendar__select:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.np-calendar__select option { background: var(--color-surface-raised); color: var(--color-text); }
+
+/* ------------------------------------------------------------
+   DATE PICKER — a field plus a calendar panel (behaviour: js/np-datepicker.js).
+   The panel is a popover from 768px (--bp-md) and a bottom sheet below it, so the same markup works
+   on a phone, a laptop and an ultrawide.
+   Single (typed or picked):
+     <div class="np-field"><label class="np-field__label" for="d">Birth date</label>
+       <div class="np-datepicker" data-np-datepicker data-selects="true" data-max="-18y">
+         <div class="np-inputgroup"><input id="d" autocomplete="bday">
+           <button type="button" class="np-icon-btn np-icon-btn--sm np-icon-btn--ghost np-datepicker__toggle"></button></div></div></div>
+   Range (one trigger, two months on wide screens, presets):
+     <div class="np-datepicker" data-np-datepicker data-mode="range" data-presets="today,7d,30d,month">
+       <button type="button" class="np-select np-datepicker__trigger"><svg class="np-select__chev" …/></button></div>
+   Invalid text: aria-invalid="true" on the input (the group turns danger-coloured).
+   ------------------------------------------------------------ */
+.np-datepicker { position: relative; display: block; min-width: 0; }
+.np-datepicker__toggle { flex: none; margin-right: -6px; }
+.np-inputgroup:has(> input[aria-invalid="true"]) { border-color: var(--color-danger); }
+.np-inputgroup:has(> input[aria-invalid="true"]):focus-within { box-shadow: var(--glow-danger); }
+.np-datepicker__panel {
+  position: absolute; z-index: var(--z-dropdown); top: calc(100% + 6px); left: 0; box-sizing: border-box; width: max-content;
+  max-width: min(620px, calc(100vw - 2 * var(--gutter))); padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-3);
+  background: var(--color-surface-overlay); border: 1px solid var(--color-border-strong); border-radius: var(--r-lg);
+  box-shadow: var(--elevation-overlay); animation: np-pop var(--dur) var(--ease-out);
+}
+.np-datepicker__panel[hidden], .np-datepicker__scrim[hidden] { display: none; }
+.np-datepicker__panel--up { top: auto; bottom: calc(100% + 6px); }
+.np-datepicker__panel--end { left: auto; right: 0; }
+.np-datepicker__months { display: flex; gap: var(--s-6); align-items: flex-start; }
+.np-datepicker__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--color-border-subtle); }
+.np-datepicker__presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.np-datepicker__scrim { display: none; }
+@media (max-width: 767.98px) {   /* below --bp-md: a bottom sheet */
+  .np-datepicker__scrim { display: block; position: fixed; inset: 0; z-index: var(--z-overlay); background: var(--color-scrim);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: np-fade var(--dur-fast) ease-out; }
+  .np-datepicker__scrim[hidden] { display: none; }
+  .np-datepicker__panel {
+    position: fixed; z-index: var(--z-modal); inset: auto 0 0 0; top: auto; width: auto; max-width: none; max-height: 90vh; max-height: 90dvh; overflow-y: auto;
+    border-width: 1px 0 0; border-radius: var(--r-2xl) var(--r-2xl) 0 0; gap: var(--s-4);
+    padding: var(--s-2) calc(var(--s-5) + var(--safe-right)) calc(var(--s-5) + var(--safe-bottom)) calc(var(--s-5) + var(--safe-left));
+    animation: np-sheet-in var(--dur-slow) var(--ease-out);
+  }
+  .np-datepicker__panel::before { content: ""; flex: none; align-self: center; width: 36px; height: 4px; margin-top: 8px; border-radius: var(--r-full); background: var(--color-border-strong); }
+  .np-datepicker__panel--up, .np-datepicker__panel--end { top: auto; bottom: 0; left: 0; right: 0; }
+  .np-datepicker__panel .np-calendar { --cal-day: var(--touch-target); width: 100%; }
+  .np-datepicker__months { flex-direction: column; gap: var(--s-4); }
+}
 
 /* ------------------------------------------------------------
    PAGINATION — prev / numbered pages / next. When the nav is narrower than 420px (its own width, not the
