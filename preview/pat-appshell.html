@@ -1,0 +1,110 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>App shell</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0}
+  body{background:var(--color-bg-page);font-family:var(--font-body)}
+  .brand{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-1) var(--s-2) var(--s-4);font:700 17px/1 var(--font-display);letter-spacing:0.03em;color:var(--color-text)}
+  .brand .np-livedot{flex:none}
+  .grow{flex:1}
+  .navgroup{font:500 10px/1 var(--font-mono);letter-spacing:0.14em;text-transform:uppercase;color:var(--color-text-muted);padding:var(--s-4) var(--s-2) var(--s-1)}
+  .title{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .title b{font:var(--h4);color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .asidehead{font:500 10px/1 var(--font-mono);letter-spacing:0.14em;text-transform:uppercase;color:var(--color-text-muted);margin:0 0 var(--s-3)}
+  .kv{display:flex;justify-content:space-between;gap:var(--s-3);font:400 13px/1.4 var(--font-body);color:var(--color-text-secondary)}
+  .kv b{font:500 12px/1.4 var(--font-mono);color:var(--color-text)}
+</style></head>
+<body>
+  <div class="np-appshell np-appshell--aside" id="shell">
+    <header class="np-appshell__top">
+      <button class="np-icon-btn np-icon-btn--ghost np-appshell__menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav" data-toggle="nav"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="title"><span class="np-eyebrow">Production</span><b>Overview</b></div>
+      <span class="grow"></span>
+      <span class="np-badge np-badge--success np-badge--live"><span class="np-badge__dot"></span>Live</span>
+      <button class="np-icon-btn np-icon-btn--ghost np-appshell__details" type="button" aria-label="Open details" aria-expanded="false" aria-controls="aside" data-toggle="aside"><i data-lucide="panel-right" aria-hidden="true"></i></button>
+      <span class="np-avatar" aria-hidden="true">JK</span>
+    </header>
+
+    <nav class="np-appshell__nav" id="nav" aria-label="Main">
+      <div class="brand"><span class="np-livedot" aria-hidden="true"></span>NeonPulse</div>
+      <a class="np-navitem" href="#" aria-current="page"><i data-lucide="layout-dashboard" aria-hidden="true"></i>Overview</a>
+      <a class="np-navitem" href="#"><i data-lucide="activity" aria-hidden="true"></i>Live<span class="np-navitem__meta np-badge np-badge--accent">3</span></a>
+      <a class="np-navitem" href="#"><i data-lucide="server" aria-hidden="true"></i>Nodes</a>
+      <a class="np-navitem" href="#"><i data-lucide="bell" aria-hidden="true"></i>Alerts</a>
+      <div class="navgroup">Workspace</div>
+      <a class="np-navitem" href="#"><i data-lucide="users" aria-hidden="true"></i>Team</a>
+      <a class="np-navitem" href="#"><i data-lucide="settings" aria-hidden="true"></i>Settings</a>
+    </nav>
+
+    <main class="np-appshell__main">
+      <div class="np-appshell__content np-stack">
+        <div class="np-pageheader">
+          <div class="np-pageheader__titles">
+            <h1 style="font:var(--h2);margin:0;color:var(--color-text)">Overview</h1>
+            <span class="np-eyebrow">Last 24 hours</span>
+          </div>
+          <button class="np-btn np-btn--primary np-btn--sm" type="button"><i data-lucide="plus" aria-hidden="true"></i>New node</button>
+        </div>
+
+        <div class="np-grid" style="grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr))">
+          <div class="np-card"><span class="np-card__eyebrow">Requests</span><div class="np-card__metric">1.24M</div><span class="np-card__delta">+24.6% ↑</span></div>
+          <div class="np-card np-card--live"><span class="np-card__eyebrow">p99 latency</span><div class="np-card__metric">42ms</div><span class="np-card__delta">us-east</span></div>
+          <div class="np-card"><span class="np-card__eyebrow">Error rate</span><div class="np-card__metric">0.04%</div><span class="np-card__delta">−0.01%</span></div>
+          <div class="np-card"><span class="np-card__eyebrow">Nodes</span><div class="np-card__metric">18</div><span class="np-card__delta">2 degraded</span></div>
+        </div>
+
+        <div class="np-table-wrap">
+          <table class="np-table">
+            <thead><tr><th scope="col">Node</th><th scope="col">Region</th><th scope="col">Status</th><th scope="col" class="is-num">p99</th></tr></thead>
+            <tbody>
+              <tr><td class="is-strong">api-gateway</td><td>us-east-1</td><td><span class="np-badge np-badge--success"><span class="np-badge__dot"></span>Live</span></td><td class="is-num">42ms</td></tr>
+              <tr><td class="is-strong">worker-02</td><td>eu-west-1</td><td><span class="np-badge np-badge--warning"><span class="np-badge__dot"></span>Degraded</span></td><td class="is-num">188ms</td></tr>
+              <tr><td class="is-strong">edge-cache</td><td>ap-south-1</td><td><span class="np-badge np-badge--info"><span class="np-badge__dot"></span>Syncing</span></td><td class="is-num">61ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <aside class="np-appshell__aside" id="aside" aria-label="Details">
+      <p class="asidehead">Selected node</p>
+      <div class="np-stack np-stack--tight">
+        <div class="kv"><span>Name</span><b>worker-02</b></div>
+        <div class="kv"><span>Region</span><b>eu-west-1</b></div>
+        <div class="kv"><span>Uptime</span><b>98.71%</b></div>
+        <div class="kv"><span>CPU</span><b>71%</b></div>
+        <div class="np-meter" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="71"><div class="np-meter__bar" style="width:71%"></div></div>
+      </div>
+      <div class="np-divider" style="margin:var(--s-4) 0"></div>
+      <div class="np-banner np-banner--warning"><i class="np-banner__icon" data-lucide="triangle-alert" aria-hidden="true"></i><span>Auto-scale nearing the node limit.</span></div>
+    </aside>
+
+    <div class="np-appshell__scrim" id="scrim" aria-hidden="true"></div>
+  </div>
+
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js" integrity="sha384-bdZtphetAEBgkGZvhZXOFDWc55tHGLqaSo1f4qZtgvEiolEBqlJ9u6FTk+CoLfj0" crossorigin="anonymous"></script>
+<script>
+  lucide.createIcons();
+  (function () {
+    var shell = document.getElementById('shell');
+    var buttons = document.querySelectorAll('[data-toggle]');
+    function sync() {
+      buttons.forEach(function (b) {
+        var open = shell.classList.contains('is-' + b.getAttribute('data-toggle') + '-open');
+        b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    function closeAll() { shell.classList.remove('is-nav-open', 'is-aside-open'); sync(); }
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var cls = 'is-' + b.getAttribute('data-toggle') + '-open', was = shell.classList.contains(cls);
+        closeAll(); if (!was) shell.classList.add(cls); sync();
+      });
+    });
+    document.getElementById('scrim').addEventListener('click', closeAll);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+  })();
+</script>
+</body></html>

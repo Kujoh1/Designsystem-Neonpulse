@@ -3,6 +3,27 @@
 All notable changes to NeonPulse. Versions follow [semver](https://semver.org): a minor
 version adds tokens/components without breaking existing class or token names.
 
+## 1.3.0 — 2026-10-12
+
+### Added
+- **Responsive foundation.** Five mobile-first breakpoints as tokens (`--bp-sm` 480 · `--bp-md` 768 · `--bp-lg` 1024 · `--bp-xl` 1440 · `--bp-2xl` 1920) — documented constants, because `@media` cannot read `var()`. Container steps `--container-prose` (680) and `--container-wide` (1600), a fluid `--gutter` (16px phone → 40px ultrawide), shell sizes `--sidebar-w`, `--aside-w`, `--topbar-h`, the touch minimum `--touch-target` (44px) and safe-area tokens `--safe-top/right/bottom/left`.
+- **`.np-appshell`** — the app profile: top bar, navigation, scrolling main area and optional inspector (`--aside`). Navigation is an off-canvas drawer below 1024, a persistent sidebar from 1024; the inspector is a panel below 1440 and docks as a third column from 1440, widening to 400px at 1920; content is capped at `--container-wide` (`__content--fluid` opts out). Specimen `preview/pat-appshell.html`, docs section "App shell" with live phone / laptop / ultrawide frames.
+- `.np-container--prose`, `--wide`, `--full`.
+- Touch rules: on `pointer: coarse` buttons, tabs, segmented items, nav items, list rows and icon buttons reach 44px and text fields use 16px (no iOS focus zoom).
+- Figma export: the layout tokens land in the Scale collection as `layout/bp-*`, `layout/container-prose|wide`, `layout/sidebar-w`, `aside-w`, `topbar-h`, `touch-target`.
+
+### Changed
+- `.np-container` side padding is now `--gutter` (16–40px, was a fixed 24px): tighter on phones, identical at ~1200px.
+- Glow hovers (primary, secondary, ghost and danger buttons, icon button, interactive card) apply only under `@media (hover: hover)`, so they no longer stick after a tap. The `.is-hover` helpers stay unconditional.
+
+## 1.2.0 — 2026-10-07
+
+### Added
+- **Figma library** (`figma/`) generated from `colors_and_type.css`: variables in three collections (Primitives, hidden · Theme with Dark/Light modes · Scale) with CSS code syntax, 29 text styles, 3 gradient paint styles, 11 effect styles whose colours and theme-dependent geometry bind to Theme variables, 34 Lucide icon components and 23 components with variants and properties (Button with 60 variants, inputs, tabs, cards, banner, toast, modal …), plus Cover, Foundations and a Dark/Light theme check.
+- `figma/export-tokens.mjs` resolves both themes from the CSS (incl. `color-mix`, glows, gradients, element type rules) into `figma/tokens.json` and the builder's data block; `--check` fails on drift.
+- `figma/plugin/` — the builder runs as a Figma development plugin (build, sync tokens, build missing components, rebuild docs) and through the Figma MCP `use_figma` tool. Re-runs update variables and styles in place and keep existing components.
+- The official Figma connector (Figma plugin from Anthropic's plugin directory: MCP server + skills) is enabled for the project in `.claude/settings.json`.
+
 ## 1.1.2 — 2026-10-06
 
 ### Added

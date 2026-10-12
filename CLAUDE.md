@@ -20,6 +20,7 @@ No build step, no bundler, no npm. It is published as-is via **GitHub Pages**.
 | `showcase/` | Case-study page (DE/EN via `?lang=de` / `?lang=en`). `showcase/img/` holds the kit screenshots. |
 | `governance/` | PR Guardian for management (DE/EN) + `workflow.html` (interactive n8n canvas) + `check.html` (live check: two PRs, eleven rules run in the browser). The workflow JSON is fetched from the `Kujoh1/neonpulse-pr-guardian` repo — never copy it here. |
 | `colors_and_type.css` | **Single source of truth**: fonts, tokens (primitives + aliases), light theme, elements, patterns. |
+| `figma/` | Figma library: `export-tokens.mjs` (CSS → `tokens.json` + plugin data), `plugin/` (builder that runs as a Figma plugin and via the Figma MCP `use_figma` tool), Lucide icons. See `figma/README.md`. |
 | `fonts/` | Self-hosted variable woff2 (Space Grotesk, Sora, JetBrains Mono) + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
 | `README.md` | Overview, quick start, architecture, brand foundations, iconography. |
@@ -100,12 +101,18 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
   `.np-field/.np-input/.np-inputgroup`, `.np-kbd`, `.np-switch`, `.np-tabs/.np-tab`,
   `.np-seg`, `data-np-tooltip`, `.np-meter`, `.np-avatar`, `.np-code`, `.np-link`) →
   **patterns** (`.np-card` family; layout `.np-container/.np-stack/.np-cluster/.np-grid/
-  .np-section`; navigation `.np-navitem`; content `.np-pageheader/.np-empty/.np-skeleton/
+  .np-section`; navigation `.np-navitem`, `.np-appshell`; content `.np-pageheader/.np-empty/.np-skeleton/
   .np-banner/.np-list/.np-table/.np-codeblock`; overlays `.np-scrim/.np-modal/
   .np-toast-region/.np-toast/.np-palette`). Compose new screens from these; only drop to
   bespoke CSS when no pattern fits — and if a pattern is missing, add it to the patterns
   layer, don't inline it. Pattern specimens live in `preview/pat-*.html` under the
   `group="Patterns"` tag.
+- **Responsive, mobile-first.** The five breakpoints are the `--bp-*` tokens (480 / 768 / 1024 / 1440 / 1920). `@media` can't read
+  `var()`, so write the literal px value from the token table — never invent another breakpoint. Web pages use `.np-container`
+  (`--prose` / `--wide` / `--full`, side padding `--gutter`); product UIs use `.np-appshell` (+ `--aside`). On ultrawide the extra
+  width goes to panels, not to stretched content. Coarse pointers get `--touch-target` (44px) and 16px text fields (selector
+  `input.np-input`, so the Figma export doesn't read the 16px); glow hovers go inside `@media (hover: hover)` and keep a `.is-hover`
+  twin outside it for static specimens.
 - States follow the button model: real pseudo-classes / ARIA attributes (`:focus-visible`,
   `aria-pressed`, `aria-selected`, `aria-current`, `aria-invalid`, `aria-busy`) plus
   `.is-*` helpers so specimens can show every state statically. Every interactive element
@@ -127,6 +134,14 @@ First-time Pages setup (once): repo **Settings → Pages → Deploy from a branc
 - Governance pages: the embedded n8n view loads from n8n.cloud only after an explicit click on `governance/index.html` (privacy); `workflow.html` loads it directly because that is its purpose. Keep `@n8n_io/n8n-demo-component` pinned with SRI.
 - `governance/check.html` mirrors a deterministic subset of the Guardian rulebook. When the rulebook or token names change, update its rules and fixes too; PR #12 must stay red, PR #13 green.
 - When the token set changes, update the Guardian rulebook (`guardian-system-prompt.md` in the Guardian repo) and rebuild its workflow with `node build-workflow.js`.
+- **Figma stays in sync with the CSS.** After any change to tokens, the light theme, or the font rules of
+  elements, run `node figma/export-tokens.mjs` (commit `figma/tokens.json` + `figma/plugin/code.js`;
+  `--check` must pass), then sync the Figma file — "Sync tokens" in the NeonPulse Library plugin, or via the
+  Figma connector (`use_figma` with `figma/plugin/code.js` + `return await NP.run(['variables', 'styles'])`,
+  load the `figma-use` skill first). New components in Figma get a builder in `figma/plugin/code.js` (`LIB`),
+  bound to Theme/Scale variables and styles only — no raw colours. Never edit the `@generated` block by hand.
+- The Figma connector is the official Figma plugin, enabled in `.claude/settings.json`
+  (`figma@anthropic-plugin-directory`); authenticate once per machine with `/mcp` → figma → Authenticate.
 - After visual changes to a kit, regenerate `showcase/img/kit-*.webp` (1340×838) and,
   if the look changed noticeably, `assets/og-image.png`.
 - Icons: use Lucide outline at the icon tokens (`--icon-stroke`, `--icon-sm/md/lg`) and

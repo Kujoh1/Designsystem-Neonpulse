@@ -133,8 +133,11 @@
   .kit .kh .t { font: var(--h4); }
   .kit .kh .d { font: 400 12px/1.3 var(--font-mono); color: var(--color-text-muted); }
   .kit .kh a { margin-left: auto; }
-  .kit .frame { --k: 0.62; position: relative; overflow: hidden; height: calc(868px * var(--k)); background: var(--color-bg-void); }
-  .kit .frame iframe { position: absolute; top: 0; left: 0; width: 1340px; height: 868px; border: 0; transform: scale(var(--k)); transform-origin: top left; }
+  .kit .frame { --k: 0.62; position: relative; overflow: hidden; height: calc(var(--h, 868px) * var(--k)); background: var(--color-bg-void); }
+  .kit .frame iframe { position: absolute; top: 0; left: 0; width: var(--w, 1340px); height: var(--h, 868px); border: 0; transform: scale(var(--k)); transform-origin: top left; }
+  .kit.phone .frame { --w: 390px; --h: 780px; --k: 0.7; }
+  .kit.phone .frame iframe { left: 50%; transform: translateX(-50%) scale(var(--k)); transform-origin: top center; }
+  .kit.kit--themed .frame { background: var(--color-bg-page); }
   .kit.mob .frame { --k: 0.58; height: 540px; }
   .kit.mob .frame iframe { width: 480px; height: 930px; left: 50%; transform: translateX(-50%) scale(var(--k)); transform-origin: top center; }
 
@@ -232,6 +235,7 @@
       <div class="grouplabel">Patterns</div>
       <a class="np-navitem" href="#pat-cards">Cards</a>
       <a class="np-navitem" href="#pat-layout">Layout primitives</a>
+      <a class="np-navitem" href="#pat-appshell">App shell <span class="new">New</span></a>
       <a class="np-navitem" href="#pat-content">Content patterns</a>
       <div class="grouplabel">Kits</div>
       <a class="np-navitem" href="#kits">UI kits</a>
@@ -441,6 +445,43 @@
       <div class="divider"></div>
     </section>
 
+    <section id="pat-appshell">
+      <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
+      <h2 class="sec">App shell &amp; breakpoints</h2>
+      <p class="sub">One responsive foundation for phones, laptops and ultrawide monitors. The system is <b>mobile-first</b> and has exactly five breakpoints. <code class="np-code">@media</code> cannot read <code class="np-code">var()</code>, so write the literal px value from the table and never invent another one. Web pages use the centred <code class="np-code">.np-container</code>; product UIs use <code class="np-code">.np-appshell</code>.</p>
+      <div class="np-table-wrap" style="margin-top:24px"><table class="np-table">
+        <thead><tr><th scope="col">Token</th><th scope="col" class="is-num">From</th><th scope="col">Device</th><th scope="col">What changes in the app shell</th></tr></thead>
+        <tbody>
+          <tr><td class="is-strong">--bp-sm</td><td class="is-num">480</td><td>Large phone</td><td>Grids may take two columns</td></tr>
+          <tr><td class="is-strong">--bp-md</td><td class="is-num">768</td><td>Tablet</td><td>Two-column forms, master–detail; navigation is still a drawer</td></tr>
+          <tr><td class="is-strong">--bp-lg</td><td class="is-num">1024</td><td>Laptop</td><td>Navigation becomes a persistent sidebar, the menu button disappears</td></tr>
+          <tr><td class="is-strong">--bp-xl</td><td class="is-num">1440</td><td>Desktop</td><td>The inspector docks as a third column (below: opens as a panel)</td></tr>
+          <tr><td class="is-strong">--bp-2xl</td><td class="is-num">1920</td><td>Full HD · ultrawide</td><td>Inspector widens to 400 px; content stays capped at <code class="np-code">--container-wide</code> (1600 px)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="glist">
+        <div class="g"><span class="n">WEB</span><h3>Container + gutter</h3><p><code class="np-code">.np-container</code> is 1200 px; <code class="np-code">--prose</code> (680), <code class="np-code">--wide</code> (1600) and <code class="np-code">--full</code> change the cap. The side padding is <code class="np-code">--gutter</code>: 16 px on a phone, growing to 40 px on ultrawide.</p></div>
+        <div class="g"><span class="n">APP</span><h3>Shell + inspector</h3><p>Top bar, navigation, scrolling main area and an optional inspector. On wide screens the extra space goes to the inspector, not to stretched content. Dashboards that should fill the width add <code class="np-code">.np-appshell__content--fluid</code>.</p></div>
+        <div class="g"><span class="n">TOUCH</span><h3>Coarse pointers</h3><p>On <code class="np-code">pointer: coarse</code> buttons, tabs, rows and icon buttons reach <code class="np-code">--touch-target</code> (44 px) and text fields use 16 px so iOS doesn't zoom. Glow hovers only apply under <code class="np-code">hover: hover</code>, so they never stick after a tap.</p></div>
+        <div class="g"><span class="n">SAFE AREA</span><h3>Notches</h3><p>The shell pads itself with <code class="np-code">--safe-top/right/bottom/left</code> (the <code class="np-code">env(safe-area-inset-*)</code> values). Add <code class="np-code">viewport-fit=cover</code> to the viewport meta tag to use them.</p></div>
+      </div>
+      <div class="kits">
+        <div class="kit kit--themed phone">
+          <div class="kh"><span class="t">Phone · 390 px</span><span class="d">navigation + inspector are drawers — tap the icons</span><a class="np-btn np-btn--ghost np-btn--sm" href="preview/pat-appshell.html" target="_blank" rel="noopener">Open full size<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+          <div class="frame"><iframe src="preview/pat-appshell.html" title="App shell at 390 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+        <div class="kit kit--themed">
+          <div class="kh"><span class="t">Laptop · 1280 px</span><span class="d">persistent sidebar, inspector as panel</span></div>
+          <div class="frame" data-w="1280" style="--w:1280px;--h:760px"><iframe src="preview/pat-appshell.html" title="App shell at 1280 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+        <div class="kit kit--themed">
+          <div class="kh"><span class="t">Ultrawide · 2560 px</span><span class="d">sidebar · capped content · docked 400 px inspector</span></div>
+          <div class="frame" data-w="2560" style="--w:2560px;--h:1080px"><iframe src="preview/pat-appshell.html" title="App shell at 2560 px" loading="lazy" scrolling="no"></iframe></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+    </section>
+
     <section id="pat-content">
       <div class="np-eyebrow"><span class="np-livedot" aria-hidden="true"></span>Patterns</div>
       <h2 class="sec">Content patterns</h2>
@@ -566,7 +607,7 @@
   function frameTheme(f) {
     try {
       var d = f.contentDocument; if (!d || !d.documentElement || d.documentElement.hasAttribute('data-theme-lock')) return;
-      if (f.closest('.kit')) return;                        // kits are dark product mocks
+      if (f.closest('.kit:not(.kit--themed)')) return;      // kits are dark product mocks; pattern demos follow the theme
       d.documentElement.setAttribute('data-theme', root.getAttribute('data-theme'));
     } catch (e) {}
   }
@@ -575,7 +616,7 @@
     themeColor.setAttribute('content', t === 'light' ? '#f5f6fa' : '#0c0c16');
     $$('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', t === 'light' ? 'Switch to dark theme' : 'Switch to light theme'); });
     if (persist) { try { localStorage.setItem('np-theme', t); } catch (e) {} }
-    $$('.pcard iframe').forEach(frameTheme);
+    $$('.pcard iframe, .kit--themed iframe').forEach(frameTheme);
     renderSwatches();
     setTimeout(fitAll, 60);
   }
@@ -688,9 +729,10 @@
 
   /* ---------- kits: scale the 1340px desktop previews to the column ---------- */
   function scaleKits() {
-    $$('.kit:not(.mob) .frame').forEach(function (fr) { fr.style.setProperty('--k', (fr.clientWidth / 1340).toFixed(4)); });
+    $$('.kit:not(.mob):not(.phone) .frame').forEach(function (fr) { fr.style.setProperty('--k', (fr.clientWidth / (+fr.getAttribute('data-w') || 1340)).toFixed(4)); });
   }
   scaleKits();
+  $$('.kit--themed iframe').forEach(function (f) { f.addEventListener('load', function () { frameTheme(f); }); });
 
   /* ---------- token reference (parsed from the stylesheet) ---------- */
   var TOKENS = [];
@@ -699,7 +741,7 @@
     if (/^--(shadow|glow|elevation|ring|state-hover)/.test(n)) return 'shadow';
     if (/^--grad|^--color-action-(primary|secondary)$/.test(n)) return 'image';
     if (/^--r-/.test(n)) return 'radius';
-    if (/^--(s-\d|container)/.test(n)) return 'space';
+    if (/^--(s-\d|container|bp-|gutter|sidebar|aside|topbar|touch)/.test(n)) return 'space';
     if (/^--font-/.test(n)) return 'family';
     if (/^--(display|h\d|body|caption|mono-label)/.test(n)) return 'font';
     if (/^--(bg|fg|line|neon|success|warning|danger|info|white|color-)/.test(n)) return 'color';

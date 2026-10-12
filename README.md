@@ -16,8 +16,9 @@
 - **Dark + light theme** via one attribute (`data-theme="light"`), nestable on any subtree. Gradients, glows, focus rings and edges are *derived* from the neon hues.
 - **Accessible by construction.** Every text token passes WCAG AA (≥ 4.5:1) in both themes, every control has a visible `:focus-visible` ring, switches are real checkboxes, `prefers-reduced-motion` is respected.
 - **Complete state model.** Rest · hover · focus · active · loading · disabled · invalid · empty are derived from interaction tokens — never hand-painted per component.
-- **36 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item.
+- **36 elements & patterns** — buttons, icon buttons, badges, fields, input groups, switch, tabs, segmented control, tooltip, meter, avatar, kbd, cards, layout primitives, responsive app shell, banners, empty/skeleton states, lists, tables, modal, toasts, ⌘K command palette, code block, sidebar nav item.
 - **Three interactive UI kits** (marketing, SaaS dashboard, mobile) built from the system's own classes.
+- **Figma library from the same source.** Variables (Primitives · Theme Dark/Light · Scale), text/gradient/effect styles and 23 components with variants are generated from `colors_and_type.css` and kept in sync — via a Figma plugin or Claude through the Figma connector. See [`figma/`](figma/README.md).
 - **Living docs.** Swatches, contrast ratios and the full token table are read from the stylesheet at runtime; theme switch, ⌘K search and the source of every specimen are built in.
 - **Governance built in.** The [PR Guardian](https://github.com/Kujoh1/neonpulse-pr-guardian) — an n8n workflow with Claude — reviews every pull request against this system's rulebook and comments with exact token fixes. [Explained for decision-makers](https://kujoh1.github.io/Designsystem-Neonpulse/governance/) · [live workflow](https://kujoh1.github.io/Designsystem-Neonpulse/governance/workflow.html) · [live check: one PR fails, one passes](https://kujoh1.github.io/Designsystem-Neonpulse/governance/check.html).
 - **Zero build.** Plain HTML/CSS, self-hosted variable fonts (no Google request), CDN dependencies pinned with SRI hashes. Deploys to GitHub Pages on push.
@@ -99,6 +100,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 | `showcase/` | Case-study / marketing page (DE/EN) presenting the system. |
 | `governance/` | PR Guardian explained for management (DE/EN) + `workflow.html`, an interactive read-only view of the n8n workflow, + `check.html`, a live check of two pull requests (one fails, one passes). |
 | `colors_and_type.css` | **Single source of truth**: tokens, light theme, elements, patterns. |
+| `figma/` | Figma library builder: token export from the CSS, Figma plugin, icons. |
 | `fonts/` | Self-hosted variable fonts + licence notes. |
 | `effects/starfield.css` | Starfield scene backdrop (brand effect). |
 | `preview/` | Specimen cards embedded in the docs (`<!-- @dsCard group="…" -->` on line 1). |
@@ -157,6 +159,7 @@ Aliases are declared on `:root, [data-theme]` so every themed subtree re-resolve
 - 1px hairlines (`--line-1/2/3`), a neon-lit edge (`--line-glow`) on focus.
 - Radii 8–28px: cards `--r-lg` (16px), buttons/inputs `--r-md` (12px), pills `--r-full`.
 - 4px spacing base (`--s-1` … `--s-20`), `--container-max: 1200px`. App shells: fixed dark sidebar + content well.
+- Responsive, mobile-first: five breakpoints (`--bp-sm` 480 · `md` 768 · `lg` 1024 · `xl` 1440 · `2xl` 1920 — written as literal px in `@media`), container steps `--container-prose/-max/-wide`, fluid `--gutter` (16 → 40px), `.np-appshell` (drawer nav < 1024, persistent sidebar ≥ 1024, docked inspector ≥ 1440, content capped on ultrawide), 44px touch targets on `pointer: coarse`, glow hovers only on `hover: hover`.
 
 ### Motion
 `--dur 200ms` with `--ease-out`; press = `scale(0.97)`; focus = neon ring. No bounces — precise, not playful.
